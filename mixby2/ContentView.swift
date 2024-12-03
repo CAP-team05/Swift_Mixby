@@ -9,8 +9,8 @@ import SwiftUI
 
 struct ContentView: View {
     
+    @State private var isLoading: Bool = true
     @State private var showTutorial: Bool = true
-    @State var isLoading: Bool = true
     
     private let userHandler = UserHandler()
     
@@ -26,8 +26,8 @@ struct ContentView: View {
             }
         }
         .onAppear {
-            let user = userHandler.fetchAllUsers()
-            showTutorial = (user.count == 0)
+            userHandler.dropUserTable()
+            print("user table dropped")
             isLoading = false
         }
     }

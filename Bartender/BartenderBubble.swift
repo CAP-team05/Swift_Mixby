@@ -25,7 +25,7 @@ struct  BartenderBubble: View {
         let comments: [String] = [
             "레시피 개수: \(recipeHandler.fetchAllRecipes().count)",
             "상품 개수: \(drinkHandler.fetchAllDrinks().count)",
-            "환영합니다. \(userName)님!",
+            "환영합니다. \(userHandler.fetchAllUsers().first!.name)님!",
             "테이스팅 노트",
             "설정"
         ]
@@ -37,10 +37,6 @@ struct  BartenderBubble: View {
                 .foregroundColor(Color.white)
                 .opacity(0.2)
                 .cornerRadius(30)
-                .frame(
-                    width: showComment ? UIScreen.screenWidth-40 : 60,
-                    height: showComment ? 100 : -40
-                )
             
             Text(comments[currentTab-1])
                 .font(.gbRegular22)
@@ -54,13 +50,10 @@ struct  BartenderBubble: View {
                     height: showComment ? 100 : -40
                 )
         } // card bg
+        .frame(
+            width: UIScreen.screenWidth-40,
+            height: 100
+        )
         .offset(y: UIScreen.screenHeight * -0.5 + 185)
-        .onAppear {
-            let userDTOs = userHandler.fetchAllUsers()
-            if userDTOs.count > 0 {
-                userName = userDTOs.first?.name ?? "noName"
-                print("user exists")
-            }
-        }
     }
 }

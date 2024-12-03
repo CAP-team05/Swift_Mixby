@@ -13,12 +13,14 @@ struct CustomTabBar: View {
     
     @Namespace private var animationNamespace
     
+    // @Environment(\.colorScheme) var colorScheme
+    
     let tabBarItems: [(image: String, title: String)] = [
         ("cocktail", "Recipes"),
         ("shelves", "Cabinet"),
         ("home", "Home"),
         ("notes", "Note"),
-        ("settings", "Settings")
+        ("badge", "Settings")
     ]
     
     var body: some View {
@@ -28,7 +30,7 @@ struct CustomTabBar: View {
             ZStack {
                 Capsule()
                     .frame(height: 80)
-                    .background(Color.mixbyColor0)
+                    .foregroundColor(Color.mixbyColor1)
                     .shadow(radius: 2)
                     .cornerRadius(90)
                 HStack {
@@ -42,7 +44,7 @@ struct CustomTabBar: View {
                             VStack(spacing: 8) {
                                 let iconSize = CGFloat(40)
                                 if index+1 == tabSelection {
-                                    Image(tabBarItems[index].image+"_")
+                                    Image(tabBarItems[index].image+"2")
                                         .resizable()
                                         .frame(width: iconSize, height: iconSize)
                                     Circle()

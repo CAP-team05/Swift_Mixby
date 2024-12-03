@@ -77,7 +77,7 @@ struct NoteTab: View {
                         } // Scroll View
                         
                         if noUnwritten {
-                            EmptyBox().offset(y: 0)
+                            EmptyBox().offset(y: -500)
                         }
                     }
                     
@@ -106,7 +106,7 @@ struct NoteTab: View {
                         } // Scroll View
                         
                         if noWritten {
-                            EmptyBox().offset(y: 0)
+                            EmptyBox().offset(y: -500)
                         }
                     }
                     Spacer()
