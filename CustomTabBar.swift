@@ -13,6 +13,8 @@ struct CustomTabBar: View {
     
     @Namespace private var animationNamespace
     
+    // @Environment(\.colorScheme) var colorScheme
+    
     let tabBarItems: [(image: String, title: String)] = [
         ("cocktail", "Recipes"),
         ("shelves", "Cabinet"),
@@ -28,7 +30,7 @@ struct CustomTabBar: View {
             ZStack {
                 Capsule()
                     .frame(height: 80)
-                    .background(Color.mixbyColor0)
+                    .foregroundColor(Color.mixbyColor1)
                     .shadow(radius: 2)
                     .cornerRadius(90)
                 HStack {
