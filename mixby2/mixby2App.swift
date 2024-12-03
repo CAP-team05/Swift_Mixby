@@ -28,10 +28,9 @@ extension Array: @retroactive RawRepresentable where Element: Codable {
 }
 
 func generateRecipeDTOsByGetKeywords(doPlus: Bool, keys: [String]) {
-    let recipeHandler: RecipeHandler = RecipeHandler()
-    recipeHandler.dropRecipeTable()
-    recipeHandler.createRecipeTable()
-    var keyword = getKeywordsByDrinkDTO(drinks: DrinkHandler().fetchAllDrinks())
+    RecipeHandler.dropTable()
+    RecipeHandler.createTable()
+    var keyword = getKeywordsByDrinkDTO(drinks: DrinkHandler.searchAll())
     if doPlus {
         for key in keys {
             keyword = keyword + key
@@ -40,18 +39,17 @@ func generateRecipeDTOsByGetKeywords(doPlus: Bool, keys: [String]) {
     print("keyword: \(keyword)")
     let recipeDTOArray = getRecipeDTOListWithKeywords(key: keyword)
     for recipeDTO in recipeDTOArray {
-        recipeHandler.insertDrink(recipe: recipeDTO)
+        RecipeHandler.insert(recipe: recipeDTO)
     }
     print("recipeDTO generated completely")
 }
 
 func generateIngredientDTOsFromAPI() {
-    let ingredientHandler: IngredientHandler = IngredientHandler()
-    ingredientHandler.dropIngredientTable()
-    ingredientHandler.createIngredientTable()
+    IngredientHandler.dropTable()
+    IngredientHandler.createTable()
     let ingredientDTOs = getAllIngredientsFromAPI()
     for ingredientDTO in ingredientDTOs {
-        ingredientHandler.insertIngredient(ingredient: ingredientDTO)
+        IngredientHandler.insert(ingredient: ingredientDTO)
     }
     print("ingredientDTO generated completely")
 }

@@ -20,8 +20,6 @@ struct TutorialBubble: View {
     @Binding var showCustomBar: Bool
     @Binding var showTutorial: Bool
     
-    private let userHandler = UserHandler()
-    
     
     func tutorialMent(index: Int, userName: String, userGender: String, userPrefer: String) -> String {
         let tutorialMent = [
@@ -217,9 +215,9 @@ struct TutorialBubble: View {
                     }
                     if tutorialIndex == 36 {
                         let userDTO = UserDTO(name: userName, gender: userGender, favoriteTaste: userPrefer, persona: "")
-                        userHandler.dropUserTable()
-                        userHandler.createUserTable()
-                        userHandler.insertUser(user: userDTO)
+                        UserHandler.dropTable()
+                        UserHandler.createTable()
+                        UserHandler.insert(user: userDTO)
                         showTutorial = false
                     } // tutorial ends
                 }

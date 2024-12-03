@@ -137,7 +137,6 @@ struct TastingNoteView: View {
                     }
                     
                     Button {
-                        let tastingNoteHandler = TastingNoteHandler()
                         let newNote = TastingNoteDTO(
                             code: tastingNoteDTO.code,
                             english_name: tastingNoteDTO.english_name,
@@ -148,7 +147,7 @@ struct TastingNoteView: View {
                             sourness: sourness,
                             alcohol: alcohol
                         )
-                        tastingNoteHandler.updateTastingNote(note: newNote)
+                        TastingNoteHandler.update(note: newNote)
                         print("note updated")
                         presentationMode.wrappedValue.dismiss()
                     } label: {

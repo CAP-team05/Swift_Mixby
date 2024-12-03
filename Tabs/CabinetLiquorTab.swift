@@ -14,10 +14,9 @@ struct CabinetLiquorTab: View {
     
     private let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 2)
     
-    private let ingredientHandler = IngredientHandler()
     
     var body: some View {
-        let ingredientDTOArray = ingredientHandler.fetchAllIngredients()
+        let ingredientDTOArray = IngredientHandler.searchAll()
         
         ScrollView(.vertical) {
             Spacer().frame(height: 10)

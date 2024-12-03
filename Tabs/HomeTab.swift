@@ -9,7 +9,7 @@ import SwiftUI
 
 struct HomeTab: View {
     
-    private let userDTO = UserHandler().fetchAllUsers()
+    private let userDTO = UserHandler.searchAll()
     
     var body: some View {
         ZStack{

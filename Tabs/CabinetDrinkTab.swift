@@ -15,8 +15,6 @@ struct CabinetDrinkTab: View {
     private let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 3)
     private let allBases: [String] = ["위스키", "리큐르", "진", "럼", "테킬라", "보드카", "브랜디", "와인", "기타"]
     
-    private let drinkHandler = DrinkHandler()
-    
     var body: some View {
         
         // let drinkDTOArray = drinkHandler.fetchAllDrinks()
@@ -31,7 +29,7 @@ struct CabinetDrinkTab: View {
                     Spacer().frame(height: 10)
                     
                     LazyVGrid(columns: columns, spacing: 20) {
-                        filteredDrinks(for: i, from: drinkHandler.fetchAllDrinks())
+                        filteredDrinks(for: i, from: DrinkHandler.searchAll())
                     }
                     
                     if isEmpty[i] {

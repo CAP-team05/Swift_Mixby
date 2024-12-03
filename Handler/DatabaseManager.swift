@@ -16,26 +16,39 @@ class DatabaseManager {
     
     func openDatabase() -> OpaquePointer? {
         if db == nil {
-            let fileURL = try! FileManager.default
-                .url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-                .appendingPathComponent("AppDatabase.sqlite")
-            if sqlite3_open(fileURL.path, &db) != SQLITE_OK {
-                print("db ok")
-            } else {
-                print("error in db")
+            do {
+                let fileURL = try FileManager.default
+                    .url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+                    .appendingPathComponent("AppDatabase.sqlite")
+                
+                print("Database path: \(fileURL.path)")
+                
+                if sqlite3_open(fileURL.path, &db) != SQLITE_OK {
+                    if let errmsg = sqlite3_errmsg(db) {
+                        print("Error opening database: \(String(cString: errmsg))")
+                    }
+                    return nil
+                } else {
+                    print("Database opened successfully")
+                }
+            } catch {
+                print("FileManager error: \(error)")
                 return nil
             }
-            
         }
         return db
     }
     
     func closeDatabase() {
-        if sqlite3_close(db) == SQLITE_OK {
-            print("db closed")
-        } else {
-            print("error in db closed")
+        if db != nil {
+            if sqlite3_close(db) == SQLITE_OK {
+                print("Database closed successfully")
+            } else {
+                if let errmsg = sqlite3_errmsg(db) {
+                    print("Error closing database: \(String(cString: errmsg))")
+                }
+            }
+            db = nil
         }
-        db = nil
     }
 }

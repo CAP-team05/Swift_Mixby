@@ -16,8 +16,7 @@ func isRecipeCodeInTastingNotes(recipe: RecipeDTO, tastingNotes: [TastingNoteDTO
 }
 
 func generateTastingsNoteByRecipeDTOs(recipeDTOs: [RecipeDTO]) {
-    let tastingNoteHandler = TastingNoteHandler()
-    let tastingNoteDTOs = tastingNoteHandler.fetchAllTastingNotes()
+    let tastingNoteDTOs = TastingNoteHandler.searchAll()
     
     for recipeDTO in recipeDTOs {
         let code = recipeDTO.code
@@ -35,7 +34,7 @@ func generateTastingsNoteByRecipeDTOs(recipeDTOs: [RecipeDTO]) {
             drinkDate: drinkDate
         )
         if !isRecipeCodeInTastingNotes(recipe: recipeDTO, tastingNotes: tastingNoteDTOs) {
-            tastingNoteHandler.insertTastingNote(note: tastingNoteDTO)
+            TastingNoteHandler.insert(note: tastingNoteDTO)
             print("new note added")
         }
     }

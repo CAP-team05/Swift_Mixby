@@ -14,8 +14,6 @@ struct RecipeView: View {
     
     @Environment(\.presentationMode) private var presentationMode : Binding<PresentationMode>
     
-    private let recipeHandler = RecipeHandler()
-    
     var body: some View {
         
         ZStack {
