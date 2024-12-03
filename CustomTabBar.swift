@@ -1,0 +1,69 @@
+//
+//  CustomTabBar.swift
+//  mixby2
+//
+//  Created by Anthony on 11/27/24.
+//
+
+import SwiftUI
+
+struct CustomTabBar: View {
+    @Binding var tabSelection: Int
+    @Binding var isLoading: Bool
+    
+    @Namespace private var animationNamespace
+    
+    let tabBarItems: [(image: String, title: String)] = [
+        ("cocktail", "Recipes"),
+        ("shelves", "Cabinet"),
+        ("home", "Home"),
+        ("notes", "Note"),
+        ("settings", "Settings")
+    ]
+    
+    var body: some View {
+        VStack {
+            Spacer()
+            
+            ZStack {
+                Capsule()
+                    .frame(height: 80)
+                    .background(Color.mixbyColor0)
+                    .shadow(radius: 2)
+                    .cornerRadius(90)
+                HStack {
+                    Spacer()
+                    ForEach(0..<5) { index in
+                        Button {
+                            if !isLoading {
+                                tabSelection = index + 1
+                            }
+                        } label: {
+                            VStack(spacing: 8) {
+                                let iconSize = CGFloat(40)
+                                if index+1 == tabSelection {
+                                    Image(tabBarItems[index].image+"_")
+                                        .resizable()
+                                        .frame(width: iconSize, height: iconSize)
+                                    Circle()
+                                        .frame(height: 6)
+                                        .foregroundColor(Color.mixbyColor2)
+                                }
+                                else {
+                                    Image(tabBarItems[index].image)
+                                        .resizable()
+                                        .frame(width: iconSize, height: iconSize)
+                                }
+                            }
+                        }
+                        Spacer()
+                    }
+                }
+            }
+            .padding(.horizontal)
+            
+            Spacer().frame(height: 20)
+        }
+        .ignoresSafeArea()
+    }
+}
