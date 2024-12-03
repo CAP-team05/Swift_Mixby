@@ -15,9 +15,7 @@ struct TutorialView: View {
     
     @State var showCustomBar: Bool = false
     @State var showBartender: Bool = true
-    
     @State var isLoading: Bool = false
-    
     @State var bgPos: Int = 0
     
     

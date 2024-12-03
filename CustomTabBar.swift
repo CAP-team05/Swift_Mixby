@@ -20,7 +20,7 @@ struct CustomTabBar: View {
         ("shelves", "Cabinet"),
         ("home", "Home"),
         ("notes", "Note"),
-        ("settings", "Settings")
+        ("badge", "Settings")
     ]
     
     var body: some View {
@@ -44,7 +44,7 @@ struct CustomTabBar: View {
                             VStack(spacing: 8) {
                                 let iconSize = CGFloat(40)
                                 if index+1 == tabSelection {
-                                    Image(tabBarItems[index].image+"_")
+                                    Image(tabBarItems[index].image+"2")
                                         .resizable()
                                         .frame(width: iconSize, height: iconSize)
                                     Circle()

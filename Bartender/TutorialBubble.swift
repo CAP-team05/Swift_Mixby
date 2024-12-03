@@ -21,209 +21,141 @@ struct TutorialBubble: View {
     @Binding var showTutorial: Bool
     
     private let userHandler = UserHandler()
+    private let maxTutorialIndex = 39
+    private let tutorialMent: [String] = [
+        "Mixby에 오신 것을 환영합니다!", "...", "흠... 크흠...", "엇? 생각보다 빨리 오셨네요.",
+        "기다리고 있었습니다.", "저는 여기 Mixby의 바텐더입니다.",
+        "손님께서, 바텐딩을 접하신지 얼마 안됐다고 들어서..",
+        "..이것 저것 준비하느라 조금 바빴습니다.", "...",
+        "혹시 성함이 어떻게 되시죠?", "...",
+        "{userName}님 반갑습니다.", "모자 때문에 그런지 잘 안보는데..",
+        "..실례지만 성별이 어떻게 되십니까?", "...",
+        "{userGender}분이시군요.", "평소에 술은 좋아하시는지 궁금하네요.",
+        "어떤 맛이 가장 취향에 맞으신가요?", "...", "역시 배우신 분인듯 하네요.",
+        "이제야 {userName}님에 대해 조금 알게 된것 같습니다.",
+        "이어서 저희 바를 소개해드리죠.",
+        "화면 하단에 있는 버튼으로 둘러보실 수 있습니다.",
+        "먼저 맨 왼쪽 페이지는 레시피가 보관되어 있습니다.",
+        "재료를 전부 가지고 계셔야 해금 된다는 점 주의하시길 바랍니다.",
+        "그리고 두번째 페이지 입니다.",
+        "보유하신 술과 재료를 확인하고 관리하실 수 있습니다.",
+        "네번째 페이지에는 '테이스팅 노트'가 정리되어 있습니다.",
+        "제조하신 레시피의 맛을 취향대로 맘껏 평가하시면 됩니다.",
+        "따라서 보유하신 모든 재료들, 남기신 테이스팅 노트를 바탕으로",
+        "제가, 가운데에서 {userName}님을 위해..",
+        "매일 새로운 추천을 해드릴겁니다.", "...",
+        "서론은 여기까지 하고,",
+        "아직 보유하신 재료나 술이 없기 때문에",
+        "두번째 탭에서 먼저 등록해주시면 되겠습니다.", "...", "그럼 잘 부탁드립니다."
+    ]
     
-    
-    func tutorialMent(index: Int, userName: String, userGender: String, userPrefer: String) -> String {
-        let tutorialMent = [
-            "Mixby에 오신 것을 환영합니다!",
-            "...",
-            "흠... 크흠...",
-            "엇? 생각보다 빨리 오셨네요.",
-            "기다리고 있었습니다.",
-            "저는 여기 Mixby의 바텐더입니다.",
-            "손님께서, 바텐딩을 접하신지 얼마 안됐다고 들어서..",
-            "..이것 저것 준비하느라 조금 바빴습니다.",
-            "...",
-            "혹시 성함이 어떻게 되시죠?",
-            "...",
-            "\(userName)님 반갑습니다.",
-            "모자 때문에 그런지 잘 안보는데..",
-            "..실례지만 성별이 어떻게 되십니까?",
-            "...",
-            "\(userGender)분이시군요.",
-            "평소에 술은 좋아하시는지 궁금하네요.",
-            "어떤 맛이 가장 취향에 맞으신가요?",
-            "...",
-            "역시 배우신 분인듯 하네요.",
-            "이제야 \(userName)님에 대해 조금 알게 된것 같습니다.",
-            "이어서 저희 바를 소개해드리죠.",
-            "화면 하단에 있는 버튼으로 둘러보실 수 있습니다.",
-            "먼저 맨 왼쪽 페이지는 레시피가 보관되어 있습니다.",
-            "재료를 전부 가지고 계셔야 열람할 수 있는 점 주의하시길 바랍니다.",
-            "그리고 두번째 페이지 입니다.",
-            "보유하신 '술', '재료', '도구'를 확인하고 관리하실 수 있습니다.",
-            "바로 오른쪽, 네번째 페이지에는 '테이스팅 노트'가 정리되어 있습니다.",
-            "제조하신 레시피의 맛을 취향대로 맘껏 평가하시면 됩니다.",
-            "따라서 보유하신 모든 재료들, 남기신 '테이스팅 노트'를 바탕으로",
-            "제가, 가운데에서 \(userName)님을 위해!",
-            "매일 새로운 추천을 해드릴겁니다!",
-            "...",
-            "서론은 여기까지 하고,",
-            "아직 보유하신 재료나 술이 없기 때문에",
-            "두번째 탭에서 먼저 등록해주시면 되겠습니다."
-        ]
-        
-        if index >= tutorialMent.count { return "그럼 곧 뵙겠습니다!" }
-        return tutorialMent[index]
+    private func getComment() -> String {
+        var comment = tutorialMent[tutorialIndex]
+        comment = comment.replacingOccurrences(of: "{userName}", with: userName)
+        comment = comment.replacingOccurrences(of: "{userGender}", with: userGender)
+        comment = comment.replacingOccurrences(of: "{userPrefer}", with: userPrefer)
+        return comment
     }
     
-    // Speech Bubble
+    private func fetchUserInfo() {
+        let userDTO = UserDTO(name: userName, gender: userGender, favoriteTaste: userPrefer, persona: "")
+        userHandler.insertUser(user: userDTO)
+    }
+    
+    private func handleUserInput() {
+        switch tutorialIndex {
+        case 9: showUserOptions = true
+        case 13: showUserOptions = true
+        case 17: showUserOptions = true
+        case 22: showCustomBar = true; tutorialIndex += 1
+        case 23: tabSelection = 1; tutorialIndex += 1
+        case 25: tabSelection = 2; tutorialIndex += 1
+        case 27: tabSelection = 4; tutorialIndex += 1
+        case 30: tabSelection = 3; tutorialIndex += 1
+        case 37: fetchUserInfo(); showTutorial = false
+        default: tutorialIndex += 1
+        }
+    }
+    
     var body: some View {
-        let comment: String = tutorialMent(
-            index: tutorialIndex,
-            userName: userName,
-            userGender: userGender,
-            userPrefer: userPrefer)
-        
         ZStack {
-            ZStack {
-                
-                Rectangle()
-                    .mask(
-                        LinearGradient(gradient: Gradient(colors: [Color.black.opacity(0), Color.black.opacity(0.8)]), startPoint: .top, endPoint: .bottom)
-                    )
-                    .offset(y: showTutorial ? UIScreen.screenHeight/3*2 : UIScreen.screenHeight*2)
-                
-                Text("화면을 클릭하여 대화를 진행하세요")
-                    .font(.gbRegular16)
-                    .foregroundColor(.white.opacity(0.5))
-                    .offset(y: UIScreen.screenHeight/4)
-                
+            Rectangle()
+                .mask(LinearGradient(gradient: Gradient(colors: [Color.black.opacity(0), Color.black.opacity(0.8)]), startPoint: .top, endPoint: .bottom))
+                .offset(y: UIScreen.screenHeight / 3 * 2)
+            
+            Text("화면을 클릭하여 대화를 진행하세요")
+                .font(.gbRegular16)
+                .foregroundColor(.white.opacity(0.5))
+                .offset(y: UIScreen.screenHeight / 4)
+            
+            VStack {
                 ZStack {
                     Rectangle()
                         .background(VisualEffectView(effect: UIBlurEffect(style: .dark)))
                         .foregroundColor(Color.white)
                         .opacity(0.2)
                         .cornerRadius(30)
-                        .frame(
-                            width: showTutorial ? UIScreen.screenWidth-40 : 60,
-                            height: showTutorial ? 100 : -40
-                        )
                     
-                    Text(comment)
-                        .font(.gbRegular22)
-                        .foregroundColor(.white)
-                        .multilineTextAlignment(.center)
-                        .lineLimit(2)
-                        .lineSpacing(10)
-                        .opacity(showTutorial ? 0.8 : 0)
-                } // card bg
-                
-                TextField("별명을 입력해주세요", text: $userName)
-                    .padding()
-                    .frame(
-                        width: UIScreen.screenWidth-40,
-                        height: 50)
-                    .background(Color(uiColor: .secondarySystemBackground))
-                    .cornerRadius(40)
-                    .opacity((showUserOptions && tutorialIndex==9) ? 1 : 0)
-                    .offset(y: 100)
-                    .onSubmit {
-                        withAnimation(.easeInOut(duration: 0.3)) {
-                            tutorialIndex += 1
-                            showUserOptions = false
-                        }
-                    } // 닉네임
-                
-                HStack {
-                    let genders = ["남성", "여성"]
-                    ForEach(0..<2) { i in
-                        ZStack {
-                            Capsule()
-                                .fill(Color.mixbyColor1.opacity(0.5))
-                            Text(genders[i])
-                                .font(.gbRegular16)
-                                .foregroundColor(.white)
-                        }.onTapGesture {
-                            withAnimation(.easeInOut(duration: 0.3)) {
-                                tutorialIndex += 1
-                                userGender = genders[i]
-                            }
-                        }
+                    if !getComment().isEmpty { // 텍스트가 비어있지 않을 때만 보여줌
+                        Text(getComment())
+                            .font(.gbRegular22)
+                            .foregroundColor(.white)
+                            .lineLimit(2)
+                            .multilineTextAlignment(.center)
+                            .lineSpacing(10)
+                            .frame(width: UIScreen.screenWidth - 40, height: 100)
+                            .id(tutorialIndex) // 상태 변화 감지
                     }
                 }
-                .frame(
-                    width: UIScreen.screenWidth-40,
-                    height: 50)
-                .opacity((showUserOptions && tutorialIndex==13) ? 1 : 0)
-                .offset(y: 100)
-                .onSubmit {
-                    withAnimation(.easeInOut(duration: 0.3)) {
-                        tutorialIndex += 1
-                        showUserOptions = false
-                    }
-                } // 성별
+                .frame(width: UIScreen.screenWidth-40, height: 100)
                 
-                HStack {
-                    let prefers = ["달콤", "상큼", "묵직", "도수"]
-                    ForEach(0..<4) { i in
-                        ZStack {
-                            Capsule()
-                                .fill(Color.mixbyColor1.opacity(0.5))
-                            Text(prefers[i])
-                                .font(.gbRegular16)
-                                .foregroundColor(.white)
-                        }.onTapGesture {
-                            withAnimation(.easeInOut(duration: 0.3)) {
-                                tutorialIndex += 1
-                                userPrefer = prefers[i]
+                if showUserOptions {
+                    switch tutorialIndex {
+                    case 9:
+                        TextField("별명을 입력해주세요", text: $userName)
+                            .padding()
+                            .frame(width: UIScreen.screenWidth - 40, height: 50)
+                            .background(Color(uiColor: .secondarySystemBackground))
+                            .cornerRadius(40)
+                            .onSubmit {
+                                withAnimation(.easeInOut(duration: 0.3)) {
+                                    handleUserInput()
+                                    tutorialIndex += 1
+                                    showUserOptions = false
+                                }
                             }
-                        }
+                    case 13:
+                        userOptionButtons(options: ["남성", "여성"], selection: $userGender)
+                    case 17:
+                        userOptionButtons(options: ["달콤", "상큼", "묵직", "도수"], selection: $userPrefer)
+                    default:
+                        EmptyView()
                     }
                 }
-                .frame(
-                    width: UIScreen.screenWidth-40,
-                    height: 50)
-                .opacity((showUserOptions && tutorialIndex==17) ? 1 : 0)
-                .offset(y: 100)
-                .onSubmit {
-                    withAnimation(.easeInOut(duration: 0.3)) {
-                        tutorialIndex += 1
-                        showUserOptions = false
-                    }
-                } // 술 취향
+                Spacer()
             }
-            .offset(y: UIScreen.screenHeight * -0.26)
-            
-        } // ZStack
+            .offset(y: -UIScreen.screenHeight * 0.1)
+            .frame(height: 400)
+        }
         .onTapGesture {
-            withAnimation(.easeInOut(duration: 0.3)) {
-                if showTutorial{
-                    isQuestion = comment.last! == "?"
-                    if !isQuestion {
-                        if tutorialIndex < 36 {
-                            tutorialIndex += 1
-                        } else {
-                            showTutorial = false
-                        }                } else {
-                            withAnimation(.easeInOut(duration: 0.3)) {
-                                showUserOptions = true
-                            }
-                        }
-                    if tutorialIndex == 22 {
-                        showCustomBar = true
+            withAnimation(.easeInOut(duration: 0.3)) { handleUserInput() }
+        }
+    }
+    
+    private func userOptionButtons(options: [String], selection: Binding<String>) -> some View {
+        HStack {
+            ForEach(options, id: \.self) { option in
+                Capsule()
+                    .fill(Color.mixbyColor1.opacity(0.5))
+                    .overlay(Text(option).font(.gbRegular16).foregroundColor(.white))
+                    .onTapGesture {
+                        selection.wrappedValue = option
+                        handleUserInput()
+                        showUserOptions = false
+                        tutorialIndex += 1
                     }
-                    if tutorialIndex == 23 {
-                        tabSelection = 1
-                    }
-                    if tutorialIndex == 25 {
-                        tabSelection = 2
-                    }
-                    if tutorialIndex == 27 {
-                        tabSelection = 4
-                    }
-                    if tutorialIndex == 30 {
-                        tabSelection = 3
-                    }
-                    if tutorialIndex == 36 {
-                        let userDTO = UserDTO(name: userName, gender: userGender, favoriteTaste: userPrefer, persona: "")
-                        userHandler.dropUserTable()
-                        userHandler.createUserTable()
-                        userHandler.insertUser(user: userDTO)
-                        showTutorial = false
-                    } // tutorial ends
-                }
             }
-        } // onTapGesture
+        }
+        .frame(width: UIScreen.screenWidth - 40, height: 50)
     }
 }

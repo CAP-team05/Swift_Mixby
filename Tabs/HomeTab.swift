@@ -9,12 +9,12 @@ import SwiftUI
 
 struct HomeTab: View {
     
-    private let userDTO = UserHandler().fetchAllUsers()
+    private let userHandler = UserHandler()
     
     var body: some View {
-        ZStack{
+        VStack{
             Text("Home Tab")
-            
+            Text("user count: \(userHandler.fetchAllUsers().count)")
         }
     }
 }
