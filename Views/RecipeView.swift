@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct RecipeView: View {
-    @Binding var tabSelection: Int
     
     var recipeDTO: RecipeDTO
     
@@ -21,19 +20,18 @@ struct RecipeView: View {
         ZStack {
             ViewBackground()
             
-            Spacer()
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button(action: {
-                            tabSelection = 4
-                            presentationMode.wrappedValue.dismiss()
-                        }, label: {
-                            Image(systemName: "note.text")
-                                .font(.system(size: 14))
-                                .foregroundColor(.white)
-                        })
-                    }
-                }
+//            Spacer()
+//                .toolbar {
+//                    ToolbarItem(placement: .navigationBarTrailing) {
+//                        Button(action: {
+//                            presentationMode.wrappedValue.dismiss()
+//                        }, label: {
+//                            Image(systemName: "note.text")
+//                                .font(.system(size: 14))
+//                                .foregroundColor(.white)
+//                        })
+//                    }
+//                }
             
             VStack {
                 Spacer().frame(height: 70)

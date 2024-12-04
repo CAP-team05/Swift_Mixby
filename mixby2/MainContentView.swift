@@ -52,6 +52,7 @@ struct MainContentView: View {
                     }
                 }
             }
+            .toolbar(.hidden, for: .tabBar)
             .overlay(alignment: .bottom) {
                 // Custom tab bar
                 CustomTabBar(tabSelection: $tabSelection, isLoading: $isLoading)

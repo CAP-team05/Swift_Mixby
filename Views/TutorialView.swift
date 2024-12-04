@@ -20,11 +20,44 @@ struct TutorialView: View {
     
     
     var body: some View {
-        
         TabView {
-            BackGround(bgPos: bgPos)
-            
+            ZStack() {
+                let bgSize: CGFloat = 500
+                // Background gradient
+                
+                
+                Image("city")
+                    .resizable()
+                    .frame(width: UIScreen.screenWidth*1.5, height: UIScreen.screenHeight*1.5)
+                    .offset(y: 100)
+                
+                Rectangle()
+                    .foregroundColor(.clear)
+                    .frame(width: UIScreen.screenWidth, height: UIScreen.screenHeight)
+                    .background(
+                        LinearGradient(gradient: Gradient(colors: [Color.black, Color.white]), startPoint: .topTrailing, endPoint: .bottomLeading)
+                    )
+                    .opacity(0.7)
+                
+                // Front Shadow
+                Rectangle()
+                    .foregroundColor(.clear)
+                    .frame(width: UIScreen.screenWidth, height: UIScreen.screenHeight)
+                    .background(Color(red: 0.20, green: 0.20, blue: 0.36).opacity(0.60))
+                
+                Image("building")
+                    .resizable()
+                    .frame(width: bgSize, height: bgSize)
+                    .offset(x: CGFloat(bgPos-20), y: 300)
+                    .opacity(showCustomBar ? 1 : 0)
+                
+                Rectangle()
+                    .opacity(showCustomBar ? 0.1 : 0.5)
+                    .mask(LinearGradient(gradient: Gradient(colors: [Color.black.opacity(0), Color.black.opacity(0.8)]), startPoint: .top, endPoint: .bottom))
+                
+            }
         }
+        
         .overlay(alignment: .bottom) {
             if showCustomBar {
                 CustomTabBar(tabSelection: $tabSelection, isLoading: $isLoading)

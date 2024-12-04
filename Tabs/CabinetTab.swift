@@ -13,9 +13,6 @@ struct CabinetTab: View {
     @State private var tabOption: Int = 0
     @State private var pageRefreshed: Bool = true
     
-    private let drinkHandler = DrinkHandler()
-    private let ingredientHandler = IngredientHandler()
-    
     var body: some View {
         
         VStack {

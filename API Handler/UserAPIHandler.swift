@@ -15,7 +15,8 @@ class UserAPIHandler {
     // API로 JSON 데이터를 전송
     func sendUserDataToAPI() {
         let users = userHandler.fetchAllUsers()
-        let notes = tastingNoteHandler.fetchAllTastingNotes()
+        let allNotes = tastingNoteHandler.fetchAllTastingNotes()
+        let notes = allNotes.filter { $0.eval >= 0 }
         let jsonEncoder = JSONEncoder()
         jsonEncoder.outputFormatting = .prettyPrinted
 

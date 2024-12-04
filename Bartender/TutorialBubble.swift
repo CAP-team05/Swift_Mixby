@@ -21,9 +21,8 @@ struct TutorialBubble: View {
     @Binding var showTutorial: Bool
     
     private let userHandler = UserHandler()
-    private let maxTutorialIndex = 39
     private let tutorialMent: [String] = [
-        "Mixby에 오신 것을 환영합니다!", "...", "흠... 크흠...", "엇? 생각보다 빨리 오셨네요.",
+        "...", "흠... 크흠...", "엇? 생각보다 빨리 오셨네요.",
         "기다리고 있었습니다.", "저는 여기 Mixby의 바텐더입니다.",
         "손님께서, 바텐딩을 접하신지 얼마 안됐다고 들어서..",
         "..이것 저것 준비하느라 조금 바빴습니다.", "...",
@@ -64,15 +63,15 @@ struct TutorialBubble: View {
     
     private func handleUserInput() {
         switch tutorialIndex {
-        case 9: showUserOptions = true
-        case 13: showUserOptions = true
-        case 17: showUserOptions = true
-        case 22: showCustomBar = true; tutorialIndex += 1
-        case 23: tabSelection = 1; tutorialIndex += 1
-        case 25: tabSelection = 2; tutorialIndex += 1
-        case 27: tabSelection = 4; tutorialIndex += 1
-        case 30: tabSelection = 3; tutorialIndex += 1
-        case 37: fetchUserInfo(); showTutorial = false
+        case 8: showUserOptions = true
+        case 12: showUserOptions = true
+        case 16: showUserOptions = true
+        case 19: showCustomBar = true; tutorialIndex += 1
+        case 21: tabSelection = 1; tutorialIndex += 1
+        case 23: tabSelection = 2; tutorialIndex += 1
+        case 25: tabSelection = 4; tutorialIndex += 1
+        case 28: tabSelection = 3; tutorialIndex += 1
+        case 36: fetchUserInfo(); showTutorial = false
         default: tutorialIndex += 1
         }
     }
@@ -80,13 +79,13 @@ struct TutorialBubble: View {
     var body: some View {
         ZStack {
             Rectangle()
+                .opacity(showCustomBar ? 0.1 : 1)
                 .mask(LinearGradient(gradient: Gradient(colors: [Color.black.opacity(0), Color.black.opacity(0.8)]), startPoint: .top, endPoint: .bottom))
-                .offset(y: UIScreen.screenHeight / 3 * 2)
             
             Text("화면을 클릭하여 대화를 진행하세요")
                 .font(.gbRegular16)
                 .foregroundColor(.white.opacity(0.5))
-                .offset(y: UIScreen.screenHeight / 4)
+//                .offset(y: UIScreen.screenHeight * 0.05)
             
             VStack {
                 ZStack {
@@ -103,7 +102,7 @@ struct TutorialBubble: View {
                             .lineLimit(2)
                             .multilineTextAlignment(.center)
                             .lineSpacing(10)
-                            .frame(width: UIScreen.screenWidth - 40, height: 100)
+                            .frame(width: UIScreen.screenWidth - 60, height: 100)
                             .id(tutorialIndex) // 상태 변화 감지
                     }
                 }
@@ -111,7 +110,7 @@ struct TutorialBubble: View {
                 
                 if showUserOptions {
                     switch tutorialIndex {
-                    case 9:
+                    case 8:
                         TextField("별명을 입력해주세요", text: $userName)
                             .padding()
                             .frame(width: UIScreen.screenWidth - 40, height: 50)
@@ -124,9 +123,9 @@ struct TutorialBubble: View {
                                     showUserOptions = false
                                 }
                             }
-                    case 13:
+                    case 12:
                         userOptionButtons(options: ["남성", "여성"], selection: $userGender)
-                    case 17:
+                    case 16:
                         userOptionButtons(options: ["달콤", "상큼", "묵직", "도수"], selection: $userPrefer)
                     default:
                         EmptyView()

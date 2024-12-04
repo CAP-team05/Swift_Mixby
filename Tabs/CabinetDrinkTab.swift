@@ -19,8 +19,6 @@ struct CabinetDrinkTab: View {
     
     var body: some View {
         
-        // let drinkDTOArray = drinkHandler.fetchAllDrinks()
-        
         ScrollView(.vertical) {
             Spacer().frame(height: 10)
             

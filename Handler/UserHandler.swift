@@ -105,13 +105,12 @@ class UserHandler {
                 let favoriteTaste = String(cString: sqlite3_column_text(statement, 2))
                 let persona = String(cString: sqlite3_column_text(statement, 3))
                 
-                print("persona : \(persona)")
-
                 let user = UserDTO(name: name, gender: gender, favoriteTaste: favoriteTaste, persona: persona)
                 users.append(user)
             }
         } else {
-            print("Failed to fetch users from database.")
+            let errorMessage = String(cString: sqlite3_errmsg(db))
+            print("Failed to fetch users from database: \(errorMessage)")
         }
         sqlite3_finalize(statement)
         return users

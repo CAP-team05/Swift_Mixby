@@ -78,6 +78,7 @@ struct mixby2App: App {
             // 초기화 작업 시뮬레이션
             sleep(2)
             DispatchQueue.main.async {
+                generateIngredientDTOsFromAPI()
                 withAnimation {
                     showSplash = false // 스플래시 상태 업데이트
                 }
