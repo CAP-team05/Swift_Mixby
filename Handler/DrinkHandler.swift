@@ -9,13 +9,13 @@ import SQLite3
 import Foundation
 
 class DrinkHandler {
-    private let db = DatabaseManager.shared.openDatabase()
+    static private let db = DatabaseManager.shared.openDatabase()
     
     init() {
-        createDrinkTable()
+        DrinkHandler.createTable()
     }
     
-    func createDrinkTable() {
+    static func createTable() {
         let createTableQuery = """
         CREATE TABLE IF NOT EXISTS Drink (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -32,13 +32,13 @@ class DrinkHandler {
         executeQuery(query: createTableQuery, description: "Create Drink Table")
     }
     
-    func dropDrinkTable() {
+    static func dropTable() {
         let dropTableQuery = "DROP TABLE IF EXISTS Drink;"
         executeQuery(query: dropTableQuery, description: "Drink table dropped")
     }
     
     
-    func executeQuery(query: String, description: String) {
+    static func executeQuery(query: String, description: String) {
         var statement: OpaquePointer?
         if sqlite3_prepare_v2(db, query, -1, &statement, nil) == SQLITE_OK {
             if sqlite3_step(statement) == SQLITE_DONE {
@@ -50,7 +50,7 @@ class DrinkHandler {
         sqlite3_finalize(statement)
     }
     
-    func insertDrink(drink: DrinkDTO) {
+    static func insert(drink: DrinkDTO) {
         let insertQuery = "INSERT INTO Drink (code, name, baseCode, type, volume, alcohol, description) VALUES (?, ?, ?, ?, ?, ?, ?);"
         var statement: OpaquePointer?
         print("in insert Drink : \(drink.name)")
@@ -72,7 +72,7 @@ class DrinkHandler {
         sqlite3_finalize(statement)
     }
     
-    func deleteDrink(drink: DrinkDTO) {
+    static func delete(drink: DrinkDTO) {
         let deleteQuery = "DELETE FROM Drink WHERE code = ?;"
         var statement: OpaquePointer?
         
@@ -88,7 +88,7 @@ class DrinkHandler {
         sqlite3_finalize(statement)
     }
     
-    func fetchAllDrinks() -> [DrinkDTO] {
+    static func searchAll() -> [DrinkDTO] {
         var drinks: [DrinkDTO] = []
         let query = "SELECT code, name, baseCode, type, volume, alcohol, description FROM Drink;"
         var statement: OpaquePointer?

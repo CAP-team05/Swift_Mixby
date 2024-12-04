@@ -10,14 +10,14 @@ import Foundation
 
 
 class TastingNoteHandler {
-    private let db = DatabaseManager.shared.openDatabase()
+    static private let db = DatabaseManager.shared.openDatabase()
     
     init() {
         // dropTastingNoteTable()
-        createTastingNoteTable()
+        TastingNoteHandler.createTable()
     }
 
-    func createTastingNoteTable() {
+    static func createTable() {
         let createTableQuery = """
         CREATE TABLE IF NOT EXISTS TastingNote (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -34,12 +34,12 @@ class TastingNoteHandler {
         executeQuery(query: createTableQuery, description: "TastingNote table created")
     }
     
-    func dropTastingNoteTable() {
+    static func dropTable() {
         let dropTableQuery = "DROP TABLE IF EXISTS TastingNote"
         executeQuery(query: dropTableQuery, description: "TastingNote table dropped")
     }
 
-    func insertTastingNote(note: TastingNoteDTO) {
+    static func insert(note: TastingNoteDTO) {
         let insertQuery = """
         INSERT INTO TastingNote (code, english_name, korean_name, drinkDate, eval, sweetness, sourness, alcohol)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?);
@@ -64,7 +64,7 @@ class TastingNoteHandler {
         sqlite3_finalize(statement)
     }
     
-    func updateTastingNote(note: TastingNoteDTO) {
+    static func update(note: TastingNoteDTO) {
         let updateQuery = """
         UPDATE TastingNote
         SET eval = ?, sweetness = ?, sourness = ?, alcohol = ?
@@ -92,7 +92,7 @@ class TastingNoteHandler {
         
     }
     
-    func fetchAllTastingNotes() -> [TastingNoteDTO] {
+    static func searchAll() -> [TastingNoteDTO] {
         var notes: [TastingNoteDTO] = []
         let query = "SELECT code, english_name, korean_name, drinkDate, eval, sweetness, sourness, alcohol FROM TastingNote;"
         var statement: OpaquePointer?
@@ -118,7 +118,7 @@ class TastingNoteHandler {
         return notes
     }
 
-    private func executeQuery(query: String, description: String) {
+    static private func executeQuery(query: String, description: String) {
         var statement: OpaquePointer?
         if sqlite3_prepare_v2(db, query, -1, &statement, nil) == SQLITE_OK {
             if sqlite3_step(statement) == SQLITE_DONE {
