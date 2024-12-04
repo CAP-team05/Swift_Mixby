@@ -18,8 +18,5 @@ struct HomeTab: View {
             Text("user count: \(userHandler.fetchAllUsers().count)")
             Text("Note count: \(tastingNoteHandler.fetchAllTastingNotes().count)")
         }
-        .onAppear {	
-            UserAPIHandler().sendUserDataToAPI()
-        }
     }
 }

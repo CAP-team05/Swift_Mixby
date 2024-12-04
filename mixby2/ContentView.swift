@@ -27,6 +27,9 @@ struct ContentView: View {
         }
         .onAppear {
             showTutorial = userHandler.fetchAllUsers().isEmpty
+            if !showTutorial {
+                UserAPIHandler().sendUserDataToAPI()
+            }
             print("Content View onAppear")
             isLoading = false
         }
