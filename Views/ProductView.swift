@@ -12,8 +12,6 @@ struct ProductView: View {
     
     var drinkDTO: DrinkDTO
     
-    private let drinkHandler = DrinkHandler()
-    
     var body: some View {
     
         ZStack {
@@ -23,7 +21,7 @@ struct ProductView: View {
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button(action: {
-                            drinkHandler.deleteDrink(drink: drinkDTO)
+                            DrinkHandler.delete(drink: drinkDTO)
                             generateRecipeDTOsByGetKeywords(doPlus: false, keys: [])
                             presentationMode.wrappedValue.dismiss()
                         }, label: {

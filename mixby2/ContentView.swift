@@ -12,8 +12,6 @@ struct ContentView: View {
     @State private var isLoading: Bool = true
     @State private var showTutorial: Bool = true
     
-    private let userHandler = UserHandler()
-    
     var body: some View {
         ZStack {
             if !isLoading {
@@ -26,7 +24,7 @@ struct ContentView: View {
             }
         }
         .onAppear {
-            showTutorial = userHandler.fetchAllUsers().isEmpty
+            showTutorial = UserHandler.searchAll().isEmpty
             if !showTutorial {
                 UserAPIHandler().sendUserDataToAPI()
             }

@@ -13,19 +13,15 @@ struct  BartenderBubble: View {
     @State private var showComment: Bool = true
     @State private var userName: String = ""
     
-    private let recipeHandler = RecipeHandler()
-    private let drinkHandler = DrinkHandler()
-    private let userHandler = UserHandler()
-    
 //    private let drinkHandler = DrinkHandler()
     
     // Speech Bubble
     var body: some View {
         
         let comments: [String] = [
-            "레시피 개수: \(recipeHandler.fetchAllRecipes().count)",
-            "상품 개수: \(drinkHandler.fetchAllDrinks().count)",
-            "환영합니다. \(userHandler.fetchAllUsers().last!.name)님!",
+            "레시피 개수: \(RecipeHandler.searchAll().count)",
+            "상품 개수: \(DrinkHandler.searchAll().count)",
+            "환영합니다. \(UserHandler.searchAll().last!.name)님!",
             "테이스팅 노트",
             "설정"
         ]

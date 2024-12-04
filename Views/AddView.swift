@@ -62,12 +62,12 @@ struct AddView: View {
                     Button (action : {
                         for code in scannedCodes{
                             let tempDrink = getDrinkDTOFromApi(barcode: code)
-                            let drinks = drinkHandler.fetchAllDrinks()
+                            let drinks = DrinkHandler.searchAll()
                             let contains = drinks.contains { drink in
                                 drink.name == tempDrink.name
                             }
                             if !contains {
-                                drinkHandler.insertDrink(drink: tempDrink)
+                                DrinkHandler.insert(drink: tempDrink)
                                 print("추가 완료")
                             }
                             else {

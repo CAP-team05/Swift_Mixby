@@ -17,12 +17,8 @@ struct NoteTab: View {
     @State private var writtenNotes: [TastingNoteDTO] = []
     @State private var unwrittenNotes: [TastingNoteDTO] = []
     
-    private let recipeHandler = RecipeHandler()
-    private let tastingNoteHandler = TastingNoteHandler()
-    
-    
     var body: some View {
-        let noteDTOs = tastingNoteHandler.fetchAllTastingNotes()
+        let noteDTOs = TastingNoteHandler.searchAll()
         
         let unwrittenNoteDTOs = noteDTOs.filter { $0.eval == -1 }
         let writtenNoteDTOs = noteDTOs.filter { $0.eval != -1 }
@@ -134,8 +130,8 @@ struct NoteTab: View {
             // 데이터 로드
             await Task.detached {
                 try? await Task.sleep(nanoseconds: 1_000_000_000) // 테스트용 딜레이
-                let loadedNotes = tastingNoteHandler.fetchAllTastingNotes()
-                let loadedRecipes = recipeHandler.fetchAllRecipes()
+                let loadedNotes = TastingNoteHandler.searchAll()
+                let loadedRecipes = RecipeHandler.searchAll()
                 
                 await MainActor.run {
                     let unlockedRecipes: [RecipeDTO] = loadedRecipes.filter { $0.have.first == $0.have.last }

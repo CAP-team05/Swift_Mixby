@@ -106,7 +106,7 @@ class UserHandler {
                 let favoriteTaste = String(cString: sqlite3_column_text(statement, 2))
                 let persona = String(cString: sqlite3_column_text(statement, 3))
                 
-                print("persona : \(persona)")
+                // print("persona : \(persona)")
 
                 let user = UserDTO(name: name, gender: gender, favoriteTaste: favoriteTaste, persona: persona)
                 users.append(user)
