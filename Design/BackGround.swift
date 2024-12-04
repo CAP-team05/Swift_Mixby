@@ -31,6 +31,13 @@ struct BackGround: View {
                 )
                 .opacity(0.7)
             
+            
+            if doRain {
+                GeometryReader{_ in
+                    SpriteView(scene: RainFall(),options: [.allowsTransparency])
+                }
+            }
+            
             // Front Shadow
             Rectangle()
                 .foregroundColor(.clear)
@@ -41,16 +48,11 @@ struct BackGround: View {
                 .resizable()
                 .frame(width: bgSize, height: bgSize)
                 .offset(x: CGFloat(bgPos-20), y: 300)
-                .opacity(0.7)
+                .opacity(0.8)
             
-            if doRain {
-                GeometryReader{_ in
-                    SpriteView(scene: RainFall(),options: [.allowsTransparency])
-                    // SpriteView(scene: RainFallLanding(),options: [.allowsTransparency])
-                }
-            }
-            
-            // titleWithDivider(title: "Mixby")
+            Rectangle()
+                .opacity(0.1)
+                .mask(LinearGradient(gradient: Gradient(colors: [Color.black.opacity(0), Color.black.opacity(0.8)]), startPoint: .top, endPoint: .bottom))
         }
     }
 }

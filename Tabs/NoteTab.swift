@@ -45,73 +45,75 @@ struct NoteTab: View {
                         .foregroundColor(.white.opacity(0.5))
                         .offset(y: -100)
                 } else {
-                    if tabOption == 0 {
-                        ScrollView(.vertical) {
-                            Spacer().frame(height: 10)
-                            LazyVStack (spacing: 20) {
-                                ForEach(0..<unwrittenNoteDTOs.count, id: \.self) { index in
-                                    NavigationLink(
-                                        destination:
-                                            TastingNoteView(tastingNoteDTO: unwrittenNoteDTOs[index])
-                                            .onAppear {
-                                                print("new note appeared")
-                                                print(unwrittenNoteDTOs[index].eval)
-                                                print(unwrittenNoteDTOs[index].sweetness)
-                                                print(unwrittenNoteDTOs[index].sourness)
-                                                print(unwrittenNoteDTOs[index].alcohol)
+                    VStack {
+                        if tabOption == 0 {
+                            ScrollView(.vertical) {
+                                Spacer().frame(height: 10)
+                                LazyVStack (spacing: 20) {
+                                    ForEach(0..<unwrittenNoteDTOs.count, id: \.self) { index in
+                                        NavigationLink(
+                                            destination:
+                                                TastingNoteView(tastingNoteDTO: unwrittenNoteDTOs[index])
+                                                .onAppear {
+                                                    print("new note appeared")
+                                                    print(unwrittenNoteDTOs[index].eval)
+                                                    print(unwrittenNoteDTOs[index].sweetness)
+                                                    print(unwrittenNoteDTOs[index].sourness)
+                                                    print(unwrittenNoteDTOs[index].alcohol)
+                                                }
+                                            
+                                            , label: {
+                                                NoteCard(noteDTO: unwrittenNoteDTOs[index])
+                                                    .onAppear {
+                                                        noUnwritten = false
+                                                    }
                                             }
-                                        
-                                        , label: {
-                                            NoteCard(noteDTO: unwrittenNoteDTOs[index])
-                                                .onAppear {
-                                                    noUnwritten = false
-                                                }
-                                        }
-                                    )
-                                }
-                            } // Grid 1
+                                        )
+                                    }
+                                } // Grid 1
+                                
+                                // bottom dummy
+                                Spacer().frame(height: 200)
+                                
+                            } // Scroll View
                             
-                            // bottom dummy
-                            Spacer().frame(height: 200)
-                            
-                        } // Scroll View
-                        
-                        if noUnwritten {
-                            EmptyBox().offset(y: -500)
+                            if noUnwritten {
+                                EmptyBox().offset(y: -500)
+                            }
                         }
-                    }
-                    
-                    if tabOption == 1 {
-                        ScrollView(.vertical) {
-                            Spacer().frame(height: 10)
-                            LazyVStack (spacing: 20) {
-                                ForEach(0..<writtenNoteDTOs.count, id: \.self) { index in
-                                    NavigationLink(
-                                        destination:
-                                            TastingNoteView(tastingNoteDTO: writtenNoteDTOs[index])
-                                        
-                                        , label: {
-                                            NoteCard(noteDTO: writtenNoteDTOs[index])
-                                                .onAppear {
-                                                    noWritten = false
-                                                }
-                                        }
-                                    )
-                                }
-                            } // Grid 1
-                            
-                            // bottom dummy
-                            Spacer().frame(height: 200)
-                            
-                        } // Scroll View
                         
-                        if noWritten {
-                            EmptyBox().offset(y: -500)
+                        if tabOption == 1 {
+                            ScrollView(.vertical) {
+                                Spacer().frame(height: 10)
+                                LazyVStack (spacing: 20) {
+                                    ForEach(0..<writtenNoteDTOs.count, id: \.self) { index in
+                                        NavigationLink(
+                                            destination:
+                                                TastingNoteView(tastingNoteDTO: writtenNoteDTOs[index])
+                                            
+                                            , label: {
+                                                NoteCard(noteDTO: writtenNoteDTOs[index])
+                                                    .onAppear {
+                                                        noWritten = false
+                                                    }
+                                            }
+                                        )
+                                    }
+                                } // Grid 1
+                                
+                                // bottom dummy
+                                Spacer().frame(height: 200)
+                                
+                            } // Scroll View
+                            
+                            if noWritten {
+                                EmptyBox().offset(y: -500)
+                            }
                         }
+                        Spacer()
                     }
-                    Spacer()
                 }
-            }
+            } // ZStack
             .frame(height: UIScreen.screenHeight-300)
             
         } // VStack

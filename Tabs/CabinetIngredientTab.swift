@@ -18,7 +18,6 @@ struct CabinetIngredientTab: View {
     
     var body: some View {
         let ingredientDTOArray = ingredientHandler.fetchAllIngredients()
-        
         ScrollView(.vertical) {
             Spacer().frame(height: 10)
             

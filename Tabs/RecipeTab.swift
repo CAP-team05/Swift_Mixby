@@ -65,9 +65,9 @@ struct RecipeTab: View {
                         Spacer()
                     }
                 }
-            }
+            } // ZStack
             .frame(height: UIScreen.screenHeight - 300)
-        }
+        } // VStack
         .frame(width: UIScreen.screenWidth, height: UIScreen.screenHeight)
         .onAppear {
             Task {
@@ -86,7 +86,6 @@ struct RecipeTab: View {
                         if doNavigate {
                             NavigationLink(
                                 destination: RecipeView(
-                                    tabSelection: $tabSelection,
                                     recipeDTO: recipes[index]
                                 ), label: {
                                     RecipeCard(recipeDTO: recipes[index])

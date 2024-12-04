@@ -26,8 +26,11 @@ struct ContentView: View {
             }
         }
         .onAppear {
-            userHandler.dropUserTable()
-            print("user table dropped")
+            showTutorial = userHandler.fetchAllUsers().isEmpty
+            if !showTutorial {
+                UserAPIHandler().sendUserDataToAPI()
+            }
+            print("Content View onAppear")
             isLoading = false
         }
     }
