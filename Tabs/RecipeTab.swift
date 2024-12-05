@@ -8,8 +8,8 @@
 import SwiftUI
 struct RecipeTab: View {
     @Binding var tabSelection: Int
-    @Binding var ownedIngs: [String]
     @Binding var isLoading: Bool
+    @Binding var ownedIngs: [String]
     
     @State private var tabOption: Int = 0
     @State private var noUnlocked: Bool = true
@@ -25,9 +25,29 @@ struct RecipeTab: View {
     
     var body: some View {
         VStack {
-            Rectangle()
-                .frame(height: 280)
-                .opacity(0.1)
+            
+            ZStack {
+                Rectangle()
+                    .frame(height: 280)
+                    .opacity(0.1)
+                
+                Button {
+                    isLoading = true
+                    generateRecipeDTOsByGetKeywords(doPlus: true, keys: ownedIngs)
+                    loadRecipes()
+                } label: {
+                    VStack (spacing: 2) {
+                        Image(systemName: "arrow.clockwise.square")
+                            .font(.system(size: 40))
+                            .foregroundColor(.white)
+                        Text("새로고침")
+                            .font(.gbRegular10)
+                            .foregroundColor(.white)
+                    }
+                }
+                .offset(x: 130, y: -30)
+                
+            }
             
             TabOptions(
                 tabOption: $tabOption,
@@ -71,7 +91,7 @@ struct RecipeTab: View {
         .frame(width: UIScreen.screenWidth, height: UIScreen.screenHeight)
         .onAppear {
             Task {
-                await loadRecipes()
+                loadRecipes()
             }
         }
     }
@@ -108,16 +128,10 @@ struct RecipeTab: View {
         }
     }
     
-    func loadRecipes() async {
-        if !isLoading && tabSelection==1 {
-            await MainActor.run {
-                isLoading = true
-            }
-            
+    func loadRecipes() {
+        if !isLoading {
             // 데이터 로드
-            await Task.detached {
-                generateRecipeDTOsByGetKeywords(doPlus: true, keys: ownedIngs)
-                try? await Task.sleep(nanoseconds: 1_000_000_000) // 테스트용 딜레이
+            Task.detached {
                 let loadedRecipes = RecipeHandler.searchAll()
                 
                 await MainActor.run {

@@ -26,7 +26,7 @@ struct BartenderIsland: View {
                         .offset(y: showBartender ? 0 : -46)
                     
                     
-                    BartenderFace("faceAnimation")
+                    GIFView("faceAnimation")
                         .frame(
                             width: showBartender ? 80 : 20,
                             height: showBartender ? 80 : 20)

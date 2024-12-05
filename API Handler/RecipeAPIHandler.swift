@@ -40,16 +40,6 @@ func getRecipeDTOListWithKeywords (key: String) -> [RecipeDTO] {
     return recipes
 }
 
-//func getRecipeIngredients(code: String) -> [IngredientDTO] {
-//    let json: String = GetJsonFromURL(url: "http://cocktail.mixby.kro.kr:2222/recipe/code="+code)
-//    
-//    if isRecipeExist(code: code) {
-//        let ingredient = IngredientDTO(
-//            
-//        )
-//    }
-//}
-
 func isRecipeExist(code: String) -> Bool {
     let json: String = GetJsonFromURL(url: "http://cocktail.mixby.kro.kr:2222/recipe/code="+code)
     

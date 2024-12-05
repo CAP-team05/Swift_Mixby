@@ -16,7 +16,7 @@ extension Array: @retroactive RawRepresentable where Element: Codable {
         }
         self = result
     }
-
+    
     public var rawValue: String {
         guard let data = try? JSONEncoder().encode(self),
               let result = String(data: data, encoding: .utf8)
@@ -56,8 +56,10 @@ func generateIngredientDTOsFromAPI() {
 
 @main
 struct mixby2App: App {
+    @AppStorage("ownedIngs") var ownedIngs: [String] = []
+    
     @State private var showSplash = true // 스플래시 상태
-
+    
     var body: some Scene {
         WindowGroup {
             if showSplash {
@@ -66,17 +68,18 @@ struct mixby2App: App {
                         performInitialization()
                     }
             } else {
-                ContentView() // 로딩 완료 후 표시
+                ContentView(ownedIngs: $ownedIngs)
             }
         }
     }
-
+    
     func performInitialization() {
         DispatchQueue.global().async {
             // 초기화 작업 시뮬레이션
             sleep(2)
             DispatchQueue.main.async {
                 generateIngredientDTOsFromAPI()
+                generateRecipeDTOsByGetKeywords(doPlus: true, keys: ownedIngs)
                 withAnimation {
                     showSplash = false // 스플래시 상태 업데이트
                 }

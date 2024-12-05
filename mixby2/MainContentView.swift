@@ -14,6 +14,8 @@ extension UIScreen{
 }
 
 struct MainContentView: View {
+    @Binding var ownedIngs: [String]
+    
     @State var tabSelection = 3
     @State var currentTab = 3
     @State var bgPos: Int = 0
@@ -21,7 +23,6 @@ struct MainContentView: View {
     
     @State var isLoading: Bool = false
     
-    @AppStorage("ownedIngs") var ownedIngs: [String] = []
     
     var body: some View {
         NavigationView {
@@ -34,8 +35,8 @@ struct MainContentView: View {
                     if currentTab == 1 {
                         RecipeTab(
                             tabSelection: $tabSelection,
-                            ownedIngs: $ownedIngs,
-                            isLoading: $isLoading
+                            isLoading: $isLoading,
+                            ownedIngs: $ownedIngs
                         )
                     }
                     if currentTab == 2 {

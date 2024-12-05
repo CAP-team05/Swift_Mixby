@@ -60,25 +60,25 @@ struct RecipeView: View {
                         .font(.gbRegular22)
                         .foregroundColor(.white)
                     
-//                    let ings = getRecipeIngredients(code: recipeDTO.code)
+                    let ings = getRecipeIngredients(recipe: recipeDTO)
                     
                     Spacer().frame(height: 10)
                     
-//                    ForEach(0..<ings.count, id: \.self) { i in
-//                        HStack {
-//                            Text(ings[i].name)
-//                                .font(.gbRegular24)
-//                                .foregroundColor(.white)
-//                            
-//                            Text(ings[i].amount)
-//                                .font(.gbRegular24)
-//                                .foregroundColor(.white)
-//                            
-//                            Text(ings[i].unit)
-//                                .font(.gbRegular24)
-//                                .foregroundColor(.white)
-//                        }
-//                    }
+                    ForEach(0..<ings.count, id: \.self) { i in
+                        HStack {
+                            Text(ings[i].name)
+                                .font(.gbRegular24)
+                                .foregroundColor(.white)
+                            
+                            Text(ings[i].amount)
+                                .font(.gbRegular24)
+                                .foregroundColor(.white)
+                            
+                            Text(ings[i].unit)
+                                .font(.gbRegular24)
+                                .foregroundColor(.white)
+                        }
+                    }
                     
                     Spacer()
                 }

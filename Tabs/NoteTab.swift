@@ -20,8 +20,8 @@ struct NoteTab: View {
     var body: some View {
         let noteDTOs = TastingNoteHandler.searchAll()
         
-        let unwrittenNoteDTOs = noteDTOs.filter { $0.eval == -1 }
         let writtenNoteDTOs = noteDTOs.filter { $0.eval != -1 }
+        let unwrittenNoteDTOs = noteDTOs.filter { $0.eval == -1 }
         
         VStack {
             // title dummy
@@ -31,7 +31,7 @@ struct NoteTab: View {
             
             TabOptions(
                 tabOption: $tabOption,
-                options: ["작성 중", "작성 완료"]
+                options: ["작성 완료", "작성 필요"]
             )
             
             ZStack {
@@ -46,46 +46,17 @@ struct NoteTab: View {
                             ScrollView(.vertical) {
                                 Spacer().frame(height: 10)
                                 LazyVStack (spacing: 20) {
-                                    ForEach(0..<unwrittenNoteDTOs.count, id: \.self) { index in
-                                        NavigationLink(
-                                            destination:
-                                                TastingNoteView(tastingNoteDTO: unwrittenNoteDTOs[index])
-                                                .onAppear {
-                                                    print("new note appeared")
-                                                    print(unwrittenNoteDTOs[index].eval)
-                                                    print(unwrittenNoteDTOs[index].sweetness)
-                                                    print(unwrittenNoteDTOs[index].sourness)
-                                                    print(unwrittenNoteDTOs[index].alcohol)
-                                                }
-                                            
-                                            , label: {
-                                                NoteCard(noteDTO: unwrittenNoteDTOs[index])
-                                                    .onAppear {
-                                                        noUnwritten = false
-                                                    }
-                                            }
-                                        )
-                                    }
-                                } // Grid 1
-                                
-                                // bottom dummy
-                                Spacer().frame(height: 200)
-                                
-                            } // Scroll View
-                            
-                            if noUnwritten {
-                                EmptyBox().offset(y: -500)
-                            }
-                        }
-                        
-                        if tabOption == 1 {
-                            ScrollView(.vertical) {
-                                Spacer().frame(height: 10)
-                                LazyVStack (spacing: 20) {
                                     ForEach(0..<writtenNoteDTOs.count, id: \.self) { index in
                                         NavigationLink(
                                             destination:
                                                 TastingNoteView(tastingNoteDTO: writtenNoteDTOs[index])
+                                                .onAppear {
+                                                    print("new note appeared")
+                                                    print(writtenNoteDTOs[index].eval)
+                                                    print(writtenNoteDTOs[index].sweetness)
+                                                    print(writtenNoteDTOs[index].sourness)
+                                                    print(writtenNoteDTOs[index].alcohol)
+                                                }
                                             
                                             , label: {
                                                 NoteCard(noteDTO: writtenNoteDTOs[index])
@@ -103,6 +74,35 @@ struct NoteTab: View {
                             } // Scroll View
                             
                             if noWritten {
+                                EmptyBox().offset(y: -500)
+                            }
+                        }
+                        
+                        if tabOption == 1 {
+                            ScrollView(.vertical) {
+                                Spacer().frame(height: 10)
+                                LazyVStack (spacing: 20) {
+                                    ForEach(0..<unwrittenNoteDTOs.count, id: \.self) { index in
+                                        NavigationLink(
+                                            destination:
+                                                TastingNoteView(tastingNoteDTO: unwrittenNoteDTOs[index])
+                                            
+                                            , label: {
+                                                NoteCard(noteDTO: unwrittenNoteDTOs[index])
+                                                    .onAppear {
+                                                        noUnwritten = false
+                                                    }
+                                            }
+                                        )
+                                    }
+                                } // Grid 1
+                                
+                                // bottom dummy
+                                Spacer().frame(height: 200)
+                                
+                            } // Scroll View
+                            
+                            if noUnwritten {
                                 EmptyBox().offset(y: -500)
                             }
                         }
