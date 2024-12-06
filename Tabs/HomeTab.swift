@@ -9,27 +9,15 @@ import SwiftUI
 
 struct HomeTab: View {
     
-    @StateObject private var locationManager = LocationManager()
-    
     var body: some View {
-        VStack{
+        ZStack {
             VStack {
-                if locationManager.latitude == 0.0 && locationManager.longitude == 0.0 {
-                    Text("위치 정보를 가져오는 중...")
-                        .padding()
-                } else {
-                    Text(getWeather(
-                        lat: locationManager.latitude,
-                        long: locationManager.longitude)
-                    )
-                }
+                
+                Text(String(describing: UserHandler.searchAll().last?.persona))
+                    .font(.gbRegular20)
+                    .foregroundColor(.white)
+                    .multilineTextAlignment(.center)
             }
-            .padding()
-            
-            Text("Note count: \(String(describing: UserHandler.searchAll().last?.persona))")
-                .font(.gbRegular20)
-                .foregroundColor(.white)
-                .multilineTextAlignment(.center)
         }
         .frame(width: UIScreen.screenWidth - 40)
     }

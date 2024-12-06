@@ -10,6 +10,7 @@ import SwiftUI
 struct ContentView: View {
     @Binding var ownedIngs: [String]
     
+    @State var weatherName: String
     @State private var isLoading: Bool = true
     @State private var showTutorial: Bool = true
     
@@ -20,7 +21,7 @@ struct ContentView: View {
                     TutorialView(showTutorial: $showTutorial)
                 }
                 else {
-                    MainContentView(ownedIngs: $ownedIngs)
+                    MainContentView(ownedIngs: $ownedIngs, weatherName: weatherName)
                 }
             }
         }

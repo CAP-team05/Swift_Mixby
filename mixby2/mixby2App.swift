@@ -60,6 +60,9 @@ struct mixby2App: App {
     
     @State private var showSplash = true // 스플래시 상태
     
+    @StateObject private var locationManager = LocationManager()
+    @State private var weatherName: String = "Undefined"
+    
     var body: some Scene {
         WindowGroup {
             if showSplash {
@@ -68,7 +71,7 @@ struct mixby2App: App {
                         performInitialization()
                     }
             } else {
-                ContentView(ownedIngs: $ownedIngs)
+                ContentView(ownedIngs: $ownedIngs, weatherName: weatherName)
             }
         }
     }
@@ -78,6 +81,15 @@ struct mixby2App: App {
             // 초기화 작업 시뮬레이션
             sleep(2)
             DispatchQueue.main.async {
+                if locationManager.latitude != 0.0 && locationManager.longitude != 0.0 {
+                    print("lat, long: \(locationManager.latitude) \(locationManager.longitude)")
+                    weatherName = getWeatherFromAPI(
+                        lat: locationManager.latitude,
+                        long: locationManager.longitude)
+                }
+                else {
+                    print("can't get weatherName")
+                }
                 generateIngredientDTOsFromAPI()
                 generateRecipeDTOsByGetKeywords(doPlus: true, keys: ownedIngs)
                 withAnimation {

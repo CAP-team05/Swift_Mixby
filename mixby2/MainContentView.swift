@@ -19,6 +19,7 @@ struct MainContentView: View {
     
     @Binding var ownedIngs: [String]
     
+    @State var weatherName: String
     @State var tabSelection = 3
     @State var currentTab = 3
     @State var bgPos: Int = 0
@@ -26,13 +27,12 @@ struct MainContentView: View {
     
     @State var isLoading: Bool = false
     
-    
     var body: some View {
         NavigationView {
             TabView {
                 ZStack {
                     // Background with animation
-                    BackGround(bgPos: bgPos)
+                    BackGround(bgPos: bgPos, weatherName: weatherName)
                     
                     // Conditional rendering based on `currentTab`
                     if currentTab == 1 {
@@ -45,7 +45,7 @@ struct MainContentView: View {
                         .toolbar(.hidden, for: .tabBar)
                     }
                     if currentTab == 2 {
-                        CabinetTab(ownedIngs: $ownedIngs, ownedTools: $ownedTools)
+                        CabinetTab(ownedIngs: $ownedIngs, ownedTools: $ownedTools, weatherName: weatherName)
                             .toolbar(.hidden, for: .tabBar)
                     }
                     if currentTab == 3 {

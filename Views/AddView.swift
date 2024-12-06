@@ -12,13 +12,15 @@ struct AddView: View {
     
     @State private var scannedCodes: [String] = [] // 중복 방지를 위한 Set
     
+    var weatherName: String
+    
     @Environment(\.presentationMode) private var presentationMode : Binding<PresentationMode>
     
     private let drinkHandler = DrinkHandler()
     
     var body: some View {
         ZStack {
-            BackGround()
+            BackGround(weatherName: weatherName)
             VStack (spacing: 20) {
                 // Spacer().frame(height: 40)
                 

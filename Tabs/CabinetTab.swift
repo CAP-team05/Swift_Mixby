@@ -13,6 +13,7 @@ struct CabinetTab: View {
     
     @State private var tabOption: Int = 0
     @State private var pageRefreshed: Bool = true
+    var weatherName: String
     
     var body: some View {
         
@@ -24,7 +25,7 @@ struct CabinetTab: View {
                     .opacity(0.1)
                 
                 NavigationLink(
-                    destination: AddView(pageRefreshed: $pageRefreshed),
+                    destination: AddView(pageRefreshed: $pageRefreshed, weatherName: weatherName),
                     label: {
                         VStack (spacing: 2) {
                             Image(systemName: "barcode.viewfinder")
