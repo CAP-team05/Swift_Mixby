@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct SettingsTab: View {
+struct ChallengeTab: View {
     var body: some View {
-        Text("Settings Tab")
+        Text("Challenge Tab")
     }
 }

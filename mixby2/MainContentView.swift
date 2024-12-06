@@ -14,6 +14,9 @@ extension UIScreen{
 }
 
 struct MainContentView: View {
+    
+    @AppStorage("ownedTools") var ownedTools: [String] = []
+    
     @Binding var ownedIngs: [String]
     
     @State var tabSelection = 3
@@ -36,24 +39,29 @@ struct MainContentView: View {
                         RecipeTab(
                             tabSelection: $tabSelection,
                             isLoading: $isLoading,
-                            ownedIngs: $ownedIngs
+                            ownedIngs: $ownedIngs,
+                            ownedTools: $ownedTools
                         )
+                        .toolbar(.hidden, for: .tabBar)
                     }
                     if currentTab == 2 {
-                        CabinetTab(ownedIngs: $ownedIngs)
+                        CabinetTab(ownedIngs: $ownedIngs, ownedTools: $ownedTools)
+                            .toolbar(.hidden, for: .tabBar)
                     }
                     if currentTab == 3 {
                         HomeTab()
+                            .toolbar(.hidden, for: .tabBar)
                     }
                     if currentTab == 4 {
                         NoteTab(isLoading: $isLoading)
+                            .toolbar(.hidden, for: .tabBar)
                     }
                     if currentTab == 5 {
-                        SettingsTab()
+                        ChallengeTab()
+                            .toolbar(.hidden, for: .tabBar)
                     }
                 }
             }
-            .toolbar(.hidden, for: .tabBar)
             .overlay(alignment: .bottom) {
                 // Custom tab bar
                 CustomTabBar(tabSelection: $tabSelection, isLoading: $isLoading)

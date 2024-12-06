@@ -37,8 +37,8 @@ struct SplashScreenView: View {
             VStack {
                 ProgressView()
                 Text("로딩 중...")
-                    .font(.gbRegular20)
-                    .foregroundColor(.black)
+                    .font(.gbBold30)
+                    .foregroundColor(.white)
                 
             }
             //            .font(.gbRegular20)

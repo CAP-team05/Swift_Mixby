@@ -7,12 +7,12 @@
 
 import SwiftUI
 
-struct IngredientCard: View {
-    @Binding var ownedIngs: [String]
+struct ToolCard: View {
+    @Binding var ownedTools: [String]
     
-    @State var isOwned: Bool
-    
-    var ingredientDTO: IngredientDTO
+    @State var name: String
+    @State var amount: Int
+    @State var isOwned: Bool = false
     
     var body: some View {
         ZStack {
@@ -26,9 +26,14 @@ struct IngredientCard: View {
                 
                 Spacer()
                 
-                Text(ingredientDTO.name)
-                    .font(.gbRegular14)
-                    .foregroundColor(isOwned ? .yellow : .white)
+                VStack (spacing: 5) {
+                    Text(name)
+                        .font(.gbRegular14)
+                        .foregroundColor(.yellow)
+                    Text("\(amount) ml")
+                        .font(.gbRegular12)
+                        .foregroundColor(.white)
+                }
                 
                 Spacer()
                 
@@ -38,11 +43,13 @@ struct IngredientCard: View {
         } // ZStack
         .frame(height: 60)
         .onTapGesture {
-            if isOwned {
-                ownedIngs.removeAll { $0 == ingredientDTO.code }
+            if !isOwned {
+                ownedTools.append(name)
+                print("is Owned")
             }
             else {
-                ownedIngs.append(ingredientDTO.code)
+                ownedTools.removeAll(where: { $0 == name })
+                print("is not Owned")
             }
             isOwned.toggle()
         }

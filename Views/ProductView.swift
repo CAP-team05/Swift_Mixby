@@ -31,6 +31,9 @@ struct ProductView: View {
                         })
                     }
                 }
+                .onAppear {
+                    print("\(drinkDTO.name) : \(drinkDTO.baseCode)")
+                }
             
             VStack {
                 Spacer().frame(height: 70)

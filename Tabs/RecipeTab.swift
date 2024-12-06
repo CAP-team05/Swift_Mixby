@@ -10,6 +10,7 @@ struct RecipeTab: View {
     @Binding var tabSelection: Int
     @Binding var isLoading: Bool
     @Binding var ownedIngs: [String]
+    @Binding var ownedTools: [String]
     
     @State private var tabOption: Int = 0
     @State private var noUnlocked: Bool = true
@@ -58,7 +59,7 @@ struct RecipeTab: View {
                 if isLoading {
                     ProgressView("로딩 중...")
                         .font(.gbRegular20)
-                        .foregroundColor(.white.opacity(0.5))
+                        .foregroundColor(.white.opacity(isLoading ? 0.5 : 0))
                         .offset(y: -100)
                 } else {
                     VStack {
@@ -106,7 +107,8 @@ struct RecipeTab: View {
                         if doNavigate {
                             NavigationLink(
                                 destination: RecipeView(
-                                    recipeDTO: recipes[index]
+                                    recipeDTO: recipes[index],
+                                    ownedTools: ownedTools
                                 ), label: {
                                     RecipeCard(recipeDTO: recipes[index])
                                         .onAppear {
@@ -129,16 +131,19 @@ struct RecipeTab: View {
     }
     
     func loadRecipes() {
-        if !isLoading {
+        print("recipe loading start")
+        
+        Task {
             // 데이터 로드
-            Task.detached {
-                let loadedRecipes = RecipeHandler.searchAll()
+            let loadedRecipes = RecipeHandler.searchAll()
+            
+            // UI 업데이트는 반드시 MainActor에서 실행
+            await MainActor.run {
+                unlockedRecipes = loadedRecipes.filter { $0.have.first == $0.have.last }
+                lockedRecipes = loadedRecipes.filter { $0.have.first != $0.have.last }
                 
-                await MainActor.run {
-                    unlockedRecipes = loadedRecipes.filter { $0.have.first == $0.have.last }
-                    lockedRecipes = loadedRecipes.filter { $0.have.first != $0.have.last }
-                    isLoading = false
-                }
+                isLoading = false
+                print("recipe loaded")
             }
         }
     }

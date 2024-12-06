@@ -9,6 +9,7 @@ import SwiftUI
 
 struct CabinetTab: View {
     @Binding var ownedIngs: [String]
+    @Binding var ownedTools: [String]
     
     @State private var tabOption: Int = 0
     @State private var pageRefreshed: Bool = true
@@ -39,7 +40,7 @@ struct CabinetTab: View {
             
             TabOptions(
                 tabOption: $tabOption,
-                options: ["술", "리큐르", "재료"]
+                options: ["술", "리큐르", "재료", "도구"]
             )
             
             ZStack {
@@ -56,6 +57,10 @@ struct CabinetTab: View {
                 if tabOption == 2{
                     CabinetIngredientTab(pageRefreshed: $pageRefreshed, ownedIngs: $ownedIngs)
                         .opacity(pageRefreshed ? 0.9 : 1)
+                }
+                
+                if tabOption == 3{
+                    CabinetToolsTab(ownedTools: $ownedTools)
                 }
                 
             } // ZStack

@@ -34,6 +34,8 @@ struct CabinetDrinkTab: View {
                 if isEmpty[index] {
                     EmptyBox()
                 }
+                
+                Spacer().frame(height: 20)
             }
             
             // Bottom dummy spacing

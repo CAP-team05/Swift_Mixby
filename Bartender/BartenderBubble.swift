@@ -23,7 +23,7 @@ struct  BartenderBubble: View {
             "상품 개수: \(DrinkHandler.searchAll().count)",
             "환영합니다. \(UserHandler.searchAll().last!.name)님!",
             "테이스팅 노트",
-            "설정"
+            "도전과제"
         ]
         
         

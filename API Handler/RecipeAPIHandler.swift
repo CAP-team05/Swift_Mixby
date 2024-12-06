@@ -40,6 +40,17 @@ func getRecipeDTOListWithKeywords (key: String) -> [RecipeDTO] {
     return recipes
 }
 
+func getInstructionByCode(code: String) -> [Substring] {
+    let json: String = GetJsonFromURL(url: "http://cocktail.mixby.kro.kr:2222/recipe/code="+code)
+    
+    if isRecipeExist(code: code) {
+        var inst = json.split(separator: "instructions")[1]
+        inst = inst.split(separator: "]")[0]
+        return inst.split(separator: ",")
+    }
+    return []
+}
+
 func isRecipeExist(code: String) -> Bool {
     let json: String = GetJsonFromURL(url: "http://cocktail.mixby.kro.kr:2222/recipe/code="+code)
     
