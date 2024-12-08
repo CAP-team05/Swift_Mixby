@@ -25,11 +25,12 @@ struct RecipeTab: View {
     
     
     var body: some View {
-        VStack {
+        VStack (spacing: 0) {
             
             ZStack {
+                // title dummy
                 Rectangle()
-                    .frame(height: 280)
+                    .frame(height: UIScreen.screenHeight * 0.25)
                     .opacity(0.1)
                 
                 Button {

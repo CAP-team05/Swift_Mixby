@@ -9,16 +9,32 @@ import SwiftUI
 
 struct HomeTab: View {
     
+    var ownedTools: [String]
+    
     var body: some View {
         ZStack {
-            VStack {
-                
-                Text(String(describing: UserHandler.searchAll().last?.persona))
-                    .font(.gbRegular20)
-                    .foregroundColor(.white)
-                    .multilineTextAlignment(.center)
+            //            Text(String(describing: UserHandler.searchAll().last?.persona))
+            //                .font(.gbRegular20)
+            //                .foregroundColor(.white)
+            //                .multilineTextAlignment(.center)
+            //                .frame(width: UIScreen.screenWidth - 20)
+            
+            Rectangle()
+                .opacity(0.1)
+            
+            
+            VStack (spacing: 0) {
+                // title dummy
+                Spacer().frame(height: UIScreen.screenHeight * 0.18)
+                ChatScrollView(ownedTools: ownedTools)
             }
+            
         }
-        .frame(width: UIScreen.screenWidth - 40)
+        .ignoresSafeArea()
+        .frame(width: UIScreen.screenWidth, height: UIScreen.screenHeight)
     }
+}
+
+#Preview {
+    HomeTab(ownedTools: [""])
 }

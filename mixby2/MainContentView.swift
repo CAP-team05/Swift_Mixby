@@ -16,6 +16,7 @@ extension UIScreen{
 struct MainContentView: View {
     
     @AppStorage("ownedTools") var ownedTools: [String] = []
+    @AppStorage("isDataChanged") var isDataChanged: Bool = false
     
     @Binding var ownedIngs: [String]
     
@@ -49,7 +50,7 @@ struct MainContentView: View {
                             .toolbar(.hidden, for: .tabBar)
                     }
                     if currentTab == 3 {
-                        HomeTab()
+                        HomeTab(ownedTools: ownedTools)
                             .toolbar(.hidden, for: .tabBar)
                     }
                     if currentTab == 4 {
@@ -73,9 +74,8 @@ struct MainContentView: View {
                     }
                 
                 // Bartender
-                BartenderIsland(showBartender: $showBartender)
-                
                 BartenderBubble(currentTab: $currentTab)
+                BartenderIsland(showBartender: $showBartender)
             }
         }
         .tint(.white)

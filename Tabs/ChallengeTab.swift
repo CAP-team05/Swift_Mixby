@@ -9,7 +9,8 @@ import SwiftUI
 
 struct ChallengeTab: View {
     var body: some View {
-        VStack {
+        VStack (spacing: 0) {
+            // title dummy
             Rectangle()
                 .frame(height: UIScreen.screenHeight * 0.3)
                 .opacity(0.1)

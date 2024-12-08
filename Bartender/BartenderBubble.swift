@@ -10,10 +10,11 @@ import SwiftUI
 struct  BartenderBubble: View {
     @Binding var currentTab: Int
     
-    @State private var showComment: Bool = true
+    @State private var showComment: Bool = false
+    @State private var showBubble: Bool = false
     @State private var userName: String = ""
     
-//    private let drinkHandler = DrinkHandler()
+    //    private let drinkHandler = DrinkHandler()
     
     // Speech Bubble
     var body: some View {
@@ -31,8 +32,12 @@ struct  BartenderBubble: View {
             Rectangle()
                 .background(VisualEffectView(effect: UIBlurEffect(style: .dark)))
                 .foregroundColor(Color.white)
-                .opacity(0.2)
+                .opacity(showBubble ? 0.2 : 0)
                 .cornerRadius(30)
+                .frame(
+                    width: showBubble ? UIScreen.screenWidth-40 : 0,
+                    height: showBubble ? 100 : 0
+                )
             
             Text(comments[currentTab-1])
                 .font(.gbRegular22)
@@ -40,16 +45,23 @@ struct  BartenderBubble: View {
                 .multilineTextAlignment(.center)
                 .lineLimit(2)
                 .lineSpacing(10)
-                .opacity(showComment ? 0.8 : 0)
+                .opacity(showBubble && showComment ? 0.8 : 0)
                 .frame(
-                    width: showComment ? UIScreen.screenWidth-60 : 60,
-                    height: showComment ? 100 : -40
+                    width: showBubble ? UIScreen.screenWidth-60 : 0,
+                    height: showBubble ? 100 : 0
                 )
+                .onChange(of: showBubble) { old, new in
+                    withAnimation(.easeInOut(duration: 0.5)) {
+                        showComment = showBubble
+                    }
+                }
+            
         } // card bg
-        .frame(
-            width: UIScreen.screenWidth-40,
-            height: 100
-        )
-        .offset(y: UIScreen.screenHeight * -0.5 + 185)
+        .offset(y: showBubble ? UIScreen.screenHeight * -0.5 + 185 : UIScreen.screenHeight * -0.5 + 85)
+        .onChange(of: currentTab) { new, old in
+            withAnimation(.easeInOut(duration: 0.3)) {
+                showBubble = currentTab != 3
+            }
+        }
     }
 }

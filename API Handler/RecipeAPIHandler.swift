@@ -58,3 +58,18 @@ func isRecipeExist(code: String) -> Bool {
         return false
     } else { return true }
 }
+
+
+func getRandomRecipe() -> RecipeDTO {
+    let json: String = GetJsonFromURL(url: "http://cocktail.mixby.kro.kr:2222/recipe/random")
+    
+    let recipeDTO = RecipeDTO(
+        code: getTagFromJson(json: json, tag: "code"),
+        english_name: getTagFromJson(json: json, tag: "english_name"),
+        korean_name: getTagFromJson(json: json, tag: "korean_name"),
+        tag1: getTagFromJson(json: json, tag: "tag1"),
+        tag2: getTagFromJson(json: json, tag: "tag2"),
+        have: ""
+    )
+    return recipeDTO
+}

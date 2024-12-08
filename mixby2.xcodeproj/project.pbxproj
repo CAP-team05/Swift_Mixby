@@ -54,6 +54,11 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		D419DBE92D05A3AA004DF3C7 /* ChatBubble */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ChatBubble;
+			sourceTree = "<group>";
+		};
 		D44466022CF60FEC00D4A3D0 /* mixby2 */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -155,6 +160,7 @@
 				D444669F2CF6209500D4A3D0 /* Bartender */,
 				D444668D2CF61B5D00D4A3D0 /* Cards */,
 				D44466AA2CF622F700D4A3D0 /* CustomTabBar.swift */,
+				D419DBE92D05A3AA004DF3C7 /* ChatBubble */,
 				D44466982CF61FD900D4A3D0 /* Design */,
 				D4A6563D2CFAE64700728054 /* DTO */,
 				D4A6563E2CFAE65000728054 /* Handler */,
@@ -195,6 +201,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				D419DBE92D05A3AA004DF3C7 /* ChatBubble */,
 				D44466022CF60FEC00D4A3D0 /* mixby2 */,
 				D444668D2CF61B5D00D4A3D0 /* Cards */,
 				D44466982CF61FD900D4A3D0 /* Design */,

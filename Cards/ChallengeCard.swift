@@ -13,7 +13,7 @@ struct ChallengeCard: View {
             Rectangle()
                 .background(VisualEffectView(effect: UIBlurEffect(style: .dark)))
                 .foregroundColor(Color.white)
-                .opacity(0.2)
+                .opacity(0.4)
                 .frame(
                     width: UIScreen.screenWidth-40,
                     height: 100
@@ -27,7 +27,7 @@ struct ChallengeCard: View {
                     Rectangle()
                         .foregroundColor(Color.mixbyColor1)
                         .cornerRadius(30)
-                        .opacity(0.5)
+                        .opacity(0.7)
                         .frame(
                             width: UIScreen.screenWidth-50,
                             height: 40
@@ -50,7 +50,7 @@ struct ChallengeCard: View {
             }
         }
         .frame(
-            width: UIScreen.screenWidth-40,
+            width: UIScreen.screenWidth-20,
             height: 100
         )
     }

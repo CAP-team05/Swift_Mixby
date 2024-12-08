@@ -23,10 +23,10 @@ struct NoteTab: View {
         let writtenNoteDTOs = noteDTOs.filter { $0.eval != -1 }
         let unwrittenNoteDTOs = noteDTOs.filter { $0.eval == -1 }
         
-        VStack {
+        VStack (spacing: 0) {
             // title dummy
             Rectangle()
-                .frame(height: 280)
+                .frame(height: UIScreen.screenHeight * 0.25)
                 .opacity(0.1)
             
             TabOptions(
