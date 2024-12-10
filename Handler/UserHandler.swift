@@ -1,3 +1,4 @@
+
 //
 //  UserHandler.swift
 //  MixbyPreview
@@ -9,13 +10,14 @@ import SQLite3
 import Foundation
 
 class UserHandler {
-    private let db = DatabaseManager.shared.openDatabase()
+    static private let db = DatabaseManager.shared.openDatabase()
     
     init() {
-        createUserTable()
+        // UserHandler.dropTable()
+        UserHandler.createTable()
     }
 
-    func createUserTable() {
+    static func createTable() {
         let createTableQuery = """
         CREATE TABLE IF NOT EXISTS User (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -28,12 +30,12 @@ class UserHandler {
         executeQuery(query: createTableQuery, description: "User table created")
     }
     
-    func dropUserTable() {
+    static func dropTable() {
         let dropTableQuery = "DROP TABLE IF EXISTS User;"
         executeQuery(query: dropTableQuery, description: "User table dropped")
     }
 
-    func insertUser(user: UserDTO) {
+    static func insert(user: UserDTO) {
         let insertQuery = "INSERT INTO User (name, gender, favoriteTaste, persona) VALUES (?, ?, ?, ?);"
         var statement: OpaquePointer?
         print("in insertUser : \(user.name)")
@@ -54,7 +56,7 @@ class UserHandler {
     
     
     // must not use gender, favoriteTaste
-    func updatePersona(user: UserDTO) {
+    static func updatePersona(user: UserDTO) {
         let updateQuery = """
         UPDATE User
         SET persona = ?
@@ -81,7 +83,7 @@ class UserHandler {
         sqlite3_finalize(statement)
     }
 
-    private func executeQuery(query: String, description: String) {
+    static private func executeQuery(query: String, description: String) {
         var statement: OpaquePointer?
         if sqlite3_prepare_v2(db, query, -1, &statement, nil) == SQLITE_OK {
             if sqlite3_step(statement) == SQLITE_DONE {
@@ -93,7 +95,7 @@ class UserHandler {
         sqlite3_finalize(statement)
     }
     
-    func fetchAllUsers() -> [UserDTO] {
+    static func searchAll() -> [UserDTO] {
         var users: [UserDTO] = []
         let query = "SELECT name, gender, favoriteTaste, persona FROM User;"
         var statement: OpaquePointer?
@@ -105,12 +107,13 @@ class UserHandler {
                 let favoriteTaste = String(cString: sqlite3_column_text(statement, 2))
                 let persona = String(cString: sqlite3_column_text(statement, 3))
                 
+                // print("persona : \(persona)")
+
                 let user = UserDTO(name: name, gender: gender, favoriteTaste: favoriteTaste, persona: persona)
                 users.append(user)
             }
         } else {
-            let errorMessage = String(cString: sqlite3_errmsg(db))
-            print("Failed to fetch users from database: \(errorMessage)")
+            print("Failed to fetch users from database.")
         }
         sqlite3_finalize(statement)
         return users

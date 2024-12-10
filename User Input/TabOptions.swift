@@ -12,30 +12,38 @@ struct TabOptions: View {
     
     var options: [String] = ["opt1", "opt2"]
     
+    var audioPlayer: AudioPlayer? = AudioPlayer()
+    
     var body: some View {
-        HStack {
-            let defaultSize = UIScreen.screenWidth/CGFloat(options.count)-10
-            let activeSize = defaultSize + 36
-            let deactiveSize = defaultSize - 36/CGFloat(options.count-1)
-            
-            ForEach(0 ..< options.count, id: \.self) { index in
-                Button(action: {
-                    withAnimation (.easeInOut(duration: 0.3)) {
-                        tabOption = index
-                    }
-                },label: {
-                    ZStack {
-                        Capsule()
-                            .fill(tabOption==index ? Color.mixbyColor1 : Color.mixbyColor2)
-                            .opacity(tabOption==index ? 0.8 : 0.2)
-                        Text(options[index])
-                            .font(.gbRegular16)
-                            .foregroundColor(.white)
-                    } // ZStack
-                    .frame(
-                        width: tabOption==index ? activeSize : deactiveSize
-                    )
-                }) // Button
+        ZStack {
+            Rectangle()
+                .frame(height: 40)
+                .foregroundColor(.black.opacity(0.1))
+            HStack {
+                let defaultSize = UIScreen.screenWidth/CGFloat(options.count)-10
+                let activeSize = defaultSize + 36
+                let deactiveSize = defaultSize - 36/CGFloat(options.count-1)
+                
+                ForEach(0 ..< options.count, id: \.self) { index in
+                    Button(action: {
+                        audioPlayer?.playSound(fileName: "drop", fileType: "mp3", volume: 0.15)
+                        withAnimation (.easeInOut(duration: 0.3)) {
+                            tabOption = index
+                        }
+                    },label: {
+                        ZStack {
+                            Capsule()
+                                .fill(tabOption==index ? Color.mixbyColor1 : Color.mixbyColor2)
+                                .opacity(tabOption==index ? 0.8 : 0.2)
+                            Text(options[index])
+                                .font(.gbRegular16)
+                                .foregroundColor(.white)
+                        } // ZStack
+                        .frame(
+                            width: tabOption==index ? activeSize : deactiveSize
+                        )
+                    }) // Button
+                }
             }
         }.frame(width: UIScreen.screenWidth - 10, height: 40)
     }

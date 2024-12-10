@@ -41,9 +41,9 @@ struct ViewBackground: View {
             
             // titleWithDivider(title: "Mixby")
         }
+        .mask {
+            Rectangle()
+                .frame(width: UIScreen.screenWidth)
+        }
     }
-}
-
-#Preview {
-    ViewBackground()
 }

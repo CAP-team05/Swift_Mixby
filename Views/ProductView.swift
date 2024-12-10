@@ -12,7 +12,7 @@ struct ProductView: View {
     
     var drinkDTO: DrinkDTO
     
-    private let drinkHandler = DrinkHandler()
+    var audioPlayer: AudioPlayer? = AudioPlayer()
     
     var body: some View {
     
@@ -23,7 +23,7 @@ struct ProductView: View {
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button(action: {
-                            drinkHandler.deleteDrink(drink: drinkDTO)
+                            DrinkHandler.delete(drink: drinkDTO)
                             generateRecipeDTOsByGetKeywords(doPlus: false, keys: [])
                             presentationMode.wrappedValue.dismiss()
                         }, label: {
@@ -32,6 +32,10 @@ struct ProductView: View {
                                 .foregroundColor(.white)
                         })
                     }
+                }
+                .onAppear {
+                    print("\(drinkDTO.name) : \(drinkDTO.baseCode)")
+                    audioPlayer?.playSound(fileName: "clink", fileType: "mp3", volume: 0.1)
                 }
             
             VStack {

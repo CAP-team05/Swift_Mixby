@@ -9,13 +9,13 @@ import SQLite3
 import Foundation
 
 class IngredientHandler {
-    private let db = DatabaseManager.shared.openDatabase()
+    static private let db = DatabaseManager.shared.openDatabase()
     
     init() {
-        createIngredientTable()
+        IngredientHandler.createTable()
     }
     
-    func createIngredientTable() {
+    static func createTable() {
         let createTableQuery = """
         CREATE TABLE IF NOT EXISTS Ingredient (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -27,13 +27,13 @@ class IngredientHandler {
         executeQuery(query: createTableQuery, description: "Create Ingredient Table")
     }
     
-    func dropIngredientTable() {
+    static func dropTable() {
         let dropTableQuery = "DROP TABLE IF EXISTS Ingredient;"
         executeQuery(query: dropTableQuery, description: "Ingredient table dropped")
     }
     
     
-    func executeQuery(query: String, description: String) {
+    static func executeQuery(query: String, description: String) {
         var statement: OpaquePointer?
         if sqlite3_prepare_v2(db, query, -1, &statement, nil) == SQLITE_OK {
             if sqlite3_step(statement) == SQLITE_DONE {
@@ -45,7 +45,7 @@ class IngredientHandler {
         sqlite3_finalize(statement)
     }
     
-    func insertIngredient (ingredient: IngredientDTO) {
+    static func insert (ingredient: IngredientDTO) {
         let insertQuery = "INSERT INTO Ingredient (code, name) VALUES (?, ?);"
         var statement: OpaquePointer?
         print("in insert Ingredient : \(ingredient.name)")
@@ -62,7 +62,7 @@ class IngredientHandler {
         sqlite3_finalize(statement)
     }
     
-    func deleteIngredient(ingredient: IngredientDTO) {
+    static func delete(ingredient: IngredientDTO) {
         let deleteQuery = "DELETE FROM Drink WHERE code = ?;"
         var statement: OpaquePointer?
         
@@ -78,7 +78,7 @@ class IngredientHandler {
         sqlite3_finalize(statement)
     }
     
-    func fetchAllIngredients() -> [IngredientDTO] {
+    static func searchAll() -> [IngredientDTO] {
         var ingredients: [IngredientDTO] = []
         let query = "SELECT code, name FROM Ingredient;"
         var statement: OpaquePointer?

@@ -17,25 +17,23 @@ struct NoteTab: View {
     @State private var writtenNotes: [TastingNoteDTO] = []
     @State private var unwrittenNotes: [TastingNoteDTO] = []
     
-    private let recipeHandler = RecipeHandler()
-    private let tastingNoteHandler = TastingNoteHandler()
-    
+    var audioPlayer: AudioPlayer? = AudioPlayer()
     
     var body: some View {
-        let noteDTOs = tastingNoteHandler.fetchAllTastingNotes()
+        let noteDTOs = TastingNoteHandler.searchAll()
         
-        let unwrittenNoteDTOs = noteDTOs.filter { $0.eval == -1 }
         let writtenNoteDTOs = noteDTOs.filter { $0.eval != -1 }
+        let unwrittenNoteDTOs = noteDTOs.filter { $0.eval == -1 }
         
-        VStack {
+        VStack (spacing: 0) {
             // title dummy
             Rectangle()
-                .frame(height: 280)
+                .frame(height: UIScreen.screenHeight * 0.25)
                 .opacity(0.1)
             
             TabOptions(
                 tabOption: $tabOption,
-                options: ["작성 중", "작성 완료"]
+                options: ["작성 완료", "작성 필요"]
             )
             
             ZStack {
@@ -50,52 +48,28 @@ struct NoteTab: View {
                             ScrollView(.vertical) {
                                 Spacer().frame(height: 10)
                                 LazyVStack (spacing: 20) {
-                                    ForEach(0..<unwrittenNoteDTOs.count, id: \.self) { index in
-                                        NavigationLink(
-                                            destination:
-                                                TastingNoteView(tastingNoteDTO: unwrittenNoteDTOs[index])
-                                                .onAppear {
-                                                    print("new note appeared")
-                                                    print(unwrittenNoteDTOs[index].eval)
-                                                    print(unwrittenNoteDTOs[index].sweetness)
-                                                    print(unwrittenNoteDTOs[index].sourness)
-                                                    print(unwrittenNoteDTOs[index].alcohol)
-                                                }
-                                            
-                                            , label: {
-                                                NoteCard(noteDTO: unwrittenNoteDTOs[index])
-                                                    .onAppear {
-                                                        noUnwritten = false
-                                                    }
-                                            }
-                                        )
-                                    }
-                                } // Grid 1
-                                
-                                // bottom dummy
-                                Spacer().frame(height: 200)
-                                
-                            } // Scroll View
-                            
-                            if noUnwritten {
-                                EmptyBox().offset(y: -500)
-                            }
-                        }
-                        
-                        if tabOption == 1 {
-                            ScrollView(.vertical) {
-                                Spacer().frame(height: 10)
-                                LazyVStack (spacing: 20) {
                                     ForEach(0..<writtenNoteDTOs.count, id: \.self) { index in
                                         NavigationLink(
                                             destination:
                                                 TastingNoteView(tastingNoteDTO: writtenNoteDTOs[index])
+                                                .onAppear {
+                                                    print("new note appeared")
+                                                    print(writtenNoteDTOs[index].eval)
+                                                    print(writtenNoteDTOs[index].sweetness)
+                                                    print(writtenNoteDTOs[index].sourness)
+                                                    print(writtenNoteDTOs[index].alcohol)
+                                                }
                                             
                                             , label: {
                                                 NoteCard(noteDTO: writtenNoteDTOs[index])
                                                     .onAppear {
                                                         noWritten = false
                                                     }
+                                            }
+                                        )
+                                        .simultaneousGesture(
+                                            TapGesture().onEnded {
+                                                audioPlayer?.playSound(fileName: "paper", fileType: "mp3", volume: 0.1)
                                             }
                                         )
                                     }
@@ -107,6 +81,40 @@ struct NoteTab: View {
                             } // Scroll View
                             
                             if noWritten {
+                                EmptyBox().offset(y: -500)
+                            }
+                        }
+                        
+                        if tabOption == 1 {
+                            ScrollView(.vertical) {
+                                Spacer().frame(height: 10)
+                                LazyVStack (spacing: 20) {
+                                    ForEach(0..<unwrittenNoteDTOs.count, id: \.self) { index in
+                                        NavigationLink(
+                                            destination:
+                                                TastingNoteView(tastingNoteDTO: unwrittenNoteDTOs[index])
+                                            
+                                            , label: {
+                                                NoteCard(noteDTO: unwrittenNoteDTOs[index])
+                                                    .onAppear {
+                                                        noUnwritten = false
+                                                    }
+                                            }
+                                        )
+                                        .simultaneousGesture(
+                                            TapGesture().onEnded {
+                                                audioPlayer?.playSound(fileName: "paper", fileType: "mp3", volume: 0.1)
+                                            }
+                                        )
+                                    }
+                                } // Grid 1
+                                
+                                // bottom dummy
+                                Spacer().frame(height: 200)
+                                
+                            } // Scroll View
+                            
+                            if noUnwritten {
                                 EmptyBox().offset(y: -500)
                             }
                         }
@@ -134,8 +142,8 @@ struct NoteTab: View {
             // 데이터 로드
             await Task.detached {
                 try? await Task.sleep(nanoseconds: 1_000_000_000) // 테스트용 딜레이
-                let loadedNotes = tastingNoteHandler.fetchAllTastingNotes()
-                let loadedRecipes = recipeHandler.fetchAllRecipes()
+                let loadedNotes = TastingNoteHandler.searchAll()
+                let loadedRecipes = RecipeHandler.searchAll()
                 
                 await MainActor.run {
                     let unlockedRecipes: [RecipeDTO] = loadedRecipes.filter { $0.have.first == $0.have.last }

@@ -28,7 +28,7 @@ struct IngredientCard: View {
                 
                 Text(ingredientDTO.name)
                     .font(.gbRegular14)
-                    .foregroundColor(.white)
+                    .foregroundColor(isOwned ? .yellow : .white)
                 
                 Spacer()
                 

@@ -14,6 +14,13 @@ extension UIScreen{
 }
 
 struct MainContentView: View {
+    @AppStorage("ownedTools") var ownedTools: [String] = []
+    @AppStorage("isDataChanged") var isDataChanged: Bool = false
+    
+    @Binding var ownedIngs: [String]
+    @Binding var lastUpdate: Date
+    
+    @State var weatherName: String
     @State var tabSelection = 3
     @State var currentTab = 3
     @State var bgPos: Int = 0
@@ -21,38 +28,41 @@ struct MainContentView: View {
     
     @State var isLoading: Bool = false
     
-    @AppStorage("ownedIngs") var ownedIngs: [String] = []
-    
     var body: some View {
         NavigationView {
             TabView {
                 ZStack {
                     // Background with animation
-                    BackGround(bgPos: bgPos)
+                    BackGround(bgPos: bgPos, weatherName: weatherName)
                     
                     // Conditional rendering based on `currentTab`
                     if currentTab == 1 {
                         RecipeTab(
                             tabSelection: $tabSelection,
+                            isLoading: $isLoading,
                             ownedIngs: $ownedIngs,
-                            isLoading: $isLoading
+                            ownedTools: $ownedTools
                         )
+                        .toolbar(.hidden, for: .tabBar)
                     }
                     if currentTab == 2 {
-                        CabinetTab(ownedIngs: $ownedIngs)
+                        CabinetTab(ownedIngs: $ownedIngs, ownedTools: $ownedTools, weatherName: weatherName)
+                            .toolbar(.hidden, for: .tabBar)
                     }
                     if currentTab == 3 {
-                        HomeTab()
+                        HomeTab(lastUpdate: $lastUpdate, ownedTools: ownedTools)
+                            .toolbar(.hidden, for: .tabBar)
                     }
                     if currentTab == 4 {
                         NoteTab(isLoading: $isLoading)
+                            .toolbar(.hidden, for: .tabBar)
                     }
                     if currentTab == 5 {
-                        SettingsTab()
+                        ChallengeTab()
+                            .toolbar(.hidden, for: .tabBar)
                     }
                 }
             }
-            .toolbar(.hidden, for: .tabBar)
             .overlay(alignment: .bottom) {
                 // Custom tab bar
                 CustomTabBar(tabSelection: $tabSelection, isLoading: $isLoading)
@@ -64,9 +74,8 @@ struct MainContentView: View {
                     }
                 
                 // Bartender
-                BartenderIsland(showBartender: $showBartender)
-                
                 BartenderBubble(currentTab: $currentTab)
+                BartenderIsland(showBartender: $showBartender)
             }
         }
         .tint(.white)

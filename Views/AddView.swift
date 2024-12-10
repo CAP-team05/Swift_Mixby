@@ -12,13 +12,15 @@ struct AddView: View {
     
     @State private var scannedCodes: [String] = [] // 중복 방지를 위한 Set
     
+    var weatherName: String
+    
     @Environment(\.presentationMode) private var presentationMode : Binding<PresentationMode>
     
     private let drinkHandler = DrinkHandler()
     
     var body: some View {
         ZStack {
-            BackGround()
+            BackGround(weatherName: weatherName)
             VStack (spacing: 20) {
                 // Spacer().frame(height: 40)
                 
@@ -62,12 +64,12 @@ struct AddView: View {
                     Button (action : {
                         for code in scannedCodes{
                             let tempDrink = getDrinkDTOFromApi(barcode: code)
-                            let drinks = drinkHandler.fetchAllDrinks()
+                            let drinks = DrinkHandler.searchAll()
                             let contains = drinks.contains { drink in
                                 drink.name == tempDrink.name
                             }
                             if !contains {
-                                drinkHandler.insertDrink(drink: tempDrink)
+                                DrinkHandler.insert(drink: tempDrink)
                                 print("추가 완료")
                             }
                             else {

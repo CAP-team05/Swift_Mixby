@@ -33,7 +33,7 @@ struct RecipeCard: View {
                     .scaledToFill()
             }
             .frame(width: cardWidth, height: cardWidth)
-            .opacity(haves[0] == haves [1] ? 1 : 0.05)
+            .opacity(haves[0] == haves [1] ? 1 : 0.1)
             .cornerRadius(30)
             .shadow(
                 color: Color(red: 0, green: 0, blue: 0, opacity: 0.25), radius: 4, y: 4

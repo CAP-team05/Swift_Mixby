@@ -20,7 +20,6 @@ struct TutorialBubble: View {
     @Binding var showCustomBar: Bool
     @Binding var showTutorial: Bool
     
-    private let userHandler = UserHandler()
     private let tutorialMent: [String] = [
         "...", "흠... 크흠...", "엇? 생각보다 빨리 오셨네요.",
         "기다리고 있었습니다.", "저는 여기 Mixby의 바텐더입니다.",
@@ -58,7 +57,8 @@ struct TutorialBubble: View {
     
     private func fetchUserInfo() {
         let userDTO = UserDTO(name: userName, gender: userGender, favoriteTaste: userPrefer, persona: "")
-        userHandler.insertUser(user: userDTO)
+        UserHandler.createTable()
+        UserHandler.insert(user: userDTO)
     }
     
     private func handleUserInput() {

@@ -10,13 +10,15 @@ import SpriteKit
 
 struct BackGround: View {
     var bgPos: Int = 0
-    var doRain: Bool = true
+    
+    @State var weatherName: String
     
     var body: some View {
         ZStack() {
             let bgSize: CGFloat = 500
             // Background gradient
-            
+            let doRain = ["천둥", "비", "이슬비"].contains(weatherName)
+            let doSnow = ["눈"].contains(weatherName)
             
             Image("city")
                 .resizable()
@@ -35,6 +37,12 @@ struct BackGround: View {
             if doRain {
                 GeometryReader{_ in
                     SpriteView(scene: RainFall(),options: [.allowsTransparency])
+                }
+            }
+            
+            if doSnow {
+                GeometryReader{_ in
+                    SpriteView(scene: SnowFall(),options: [.allowsTransparency])
                 }
             }
             

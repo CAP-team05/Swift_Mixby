@@ -8,15 +8,24 @@
 import SwiftUI
 
 struct HomeTab: View {
+    @Binding var lastUpdate: Date
     
-    private let userHandler = UserHandler()
-    private let tastingNoteHandler = TastingNoteHandler()
+    var ownedTools: [String]
     
     var body: some View {
-        VStack{
-            Text("Home Tab")
-            Text("user count: \(userHandler.fetchAllUsers().count)")
-            Text("Note count: \(tastingNoteHandler.fetchAllTastingNotes().count)")
+        ZStack {
+            Rectangle()
+                .opacity(0.1)
+            
+            
+            VStack (spacing: 0) {
+                // title dummy
+                Spacer().frame(height: UIScreen.screenHeight * 0.18)
+                ChatScrollView(lastUpdate: $lastUpdate, ownedTools: ownedTools)
+            }
+            
         }
+        .ignoresSafeArea()
+        .frame(width: UIScreen.screenWidth, height: UIScreen.screenHeight)
     }
 }

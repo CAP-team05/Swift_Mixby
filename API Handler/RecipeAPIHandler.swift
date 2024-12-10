@@ -40,15 +40,42 @@ func getRecipeDTOListWithKeywords (key: String) -> [RecipeDTO] {
     return recipes
 }
 
-//func getRecipeIngredients(code: String) -> [IngredientDTO] {
-//    let json: String = GetJsonFromURL(url: "http://cocktail.mixby.kro.kr:2222/recipe/code="+code)
-//    
-//    if isRecipeExist(code: code) {
-//        let ingredient = IngredientDTO(
-//            
-//        )
-//    }
-//}
+func getRecipeDTObyName(name: String) -> RecipeDTO {
+    let modiName = name.replacingOccurrences(of: " ", with: "-")
+    let a: String = GetJsonFromURL(url: "http://cocktail.mixby.kro.kr:2222/recipe/name="+modiName)
+    print("name: \(modiName)")
+    
+    let recipeDTO = RecipeDTO(
+        code: getTagFromJson(json: String(a), tag: "code"),
+        english_name: getTagFromJson(json: String(a), tag: "english_name"),
+        korean_name: getTagFromJson(json: String(a), tag: "korean_name"),
+        tag1: getTagFromJson(json: String(a), tag: "tag1"),
+        tag2: getTagFromJson(json: String(a), tag: "tag2"),
+        have: ""
+    )
+    return recipeDTO
+}
+
+func getRecipeCodeByName(name: String) -> String {
+    let modiName = name.replacingOccurrences(of: " ", with: "-")
+    let a: String = GetJsonFromURL(url: "http://cocktail.mixby.kro.kr:2222/recipe/name="+modiName)
+    if a.contains("no result found") {
+        print("name: \(modiName)")
+        return "no result"
+    }
+    return getTagFromJson(json: String(a), tag: "code")
+}
+
+func getInstructionByCode(code: String) -> [Substring] {
+    let json: String = GetJsonFromURL(url: "http://cocktail.mixby.kro.kr:2222/recipe/code="+code)
+    
+    if isRecipeExist(code: code) {
+        var inst = json.split(separator: "instructions")[1]
+        inst = inst.split(separator: "]")[0]
+        return inst.split(separator: ",")
+    }
+    return []
+}
 
 func isRecipeExist(code: String) -> Bool {
     let json: String = GetJsonFromURL(url: "http://cocktail.mixby.kro.kr:2222/recipe/code="+code)
@@ -56,4 +83,19 @@ func isRecipeExist(code: String) -> Bool {
     if json.contains("no result found") {
         return false
     } else { return true }
+}
+
+
+func getRandomRecipe() -> RecipeDTO {
+    let json: String = GetJsonFromURL(url: "http://cocktail.mixby.kro.kr:2222/recipe/random")
+    
+    let recipeDTO = RecipeDTO(
+        code: getTagFromJson(json: json, tag: "code"),
+        english_name: getTagFromJson(json: json, tag: "english_name"),
+        korean_name: getTagFromJson(json: json, tag: "korean_name"),
+        tag1: getTagFromJson(json: json, tag: "tag1"),
+        tag2: getTagFromJson(json: json, tag: "tag2"),
+        have: ""
+    )
+    return recipeDTO
 }

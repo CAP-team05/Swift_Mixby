@@ -14,8 +14,8 @@ class UserAPIHandler {
 
     // API로 JSON 데이터를 전송
     func sendUserDataToAPI() {
-        let users = userHandler.fetchAllUsers()
-        let allNotes = tastingNoteHandler.fetchAllTastingNotes()
+        let users = UserHandler.searchAll()
+        let allNotes = TastingNoteHandler.searchAll()
         let notes = allNotes.filter { $0.eval >= 0 }
         let jsonEncoder = JSONEncoder()
         jsonEncoder.outputFormatting = .prettyPrinted
@@ -74,7 +74,7 @@ class UserAPIHandler {
                                 print("Decoded user: \(user), persona: \(user.persona)")
                                 
                                 // Update the database using updatePersona
-                                self.userHandler.updatePersona(user: user)
+                                UserHandler.updatePersona(user: user)
                             } else if let result = decodedData["result"] {
                                 print("Result received from API: \(result)")
                             }
