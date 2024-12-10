@@ -8,31 +8,16 @@
 import SwiftUI
 
 struct RecipeView: View {
-    
     var recipeDTO: RecipeDTO
     var ownedTools: [String]
+    var ownedIngs: [String]
     
-    @Environment(\.presentationMode) private var presentationMode : Binding<PresentationMode>
-    
+    @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
     private let recipeHandler = RecipeHandler()
     
     var body: some View {
-        
         ZStack {
             ViewBackground()
-            
-            //            Spacer()
-            //                .toolbar {
-            //                    ToolbarItem(placement: .navigationBarTrailing) {
-            //                        Button(action: {
-            //                            presentationMode.wrappedValue.dismiss()
-            //                        }, label: {
-            //                            Image(systemName: "note.text")
-            //                                .font(.system(size: 14))
-            //                                .foregroundColor(.white)
-            //                        })
-            //                    }
-            //                }
             
             VStack {
                 Spacer().frame(height: 70)
@@ -64,7 +49,7 @@ struct RecipeView: View {
                 
                 Spacer().frame(height: 20)
                 
-                VStack (alignment: .leading, spacing: 20) {
+                VStack(alignment: .leading, spacing: 20) {
                     titleCard(title: "제조법").offset(x: 150)
                     
                     let instArray = getInstructionByCode(code: recipeDTO.code)
@@ -84,6 +69,13 @@ struct RecipeView: View {
                     
                     ForEach(0..<ings.count, id: \.self) { i in
                         HStack {
+                            let doHaveIng = ownedIngs.contains(ings[i].code)
+                            let doHaveDrink = getAllDrinkCodes().contains(ings[i].code)
+                            
+                            Image(systemName: doHaveIng || doHaveDrink ? "checkmark.circle" : "x.circle")
+                                .font(.system(size: 24))
+                                .foregroundColor(.white)
+                            
                             Text(ings[i].name)
                                 .font(.gbRegular24)
                                 .foregroundColor(.white)
@@ -100,8 +92,36 @@ struct RecipeView: View {
                 }
                 .padding()
                 Spacer()
-            }.frame(width: UIScreen.screenWidth, height: UIScreen.screenHeight)
+            }
+            .frame(width: UIScreen.screenWidth, height: UIScreen.screenHeight)
         }
+        // .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                navigationBarTrailingItem
+            }
+        }
+    }
+    
+    private var navigationBarTrailingItem: some View {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let drinkDate = dateFormatter.string(from: Date())
+        let tastingNoteDTO = TastingNoteDTO(
+            code: recipeDTO.code,
+            english_name: recipeDTO.english_name,
+            korean_name: recipeDTO.korean_name,
+            drinkDate: drinkDate
+        )
+        
+        return NavigationLink(
+            destination: TastingNoteView(tastingNoteDTO: tastingNoteDTO),
+            label: {
+                Image(systemName: "note.text")
+                    .font(.system(size: 14))
+                    .foregroundColor(.white)
+            }
+        )
     }
     
     func reconfigureAmount(tools: [String], amount: String, unit: String) -> String {
@@ -109,20 +129,20 @@ struct RecipeView: View {
         
         if tools.contains("숟가락") {
             let intAmount = Float(amount) ?? 0
-            re = round(intAmount/10 * 10) / 10
-            return String(re)+" 숟가락"
+            re = round(intAmount / 10 * 10) / 10
+            return String(re) + " 숟가락"
         }
         if tools.contains("소주잔") {
             let intAmount = Float(amount) ?? 0
-            re = round(intAmount/50 * 10) / 10
-            return String(re)+" 소주잔"
+            re = round(intAmount / 50 * 10) / 10
+            return String(re) + " 소주잔"
         }
         if tools.contains("종이컵") {
             let intAmount = Float(amount) ?? 0
-            re = round(intAmount/180 * 10) / 10
-            return String(re)+" 종이컵"
+            re = round(intAmount / 180 * 10) / 10
+            return String(re) + " 종이컵"
         }
         
-        return (amount + unit)
+        return amount + unit
     }
 }

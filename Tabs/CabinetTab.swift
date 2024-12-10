@@ -15,6 +15,8 @@ struct CabinetTab: View {
     @State private var pageRefreshed: Bool = true
     var weatherName: String
     
+    var audioPlayer: AudioPlayer? = AudioPlayer()
+    
     var body: some View {
         
         VStack (spacing: 0) {
@@ -37,6 +39,11 @@ struct CabinetTab: View {
                         }
                 })
                 .offset(x: 130, y: -30)
+                .simultaneousGesture(
+                    TapGesture().onEnded {
+                        audioPlayer?.playSound(fileName: "refresh", fileType: "mp3", volume: 0.15)
+                    }
+                )
             }
             
             TabOptions(

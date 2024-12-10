@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct BartenderChatBubble: View {
+    var firstLine = ""
+    var secondLine = ""
     
     var body: some View {
         HStack {
@@ -24,13 +26,13 @@ struct BartenderChatBubble: View {
                 
                 VStack {
                     Spacer()
-                    
-                    Text("환영합니다.")
+            
+                    Text(firstLine)
                         .font(.gbRegular16)
                         .foregroundColor(.yellow)
                     Spacer()
                     
-                    Text("어떤 술을 추천드릴까요?")
+                    Text(secondLine)
                         .font(.gbRegular16)
                         .foregroundColor(.white)
                     
@@ -40,9 +42,11 @@ struct BartenderChatBubble: View {
             Spacer()
         }
         .frame(height: 85)
+        .onTapGesture {
+            let recommendDTOs = RecommendHandler.searchAll()
+            for index in 0..<recommendDTOs.count {
+                print("recommendDTO \(index) : \(recommendDTOs[index])")
+            }
+        }
     }
-}
-
-#Preview {
-    BartenderChatBubble()
 }

@@ -17,6 +17,8 @@ struct NoteTab: View {
     @State private var writtenNotes: [TastingNoteDTO] = []
     @State private var unwrittenNotes: [TastingNoteDTO] = []
     
+    var audioPlayer: AudioPlayer? = AudioPlayer()
+    
     var body: some View {
         let noteDTOs = TastingNoteHandler.searchAll()
         
@@ -65,6 +67,11 @@ struct NoteTab: View {
                                                     }
                                             }
                                         )
+                                        .simultaneousGesture(
+                                            TapGesture().onEnded {
+                                                audioPlayer?.playSound(fileName: "paper", fileType: "mp3", volume: 0.1)
+                                            }
+                                        )
                                     }
                                 } // Grid 1
                                 
@@ -92,6 +99,11 @@ struct NoteTab: View {
                                                     .onAppear {
                                                         noUnwritten = false
                                                     }
+                                            }
+                                        )
+                                        .simultaneousGesture(
+                                            TapGesture().onEnded {
+                                                audioPlayer?.playSound(fileName: "paper", fileType: "mp3", volume: 0.1)
                                             }
                                         )
                                     }

@@ -12,6 +12,8 @@ struct ProductView: View {
     
     var drinkDTO: DrinkDTO
     
+    var audioPlayer: AudioPlayer? = AudioPlayer()
+    
     var body: some View {
     
         ZStack {
@@ -33,6 +35,7 @@ struct ProductView: View {
                 }
                 .onAppear {
                     print("\(drinkDTO.name) : \(drinkDTO.baseCode)")
+                    audioPlayer?.playSound(fileName: "clink", fileType: "mp3", volume: 0.1)
                 }
             
             VStack {

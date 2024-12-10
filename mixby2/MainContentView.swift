@@ -14,11 +14,11 @@ extension UIScreen{
 }
 
 struct MainContentView: View {
-    
     @AppStorage("ownedTools") var ownedTools: [String] = []
     @AppStorage("isDataChanged") var isDataChanged: Bool = false
     
     @Binding var ownedIngs: [String]
+    @Binding var lastUpdate: Date
     
     @State var weatherName: String
     @State var tabSelection = 3
@@ -50,7 +50,7 @@ struct MainContentView: View {
                             .toolbar(.hidden, for: .tabBar)
                     }
                     if currentTab == 3 {
-                        HomeTab(ownedTools: ownedTools)
+                        HomeTab(lastUpdate: $lastUpdate, ownedTools: ownedTools)
                             .toolbar(.hidden, for: .tabBar)
                     }
                     if currentTab == 4 {

@@ -17,8 +17,8 @@ struct BackGround: View {
         ZStack() {
             let bgSize: CGFloat = 500
             // Background gradient
-            let doRain = ["Thunderstorm", "Rain", "Drizzle"].contains(weatherName)
-            let doSnow = ["Snow"].contains(weatherName)
+            let doRain = ["천둥", "비", "이슬비"].contains(weatherName)
+            let doSnow = ["눈"].contains(weatherName)
             
             Image("city")
                 .resizable()

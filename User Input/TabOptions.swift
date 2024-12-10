@@ -12,6 +12,8 @@ struct TabOptions: View {
     
     var options: [String] = ["opt1", "opt2"]
     
+    var audioPlayer: AudioPlayer? = AudioPlayer()
+    
     var body: some View {
         ZStack {
             Rectangle()
@@ -24,6 +26,7 @@ struct TabOptions: View {
                 
                 ForEach(0 ..< options.count, id: \.self) { index in
                     Button(action: {
+                        audioPlayer?.playSound(fileName: "drop", fileType: "mp3", volume: 0.15)
                         withAnimation (.easeInOut(duration: 0.3)) {
                             tabOption = index
                         }

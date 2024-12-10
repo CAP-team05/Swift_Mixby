@@ -23,6 +23,7 @@ struct RecipeTab: View {
     
     private let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 3)
     
+    var audioPlayer: AudioPlayer? = AudioPlayer()
     
     var body: some View {
         VStack (spacing: 0) {
@@ -34,6 +35,7 @@ struct RecipeTab: View {
                     .opacity(0.1)
                 
                 Button {
+                    audioPlayer?.playSound(fileName: "refresh", fileType: "mp3", volume: 0.15)
                     isLoading = true
                     generateRecipeDTOsByGetKeywords(doPlus: true, keys: ownedIngs)
                     loadRecipes()
@@ -77,7 +79,7 @@ struct RecipeTab: View {
                         if tabOption == 1 {
                             recipeGrid(
                                 recipes: lockedRecipes,
-                                doNavigate: false,
+                                doNavigate: true,
                                 isEmpty: $noLocked
                             )
                             if noLocked {
@@ -109,12 +111,18 @@ struct RecipeTab: View {
                             NavigationLink(
                                 destination: RecipeView(
                                     recipeDTO: recipes[index],
-                                    ownedTools: ownedTools
+                                    ownedTools: ownedTools,
+                                    ownedIngs: ownedIngs
                                 ), label: {
                                     RecipeCard(recipeDTO: recipes[index])
                                         .onAppear {
                                             isEmpty.wrappedValue = false
                                         }
+                                }
+                            )
+                            .simultaneousGesture(
+                                TapGesture().onEnded {
+                                    audioPlayer?.playSound(fileName: "ice2", fileType: "mp3", volume: 0.1)
                                 }
                             )
                         } else {

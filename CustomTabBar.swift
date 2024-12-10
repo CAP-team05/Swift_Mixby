@@ -36,7 +36,9 @@ struct CustomTabBar: View {
                 HStack {
                     Spacer()
                     ForEach(0..<5) { index in
+                        let player = AudioPlayer()
                         Button {
+                            player.playSound(fileName: "click", fileType: "mp3", volume: 0.3)
                             if !isLoading {
                                 tabSelection = index + 1
                             }

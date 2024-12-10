@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     @Binding var ownedIngs: [String]
+    @Binding var lastUpdate: Date
     
     @State var weatherName: String
     @State private var isLoading: Bool = true
@@ -21,7 +22,7 @@ struct ContentView: View {
                     TutorialView(showTutorial: $showTutorial)
                 }
                 else {
-                    MainContentView(ownedIngs: $ownedIngs, weatherName: weatherName)
+                    MainContentView(ownedIngs: $ownedIngs, lastUpdate: $lastUpdate, weatherName: weatherName)
                 }
             }
         }
@@ -30,7 +31,7 @@ struct ContentView: View {
             if !showTutorial {
                 UserAPIHandler().sendUserDataToAPI()
             }
-            print("Content View onAppear")
+            print("Content View onAppear, \(UserHandler.searchAll().count)")
             isLoading = false
         }
     }

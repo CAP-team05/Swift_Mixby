@@ -92,6 +92,11 @@
 			path = Bartender;
 			sourceTree = "<group>";
 		};
+		D45151A32D08992200E7DBB6 /* SoundFX */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SoundFX;
+			sourceTree = "<group>";
+		};
 		D49661FF2CFB596E00496F13 /* API Handler */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = "API Handler";
@@ -160,6 +165,7 @@
 				D444669F2CF6209500D4A3D0 /* Bartender */,
 				D444668D2CF61B5D00D4A3D0 /* Cards */,
 				D44466AA2CF622F700D4A3D0 /* CustomTabBar.swift */,
+				D45151A32D08992200E7DBB6 /* SoundFX */,
 				D419DBE92D05A3AA004DF3C7 /* ChatBubble */,
 				D44466982CF61FD900D4A3D0 /* Design */,
 				D4A6563D2CFAE64700728054 /* DTO */,
@@ -206,6 +212,7 @@
 				D444668D2CF61B5D00D4A3D0 /* Cards */,
 				D44466982CF61FD900D4A3D0 /* Design */,
 				D444669F2CF6209500D4A3D0 /* Bartender */,
+				D45151A32D08992200E7DBB6 /* SoundFX */,
 				D49661FF2CFB596E00496F13 /* API Handler */,
 				D49CAAF82CFE3D8E0024B431 /* User Input */,
 				D49CAB172CFE44930024B431 /* Tabs */,
@@ -526,7 +533,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = musclerun.mixby2;
+				PRODUCT_BUNDLE_IDENTIFIER = musclerun.mixby;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -560,7 +567,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = musclerun.mixby2;
+				PRODUCT_BUNDLE_IDENTIFIER = musclerun.mixby;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;

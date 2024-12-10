@@ -57,11 +57,11 @@ func generateIngredientDTOsFromAPI() {
 @main
 struct mixby2App: App {
     @AppStorage("ownedIngs") var ownedIngs: [String] = []
+    @AppStorage("lastUpdate") var lastUpdate: Date = Date()
     
     @State private var showSplash = true // 스플래시 상태
     
-    @StateObject private var locationManager = LocationManager()
-    @State private var weatherName: String = "Undefined"
+    @State private var weatherName: String = "미정의"
     
     var body: some Scene {
         WindowGroup {
@@ -71,29 +71,41 @@ struct mixby2App: App {
                         performInitialization()
                     }
             } else {
-                ContentView(ownedIngs: $ownedIngs, weatherName: weatherName)
+                ContentView(ownedIngs: $ownedIngs, lastUpdate: $lastUpdate, weatherName: weatherName)
             }
         }
     }
     
+    var audioPlayer: AudioPlayer? = AudioPlayer()
+    
     func performInitialization() {
-        DispatchQueue.global().async {
-            // 초기화 작업 시뮬레이션
-            sleep(2)
-            DispatchQueue.main.async {
-                if locationManager.latitude != 0.0 && locationManager.longitude != 0.0 {
-                    print("lat, long: \(locationManager.latitude) \(locationManager.longitude)")
-                    weatherName = getWeatherFromAPI(
-                        lat: locationManager.latitude,
-                        long: locationManager.longitude)
+        audioPlayer?.playSound(fileName: "pouring", fileType: "mp3", volume: 0.2)
+        
+        DispatchQueue.main.async {
+            
+            // 초기화 작업 시작
+            weatherName = getWeatherFromAPI()
+            generateIngredientDTOsFromAPI()
+            generateRecipeDTOsByGetKeywords(doPlus: true, keys: ownedIngs)
+            
+            let now = Date()
+            let refreshTask = Task {
+                if now.timeIntervalSince(lastUpdate) > 600 {
+                    print("getting new refresh")
+                    lastUpdate = now
+                    refreshDefaultRecommendDTOs() {
+                        print("refresh completed")
+                    }
+                } else {
+                    print("Not getting new refresh")
                 }
-                else {
-                    print("can't get weatherName")
-                }
-                generateIngredientDTOsFromAPI()
-                generateRecipeDTOsByGetKeywords(doPlus: true, keys: ownedIngs)
-                withAnimation {
-                    showSplash = false // 스플래시 상태 업데이트
+            }
+            
+            // 최소 6초 보장
+            DispatchQueue.main.asyncAfter(deadline: .now() + 6.0) {
+                Task {
+                    await refreshTask.value // refreshTask가 끝나기를 기다림
+                    withAnimation { showSplash = false }
                 }
             }
         }

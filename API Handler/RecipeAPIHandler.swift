@@ -40,6 +40,32 @@ func getRecipeDTOListWithKeywords (key: String) -> [RecipeDTO] {
     return recipes
 }
 
+func getRecipeDTObyName(name: String) -> RecipeDTO {
+    let modiName = name.replacingOccurrences(of: " ", with: "-")
+    let a: String = GetJsonFromURL(url: "http://cocktail.mixby.kro.kr:2222/recipe/name="+modiName)
+    print("name: \(modiName)")
+    
+    let recipeDTO = RecipeDTO(
+        code: getTagFromJson(json: String(a), tag: "code"),
+        english_name: getTagFromJson(json: String(a), tag: "english_name"),
+        korean_name: getTagFromJson(json: String(a), tag: "korean_name"),
+        tag1: getTagFromJson(json: String(a), tag: "tag1"),
+        tag2: getTagFromJson(json: String(a), tag: "tag2"),
+        have: ""
+    )
+    return recipeDTO
+}
+
+func getRecipeCodeByName(name: String) -> String {
+    let modiName = name.replacingOccurrences(of: " ", with: "-")
+    let a: String = GetJsonFromURL(url: "http://cocktail.mixby.kro.kr:2222/recipe/name="+modiName)
+    if a.contains("no result found") {
+        print("name: \(modiName)")
+        return "no result"
+    }
+    return getTagFromJson(json: String(a), tag: "code")
+}
+
 func getInstructionByCode(code: String) -> [Substring] {
     let json: String = GetJsonFromURL(url: "http://cocktail.mixby.kro.kr:2222/recipe/code="+code)
     

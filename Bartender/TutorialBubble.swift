@@ -57,6 +57,7 @@ struct TutorialBubble: View {
     
     private func fetchUserInfo() {
         let userDTO = UserDTO(name: userName, gender: userGender, favoriteTaste: userPrefer, persona: "")
+        UserHandler.createTable()
         UserHandler.insert(user: userDTO)
     }
     

@@ -13,6 +13,7 @@ class UserHandler {
     static private let db = DatabaseManager.shared.openDatabase()
     
     init() {
+        // UserHandler.dropTable()
         UserHandler.createTable()
     }
 

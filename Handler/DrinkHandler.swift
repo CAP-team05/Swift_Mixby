@@ -113,3 +113,16 @@ class DrinkHandler {
         return drinks
     }
 }
+
+func getAllDrinkCodes() -> [String] {
+    let allDrinkDTOs = DrinkHandler.searchAll()
+    var codes: [String] = []
+    for drinkDTO in allDrinkDTOs {
+        let code = drinkDTO.baseCode
+        if !codes.contains(code) {
+            codes.append(code)
+        }
+    }
+    print(codes)
+    return codes
+}

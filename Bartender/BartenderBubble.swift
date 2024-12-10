@@ -22,7 +22,7 @@ struct  BartenderBubble: View {
         let comments: [String] = [
             "레시피 개수: \(RecipeHandler.searchAll().count)",
             "상품 개수: \(DrinkHandler.searchAll().count)",
-            "환영합니다. \(UserHandler.searchAll().last!.name)님!",
+            "환영합니다. \(UserHandler.searchAll().count)님!",
             "테이스팅 노트",
             "도전과제"
         ]

@@ -28,7 +28,7 @@ struct UserBubble: View {
                 
                 VStack (spacing: 10) {
                     HStack {
-                        Text(param)
+                        Text("\(param)")
                             .font(.gbRegular16)
                             .foregroundColor(.yellow)
                         Text("에 맞는 레시피 추천해줘.")

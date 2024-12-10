@@ -1,24 +1,23 @@
 //
-//  Recommands.swift
+//  Feelings.swift
 //  mixby2
 //
-//  Created by Anthony on 12/8/24.
+//  Created by Anthony on 12/10/24.
 //
 
 import SwiftUI
 
-struct Recommands: View {
-    var param: String = ""
+struct Feelings: View {
+    var param: String = "기분"
     var body: some View {
         ZStack {
             Rectangle()
                 .background(VisualEffectView(effect: UIBlurEffect(style: .light)))
-                .foregroundColor(Color.white.opacity(0.2))
+                .foregroundColor(Color.mixbyColor2.opacity(0.2))
                 .cornerRadius(50)
             HStack {
                 Text(getImoji(param: param)+param)
                     .font(.gbRegular14)
-                    .foregroundColor(.white)
 //                Text(param)
 //                    .font(.gbRegular14)
 //                    .foregroundColor(.white)

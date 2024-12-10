@@ -7,11 +7,14 @@
 
 import SwiftUI
 
-struct RecommandBubble: View {
+struct RecommendBubble: View {
     
     var recipeDTO: RecipeDTO
+    var reason: String
+    var tag: String
     
     var body: some View {
+        
         HStack {
             Spacer().frame(width: 10)
             ZStack {
@@ -27,6 +30,7 @@ struct RecommandBubble: View {
                 VStack {
                     Spacer().frame(height: 10)
                     HStack {
+                        
                         let image_url = URL(string: "http://cocktail.mixby.kro.kr:2222/recipe/image="+recipeDTO.english_name)
                         
                         Spacer().frame(width: 15)
@@ -47,7 +51,7 @@ struct RecommandBubble: View {
                                 .font(.gbRegular18)
                                 .foregroundColor(.yellow)
                             
-                            Text("#\(recipeDTO.tag1) #\(recipeDTO.tag2)")
+                            Text("#\(tag)")
                                 .font(.gbRegular16)
                                 .foregroundColor(.white)
                         }
@@ -57,13 +61,15 @@ struct RecommandBubble: View {
                     
                     Spacer()
                     
-                    Text("어쩌구 저쩌구")
-                        .font(.gbRegular14)
+                    Text(reason)
+                        .font(.gbRegular16)
                         .foregroundColor(.white)
+                        .frame(width: 200)
+                        .multilineTextAlignment(.leading)
                     
                     Spacer()
                 }
-                .frame(width: UIScreen.screenWidth-60, height: 200)
+                .frame(width: UIScreen.screenWidth-80, height: 200)
             }
             Spacer()
         }
