@@ -8,20 +8,19 @@
 import SwiftUI
 
 struct HomeTab: View {
-    @Binding var lastUpdate: Date
+    @Binding var appJustLaunched: Bool
+    
+    @State var userName: String
     
     var ownedTools: [String]
+    var ownedIngs: [String]
     
     var body: some View {
         ZStack {
-            Rectangle()
-                .opacity(0.1)
-            
-            
             VStack (spacing: 0) {
                 // title dummy
                 Spacer().frame(height: UIScreen.screenHeight * 0.18)
-                ChatScrollView(lastUpdate: $lastUpdate, ownedTools: ownedTools)
+                ChatScrollView(appJustLaunched: $appJustLaunched, userName: userName, ownedTools: ownedTools, ownedIngs: ownedIngs)
             }
             
         }

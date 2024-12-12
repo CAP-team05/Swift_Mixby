@@ -57,8 +57,8 @@ func generateIngredientDTOsFromAPI() {
 @main
 struct mixby2App: App {
     @AppStorage("ownedIngs") var ownedIngs: [String] = []
-    @AppStorage("lastUpdate") var lastUpdate: Date = Date()
     
+    @State private var showTutorial: Bool = true
     @State private var showSplash = true // 스플래시 상태
     
     @State private var weatherName: String = "미정의"
@@ -71,7 +71,7 @@ struct mixby2App: App {
                         performInitialization()
                     }
             } else {
-                ContentView(ownedIngs: $ownedIngs, lastUpdate: $lastUpdate, weatherName: weatherName)
+                ContentView(ownedIngs: $ownedIngs, weatherName: weatherName, showTutorial: showTutorial)
             }
         }
     }
@@ -81,31 +81,36 @@ struct mixby2App: App {
     func performInitialization() {
         audioPlayer?.playSound(fileName: "pouring", fileType: "mp3", volume: 0.2)
         
+        let serialQueue = DispatchQueue(label: "com.mixby.recommend.insertQueue")
+
         DispatchQueue.main.async {
-            
-            // 초기화 작업 시작
-            weatherName = getWeatherFromAPI()
             generateIngredientDTOsFromAPI()
             generateRecipeDTOsByGetKeywords(doPlus: true, keys: ownedIngs)
             
-            let now = Date()
-            let refreshTask = Task {
-                if now.timeIntervalSince(lastUpdate) > 600 {
-                    print("getting new refresh")
-                    lastUpdate = now
-                    refreshDefaultRecommendDTOs() {
-                        print("refresh completed")
-                    }
-                } else {
-                    print("Not getting new refresh")
+            // 초기화 작업 시작
+            serialQueue.sync {
+                showTutorial = UserHandler.searchAll().isEmpty
+                if !showTutorial {
+                    UserAPIHandler().sendUserDataToAPI()
                 }
-            }
-            
-            // 최소 6초 보장
-            DispatchQueue.main.asyncAfter(deadline: .now() + 6.0) {
-                Task {
-                    await refreshTask.value // refreshTask가 끝나기를 기다림
-                    withAnimation { showSplash = false }
+                
+                let _ = getWeatherFromAPI { weather in
+                    weatherName = weather
+                }
+                
+                let refreshTask = Task {
+                        print("getting new recommends")
+                        refreshDefaultRecommendDTOs(weather: weatherName) {
+                            print("recommends refreshed completly")
+                        }
+                }
+                
+                // 최소 6초 보장
+                DispatchQueue.main.asyncAfter(deadline: .now() + 6.0) {
+                    Task {
+                        await refreshTask.value // refreshTask가 끝나기를 기다림
+                        withAnimation { showSplash = false }
+                    }
                 }
             }
         }

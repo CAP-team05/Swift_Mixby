@@ -29,7 +29,7 @@ struct NoteTab: View {
             // title dummy
             Rectangle()
                 .frame(height: UIScreen.screenHeight * 0.25)
-                .opacity(0.1)
+                .opacity(0)
             
             TabOptions(
                 tabOption: $tabOption,
@@ -140,9 +140,9 @@ struct NoteTab: View {
             }
             
             // 데이터 로드
-            await Task.detached {
+            Task.detached {
                 try? await Task.sleep(nanoseconds: 1_000_000_000) // 테스트용 딜레이
-                let loadedNotes = TastingNoteHandler.searchAll()
+                // let loadedNotes = TastingNoteHandler.searchAll()
                 let loadedRecipes = RecipeHandler.searchAll()
                 
                 await MainActor.run {

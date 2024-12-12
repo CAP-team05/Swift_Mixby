@@ -24,6 +24,8 @@ func generateTastingsNoteByRecipeDTOs(recipeDTOs: [RecipeDTO]) {
         let korean_name = recipeDTO.korean_name
         
         let dateFormatter = DateFormatter()
+        dateFormatter.timeZone = TimeZone.current
+        
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let drinkDate = dateFormatter.string(from: Date())
         

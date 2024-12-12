@@ -162,6 +162,7 @@ struct Home : View {
     func getTime()->String{
         
         let format = DateFormatter()
+        format.timeZone = TimeZone.current
         format.dateFormat = "hh:mm a"
         
         return format.string(from: Date())

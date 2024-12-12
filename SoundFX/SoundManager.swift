@@ -21,9 +21,9 @@ class AudioPlayer: NSObject, AVAudioPlayerDelegate {
                 audioPlayer?.delegate = self
                 audioPlayer?.prepareToPlay()
                 audioPlayer?.play()
-                print("Playing sound: \(fileName).\(fileType)")
+                // print("Playing sound: \(fileName).\(fileType)")
             } catch {
-                print("Error playing sound: \(error.localizedDescription)")
+                // print("Error playing sound: \(error.localizedDescription)")
             }
         } else {
             print("Sound file not found.")
@@ -31,7 +31,7 @@ class AudioPlayer: NSObject, AVAudioPlayerDelegate {
     }
 
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-        print("Sound finished playing.")
+        // print("Sound finished playing.")
         completionHandler?()
     }
 }

@@ -54,11 +54,14 @@ struct RecipeView: View {
                     
                     let instArray = getInstructionByCode(code: recipeDTO.code)
                     ForEach(0..<instArray.count, id: \.self) { i in
-                        Text(instArray[i].split(separator: "\"")[1])
+                        let text = instArray[i].replacingOccurrences(of: "\n", with: "")
+                        Text(text.replacingOccurrences(of: "\"", with: ""))
                             .font(.gbRegular20)
                             .foregroundColor(.yellow)
-                            .multilineTextAlignment(.leading)
                             .lineLimit(2)
+                            .lineSpacing(5)
+                            .frame(width: UIScreen.screenWidth-20, alignment: .leading)
+                            // .multilineTextAlignment(.leading)
                     }
                     
                     Spacer().frame(height: 20)
@@ -67,28 +70,32 @@ struct RecipeView: View {
                     
                     let ings = getRecipeIngredients(recipe: recipeDTO)
                     
-                    ForEach(0..<ings.count, id: \.self) { i in
-                        HStack {
-                            let doHaveIng = ownedIngs.contains(ings[i].code)
-                            let doHaveDrink = getAllDrinkCodes().contains(ings[i].code)
-                            
-                            Image(systemName: doHaveIng || doHaveDrink ? "checkmark.circle" : "x.circle")
-                                .font(.system(size: 24))
-                                .foregroundColor(.white)
-                            
-                            Text(ings[i].name)
-                                .font(.gbRegular24)
-                                .foregroundColor(.white)
-                            
-                            Spacer()
-                            
-                            let re = reconfigureAmount(tools: ownedTools, amount: ings[i].amount, unit: ings[i].unit)
-                            Text(re)
-                                .font(.gbRegular20)
-                                .foregroundColor(.white)
+                    ScrollView (.vertical) {
+                        VStack (spacing: 10) {
+                            ForEach(0..<ings.count, id: \.self) { i in
+                                HStack {
+                                    let doHaveIng = ownedIngs.contains(ings[i].code)
+                                    let doHaveDrink = getAllDrinkCodes().contains(ings[i].code)
+                                    
+                                    Image(systemName: doHaveIng || doHaveDrink ? "checkmark.circle" : "x.circle")
+                                        .font(.system(size: 24))
+                                        .foregroundColor(.white)
+                                    
+                                    Text(ings[i].name)
+                                        .font(.gbRegular24)
+                                        .foregroundColor(.white)
+                                    
+                                    Spacer()
+                                    
+                                    let re = reconfigureAmount(tools: ownedTools, amount: ings[i].amount, unit: ings[i].unit)
+                                    Text(re)
+                                        .font(.gbRegular20)
+                                        .foregroundColor(.white)
+                                }
+                            }
+                            Spacer().frame(height: 120)
                         }
                     }
-                    Spacer()
                 }
                 .padding()
                 Spacer()
@@ -105,6 +112,7 @@ struct RecipeView: View {
     
     private var navigationBarTrailingItem: some View {
         let dateFormatter = DateFormatter()
+        dateFormatter.timeZone = TimeZone.current
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let drinkDate = dateFormatter.string(from: Date())
         let tastingNoteDTO = TastingNoteDTO(

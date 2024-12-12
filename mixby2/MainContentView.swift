@@ -18,7 +18,6 @@ struct MainContentView: View {
     @AppStorage("isDataChanged") var isDataChanged: Bool = false
     
     @Binding var ownedIngs: [String]
-    @Binding var lastUpdate: Date
     
     @State var weatherName: String
     @State var tabSelection = 3
@@ -27,6 +26,9 @@ struct MainContentView: View {
     @State var showBartender: Bool = true
     
     @State var isLoading: Bool = false
+    @State var appJustLaunched: Bool = true
+    
+    @State private var userName: String = UserHandler.searchAll().last?.name ?? "noname"
     
     var body: some View {
         NavigationView {
@@ -50,7 +52,7 @@ struct MainContentView: View {
                             .toolbar(.hidden, for: .tabBar)
                     }
                     if currentTab == 3 {
-                        HomeTab(lastUpdate: $lastUpdate, ownedTools: ownedTools)
+                        HomeTab(appJustLaunched: $appJustLaunched, userName: userName, ownedTools: ownedTools, ownedIngs: ownedIngs)
                             .toolbar(.hidden, for: .tabBar)
                     }
                     if currentTab == 4 {
@@ -74,7 +76,7 @@ struct MainContentView: View {
                     }
                 
                 // Bartender
-                BartenderBubble(currentTab: $currentTab)
+                BartenderBubble(currentTab: $currentTab, userName: userName)
                 BartenderIsland(showBartender: $showBartender)
             }
         }

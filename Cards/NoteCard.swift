@@ -29,7 +29,7 @@ struct NoteCard: View {
             }
                 .frame(width: 106, height: 106)
                 .cornerRadius(30)
-                .offset(x: 125)
+                .offset(x: -125)
                 .shadow(
                     color: Color(red: 0, green: 0, blue: 0, opacity: 0.25), radius: 4, y: 4
                 )
@@ -38,19 +38,19 @@ struct NoteCard: View {
                 .font(.gbBold16)
                 .foregroundColor(Color.black)
                 .frame(width: 200, alignment: .leading)
-                .offset(x: -35, y: -30)
+                .offset(x: 45, y: -30)
             
             Text(noteDTO.drinkDate)
                 .font(.gbRegular14)
-                .foregroundColor(Color.blue)
+                .foregroundColor(Color.mixbyColor0)
                 .frame(width: 200, alignment: .trailing)
-                .offset(x: -35, y: -30)
+                .offset(x: 45, y: -30)
             
             Text(TastingNoteDTO.toEval(n: noteDTO.eval))
                 .font(.gbRegular16)
                 .foregroundColor(Color.black.opacity(0.7))
                 .frame(width: 200, alignment: .leading)
-                .offset(x: -35, y: 2)
+                .offset(x: 45, y: 2)
         }
         .frame(width: 360)
     }

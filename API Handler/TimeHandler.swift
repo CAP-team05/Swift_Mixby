@@ -11,6 +11,7 @@ class TimeHandler {
     // 현재 월을 반환하는 메서드
     static func getCurrentMonth() -> Int {
         let dateFormatter = DateFormatter()
+        dateFormatter.timeZone = TimeZone.current
         dateFormatter.dateFormat = "MM"
         let _str = dateFormatter.string(from: Date())
         let _int = Int(_str)!
@@ -20,6 +21,7 @@ class TimeHandler {
     // 현재 시간을 반환하는 메서드
     static func getCurrentHour() -> String {
         let dateFormatter = DateFormatter()
+        dateFormatter.timeZone = TimeZone.current
         dateFormatter.dateFormat = "HH"  // 'HH'는 시간을 24시간 형식으로 표시합니다 (00~23)
         let _str = dateFormatter.string(from: Date())
         let _time = Int(_str)!

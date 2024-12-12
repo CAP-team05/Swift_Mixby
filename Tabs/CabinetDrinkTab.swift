@@ -4,15 +4,11 @@
 //
 //  Created by Anthony on 12/1/24.
 //
-
-import SwiftUI
-
 import SwiftUI
 
 struct CabinetDrinkTab: View {
     @Binding var pageRefreshed: Bool
-    
-    @State private var isEmpty: [Bool] = Array(repeating: true, count: 10)
+    @State private var refreshImages: Bool = false // 이미지 로딩 상태를 강제로 트리거하는 변수
     
     private let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 3)
     private let allBases: [String] = ["위스키", "리큐르", "진", "럼", "테킬라", "보드카", "브랜디", "와인", "기타"]
@@ -23,15 +19,18 @@ struct CabinetDrinkTab: View {
         ScrollView(.vertical) {
             Spacer().frame(height: 10)
             
+            let allDrinksDTO = DrinkHandler.searchAll()
             ForEach(0..<allBases.count, id: \.self) { index in
                 
                 titleCard(title: allBases[index])
                 
                 LazyVGrid(columns: columns, spacing: 20) {
-                    filteredDrinks(for: index, from: DrinkHandler.searchAll())
+                    filteredDrinks(for: index, from: allDrinksDTO)
                 }
                 
-                if isEmpty[index] {
+                let isEmpty: Bool = allDrinksDTO.filter { (Int($0.baseCode) ?? 0) / 100 == index + 1 }.isEmpty
+                
+                if isEmpty {
                     EmptyBox()
                 }
                 
@@ -41,8 +40,8 @@ struct CabinetDrinkTab: View {
             // Bottom dummy spacing
             Spacer().frame(height: 200)
         }
-        .onChange(of: pageRefreshed) { old, new in
-            resetIsEmpty()
+        .onChange(of: pageRefreshed) { _, _ in
+            refreshImages.toggle() // 이미지 상태 강제 새로고침
         }
     }
     
@@ -58,16 +57,8 @@ struct CabinetDrinkTab: View {
                     .onDisappear { pageRefreshed.toggle() },
                 label: {
                     ProductCard(drinkDTO: drinkDTO)
-                        .onAppear {
-                            isEmpty[index] = false
-                        }
                 }
             )
         }
-    }
-    
-    // `isEmpty` 상태 초기화 함수
-    private func resetIsEmpty() {
-        isEmpty = Array(repeating: true, count: 10)
     }
 }
