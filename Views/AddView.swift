@@ -36,7 +36,7 @@ struct AddView: View {
                         .opacity(0.1)
                     
                     ScrollView {
-                        VStack {
+                        VStack (spacing: 20) {
                             Spacer().frame(height: 10)
                             ForEach(scannedCodes, id:\.self) { code in
                                 AdditionCard(code: code)

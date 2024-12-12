@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct NoteTab: View {
-    @Binding var isLoading: Bool
     @Binding var showBartender: Bool
+    @Binding var isLoading: Bool
+    @State var ownedIngs: [String]
     
     @State private var noUnwritten: Bool = true
     @State private var noWritten: Bool = true
@@ -22,7 +23,10 @@ struct NoteTab: View {
         let noteDTOs = TastingNoteHandler.shared.searchAll()
         let writtenNoteDTOs = noteDTOs.filter { $0.eval != -1 }
         let unwrittenNoteDTOs = noteDTOs.filter { $0.eval == -1 }
-        
+    
+        if writtenNoteDTOs.count >= 1 { let _ = ChallengeHandler.shared.unlockChallenge(id: 18) }
+        if writtenNoteDTOs.count >= 10 { let _ = ChallengeHandler.shared.unlockChallenge(id: 19) }
+    
         VStack {
             Spacer().frame(height: showBartender ? 250 : 150)
             
@@ -116,10 +120,11 @@ struct NoteTab: View {
             // 데이터 로드
             Task.detached {
                 try? await Task.sleep(nanoseconds: 1_000_000_000) // 테스트용 딜레이
-                // let loadedNotes = TastingNoteHandler.searchAll()
-                let loadedRecipes = RecipeHandler.shared.searchAll()
+                
+                generateRecipeDTOsByGetKeywords(doPlus: true, keys: ownedIngs)
                 
                 await MainActor.run {
+                    let loadedRecipes = RecipeHandler.shared.searchAll()
                     let unlockedRecipes: [RecipeDTO] = loadedRecipes.filter { $0.have.first == $0.have.last }
                     
                     generateTastingsNoteByRecipeDTOs(recipeDTOs: unlockedRecipes)

@@ -115,10 +115,8 @@ struct RecipeTab: View {
             isLoading = true
         }
         
-        // UI 업데이트는 반드시 MainActor에서 실행
-        
+        // 데이터 로드
         Task.detached {
-            // 데이터 로드
             try? await Task.sleep(nanoseconds: 1_000_000_000) // 테스트용 딜레이
             
             generateRecipeDTOsByGetKeywords(doPlus: true, keys: ownedIngs)
@@ -127,6 +125,14 @@ struct RecipeTab: View {
                 let loadedRecipes = RecipeHandler.shared.searchAll()
                 unlockedRecipes = loadedRecipes.filter { $0.have.first == $0.have.last }
                 lockedRecipes = loadedRecipes.filter { $0.have.first != $0.have.last }
+                let unlockedCount = unlockedRecipes.count
+                let lockedCount = lockedRecipes.count
+                
+                if unlockedCount >= 10 { ChallengeHandler.shared.unlockChallenge(id: 27) }
+                if unlockedCount >= 30 { ChallengeHandler.shared.unlockChallenge(id: 28) }
+                if unlockedCount >= 50 { ChallengeHandler.shared.unlockChallenge(id: 29) }
+                if unlockedCount >= 70 { ChallengeHandler.shared.unlockChallenge(id: 30) }
+                if unlockedCount >= 100 { ChallengeHandler.shared.unlockChallenge(id: 31) }
                 
                 isLoading = false // 로딩 상태 종료
                 print("recipe loaded")

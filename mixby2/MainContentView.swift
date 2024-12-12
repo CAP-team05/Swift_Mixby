@@ -68,8 +68,10 @@ struct MainContentView: View {
                             }
                             if currentTab == 4 {
                                 NoteTab(
+                                    showBartender: $showBartender,
                                     isLoading: $isLoading,
-                                    showBartender: $showBartender)
+                                    ownedIngs: ownedIngs
+                                )
                                     .toolbar(.hidden, for: .tabBar)
                             }
                             if currentTab == 5 {

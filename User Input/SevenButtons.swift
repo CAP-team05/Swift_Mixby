@@ -73,7 +73,9 @@ struct SevenButtons: View {
             .frame(height: 30)
             .onAppear {
                 // 부모의 value 값과 sliderValue 동기화
-                sliderValue = Double(value + 1)
+                if value != -1 {
+                    sliderValue = Double(value + 1)
+                }
                 print("onAppear: sliderValue set to \(sliderValue)")
             }
         }

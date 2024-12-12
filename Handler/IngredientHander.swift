@@ -65,7 +65,7 @@ class IngredientHandler {
     }
     
     func delete(ingredient: IngredientDTO) {
-        let deleteQuery = "DELETE FROM Drink WHERE code = ?;"
+        let deleteQuery = "DELETE FROM Ingredient WHERE code = ?;"
         var statement: OpaquePointer?
         
         if sqlite3_prepare_v2(db, deleteQuery, -1, &statement, nil) == SQLITE_OK {
@@ -81,8 +81,8 @@ class IngredientHandler {
     }
     
     func deleteAll() {
-        let deleteQuery = "DELETE FROM Drink"
-        executeQuery(query: deleteQuery, description: "delete all drink")
+        let deleteQuery = "DELETE FROM Ingredient;"
+        executeQuery(query: deleteQuery, description: "delete all ingredient")
     }
     
     func searchAll() -> [IngredientDTO] {

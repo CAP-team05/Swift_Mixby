@@ -28,7 +28,7 @@ class RecommendAPIHandler {
     // API로 JSON 데이터를 전송
     func getRecommend(weather: String, id: Int, completion: @escaping (String) -> Void) {
         let userPersona = UserHandler.shared.searchAll().last?.persona
-        let haveRecipes = RecipeHandler.shared.searchAll()
+        let haveRecipes = RecipeHandler.shared.searchHave()
         let time = TimeHandler.getCurrentHour()
         
         let jsonEncoder = JSONEncoder()

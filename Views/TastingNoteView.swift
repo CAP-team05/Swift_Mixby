@@ -131,7 +131,7 @@ struct TastingNoteView: View {
                         )
                         TastingNoteHandler.shared.update(note: newNote)
                         print("note updated")
-                        UserAPIHandler().sendUserDataToAPI()
+                        UserAPIHandler.shared.sendUserDataToAPI()
                         presentationMode.wrappedValue.dismiss()
                     } label: {
                         ZStack {

@@ -28,6 +28,7 @@ struct ContentView: View {
         }
         .onAppear {
             isLoading = false
+            ChallengeHandler.shared.unlockChallenge(id: 0)
         }
     }
 }

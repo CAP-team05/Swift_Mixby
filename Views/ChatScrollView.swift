@@ -108,34 +108,34 @@ struct ChatScrollView: View {
                     .onChange(of: messages.count) { _, _ in
                         scrollToBottom(proxy: proxy)
                     }
-                    .overlay {
-                        ZStack {
-                            Capsule()
-                                .foregroundColor(Color.white.opacity(0.5))
-                            Image(systemName: "chevron.up")
-                                .font(.system(size: 10))
-                                .foregroundColor(.white)
-                        }
-                        .frame(width: 40, height: 40)
-                        .opacity(0.5)
-                        .offset(x: 110, y: -400)
-                        .onTapGesture {
-                            scrollToTop(proxy: proxy)
-                        }
-                        ZStack {
-                            Capsule()
-                                .foregroundColor(Color.white.opacity(0.5))
-                            Image(systemName: "chevron.down")
-                                .font(.system(size: 10))
-                                .foregroundColor(.white)
-                        }
-                        .frame(width: 40, height: 40)
-                        .opacity(0.5)
-                        .offset(x: 155, y: -400)
-                        .onTapGesture {
-                            scrollToBottom(proxy: proxy)
-                        }
-                    }
+//                    .overlay {
+//                        ZStack {
+//                            Capsule()
+//                                .foregroundColor(Color.white.opacity(0.5))
+//                            Image(systemName: "chevron.up")
+//                                .font(.system(size: 10))
+//                                .foregroundColor(.white)
+//                        }
+//                        .frame(width: 40, height: 40)
+//                        .opacity(0.5)
+//                        .offset(x: 110, y: -400)
+//                        .onTapGesture {
+//                            scrollToTop(proxy: proxy)
+//                        }
+//                        ZStack {
+//                            Capsule()
+//                                .foregroundColor(Color.white.opacity(0.5))
+//                            Image(systemName: "chevron.down")
+//                                .font(.system(size: 10))
+//                                .foregroundColor(.white)
+//                        }
+//                        .frame(width: 40, height: 40)
+//                        .opacity(0.5)
+//                        .offset(x: 155, y: -400)
+//                        .onTapGesture {
+//                            scrollToBottom(proxy: proxy)
+//                        }
+//                    }
                 }
             }
             .overlay {
@@ -168,9 +168,10 @@ struct ChatScrollView: View {
                 loadMessages()
                 inputMode = 0
                 
+                let recipeDTOs = RecipeHandler.shared.searchAll()
+                isRecipeEmpty = recipeDTOs.isEmpty
+                
                 if appJustLaunched {
-//                    let recipeDTOs = RecipeHandler.searchAll()
-//                    isRecipeEmpty = recipeDTOs.isEmpty
                     resetChat()
                     setRandomMessage()
                     appJustLaunched = false
@@ -247,7 +248,7 @@ struct ChatScrollView: View {
                 } else {
                     audioPlayer?.playSound(fileName: "ice", fileType: "mp3", volume: 0.05)
                     
-                    let ind: Int = index / 3
+                    let ind: Int = 0
                     performRefresh(id: ind) {
                         // performRefresh 완료 후 실행
                         let recommendDTOs = RecommendHandler.shared.searchAll()
@@ -281,7 +282,7 @@ struct ChatScrollView: View {
             
             addMessage(type: "Option", param: getImoji(param: feelingOptions[index]) + feelingOptions[index], recipe: nil)
             
-            let ind: Int = index / 3
+            let ind: Int = 1
             performRefresh(id: ind) {
                 
                 let recommendDTOs = RecommendHandler.shared.searchAll()
@@ -311,7 +312,7 @@ struct ChatScrollView: View {
             
             addMessage(type: "Option", param: getImoji(param: scheduleOptions[index]) + scheduleOptions[index], recipe: nil)
             
-            let ind: Int = index / 3
+            let ind: Int = 2
             performRefresh(id: ind) {
                 let recommendDTOs = RecommendHandler.shared.searchAll()
                 let cnt = recommendDTOs.count
@@ -361,8 +362,7 @@ struct ChatScrollView: View {
             "환영합니다.",
             "어서오세요.",
             "안녕하세요.",
-            "반갑습니다.",
-            "기다리고 있었습니다."
+            "반갑습니다."
         ]
         
         let randomQuestions = [

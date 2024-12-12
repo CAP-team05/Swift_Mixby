@@ -73,7 +73,7 @@ class UserAPIHandler {
                                 print("Decoded user: \(user), persona: \(user.persona)")
                                 
                                 // Update the database using updatePersona
-                                UserHandler.shared.updatePersona(user: user)
+                                Task { UserHandler.shared.updatePersona(user: user) }
                             } else if let result = decodedData["result"] {
                                 print("Result received from API: \(result)")
                             }

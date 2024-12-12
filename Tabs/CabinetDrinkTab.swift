@@ -18,9 +18,10 @@ struct CabinetDrinkTab: View {
             Spacer().frame(height: 10)
             
             let allDrinksDTO = DrinkHandler.shared.searchAll()
+            if allDrinksDTO.count >= 10 { let _ = ChallengeHandler.shared.unlockChallenge(id: 20) }
             ForEach(0..<allBases.count, id: \.self) { index in
                 
-                titleCard(title: allBases[index])
+                TitleCard(title: allBases[index])
                 
                 LazyVGrid(columns: columns, spacing: 20) {
                     filteredDrinks(for: index, from: allDrinksDTO)
@@ -57,6 +58,22 @@ struct CabinetDrinkTab: View {
                     ProductCard(drinkDTO: drinkDTO)
                 }
             )
+            .onAppear {
+                if filtered.count >= 1 && index == 0 { ChallengeHandler.shared.unlockChallenge(id: 33) } // 위스키
+                if filtered.count >= 3 && index == 0 { ChallengeHandler.shared.unlockChallenge(id: 34) }
+                // if filtered.count >= 1 && index == 1 { ChallengeHandler.shared.unlockChallenge(id: 33) } // 리큐르
+                // if filtered.count >= 3 && index == 1 { ChallengeHandler.shared.unlockChallenge(id: 34) }
+                if filtered.count >= 1 && index == 2 { ChallengeHandler.shared.unlockChallenge(id: 39) } // 진
+                if filtered.count >= 3 && index == 2 { ChallengeHandler.shared.unlockChallenge(id: 40) }
+                if filtered.count >= 1 && index == 3 { ChallengeHandler.shared.unlockChallenge(id: 37) } // 럼
+                if filtered.count >= 3 && index == 3 { ChallengeHandler.shared.unlockChallenge(id: 38) }
+                if filtered.count >= 1 && index == 4 { ChallengeHandler.shared.unlockChallenge(id: 43) } // 테킬라
+                if filtered.count >= 3 && index == 4 { ChallengeHandler.shared.unlockChallenge(id: 44) }
+                if filtered.count >= 1 && index == 5 { ChallengeHandler.shared.unlockChallenge(id: 35) } // 보드카
+                if filtered.count >= 3 && index == 5 { ChallengeHandler.shared.unlockChallenge(id: 36) }
+                if filtered.count >= 1 && index == 6 { ChallengeHandler.shared.unlockChallenge(id: 41) } // 브랜디
+                if filtered.count >= 3 && index == 6 { ChallengeHandler.shared.unlockChallenge(id: 42) }
+            }
         }
     }
 }

@@ -10,7 +10,7 @@ import SQLite3
 import Foundation
 
 class RecipeHandler {
-    static let shared = RecipeHandler()
+    public static let shared = RecipeHandler()
     private let db: OpaquePointer?
     
     private init() {

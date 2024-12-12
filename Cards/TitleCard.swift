@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct titleCard: View {
+struct TitleCard: View {
     var title: String = "Title"
     
     var body: some View {

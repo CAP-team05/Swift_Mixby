@@ -35,9 +35,7 @@ struct ChallengeCard: View {
         .frame(width: UIScreen.screenWidth, height: 60)
         .onTapGesture {
             isTouch.toggle()
-            if !isUnlocked {
-                ChallengeHandler.shared.unlockChallenge(id: id)
-            }
+            // if !isUnlocked { ChallengeHandler.shared.unlockChallenge(id: id) }
         }
     }
 }

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ToolCard: View {
+struct EasyToolCard: View {
     @Binding var ownedTools: [String]
     
     @State var name: String
