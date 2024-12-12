@@ -43,7 +43,7 @@ struct BartenderChatBubble: View {
         }
         .frame(height: 85)
         .onTapGesture {
-            let recommendDTOs = RecommendHandler.searchAll()
+            let recommendDTOs = RecommendHandler.shared.searchAll()
             for index in 0..<recommendDTOs.count {
                 print("recommendDTO \(index) : \(recommendDTOs[index])")
             }

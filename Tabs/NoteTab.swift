@@ -19,7 +19,7 @@ struct NoteTab: View {
     var audioPlayer: AudioPlayer? = AudioPlayer()
     
     var body: some View {
-        let noteDTOs = TastingNoteHandler.searchAll()
+        let noteDTOs = TastingNoteHandler.shared.searchAll()
         let writtenNoteDTOs = noteDTOs.filter { $0.eval != -1 }
         let unwrittenNoteDTOs = noteDTOs.filter { $0.eval == -1 }
         
@@ -117,7 +117,7 @@ struct NoteTab: View {
             Task.detached {
                 try? await Task.sleep(nanoseconds: 1_000_000_000) // 테스트용 딜레이
                 // let loadedNotes = TastingNoteHandler.searchAll()
-                let loadedRecipes = RecipeHandler.searchAll()
+                let loadedRecipes = RecipeHandler.shared.searchAll()
                 
                 await MainActor.run {
                     let unlockedRecipes: [RecipeDTO] = loadedRecipes.filter { $0.have.first == $0.have.last }

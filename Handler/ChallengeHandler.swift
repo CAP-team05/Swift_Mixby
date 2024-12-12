@@ -65,12 +65,6 @@ class ChallengeHandler {
         ]
     }
     
-    func unlockChallenge(id: Int) {
-        if let index = challenges.firstIndex(where: { $0.id == id }) {
-            challenges[index].unlocked()
-        }
-    }
-    
     func id2title(id: Int) -> String {
         return challenges[id].title
     }
@@ -85,5 +79,12 @@ class ChallengeHandler {
     
     func lengthChellengeList() -> Int {
         return challenges.count
+    }
+    
+    func unlockChallenge(id: Int) {
+        if let index = challenges.firstIndex(where: { $0.id == id }) {
+            challenges[index].unlocked()
+            sendLocalNotification(title: challenges[index].title, body: challenges[index].description)
+        }
     }
 }

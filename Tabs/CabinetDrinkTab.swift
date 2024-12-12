@@ -13,13 +13,11 @@ struct CabinetDrinkTab: View {
     private let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 3)
     private let allBases: [String] = ["위스키", "리큐르", "진", "럼", "테킬라", "보드카", "브랜디", "와인", "기타"]
     
-    private let drinkHandler = DrinkHandler()
-    
     var body: some View {
         ScrollView(.vertical) {
             Spacer().frame(height: 10)
             
-            let allDrinksDTO = DrinkHandler.searchAll()
+            let allDrinksDTO = DrinkHandler.shared.searchAll()
             ForEach(0..<allBases.count, id: \.self) { index in
                 
                 titleCard(title: allBases[index])

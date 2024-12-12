@@ -28,7 +28,7 @@ struct MainContentView: View {
     @State var isLoading: Bool = false
     @State var appJustLaunched: Bool = true
     
-    @State private var userName: String = UserHandler.searchAll().last?.name ?? "noname"
+    @State private var userName: String = UserHandler.shared.searchAll().last?.name ?? "noname"
     
     var body: some View {
         NavigationView {

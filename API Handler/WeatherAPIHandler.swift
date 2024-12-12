@@ -8,8 +8,8 @@
 import Foundation
 
 func getWeatherFromAPI(updateWeatherName: @escaping (String) -> Void) {
-    let locationManager = LocationManager.shared
-    locationManager.onLocationUpdate = { latitude, longitude in
+    //let locationManager = LocationManager.shared
+    LocationManager.shared.onLocationUpdate = { latitude, longitude in
         let url = "http://cocktail.mixby.kro.kr:2222/weather/lat=\(latitude)/long=\(longitude)"
         let json = GetJsonFromURL(url: url)
         // print(json)

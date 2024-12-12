@@ -8,6 +8,7 @@
 import Foundation
 
 class TimeHandler {
+    public static let shared = TimeHandler()
     // 현재 월을 반환하는 메서드
     static func getCurrentMonth() -> Int {
         let dateFormatter = DateFormatter()

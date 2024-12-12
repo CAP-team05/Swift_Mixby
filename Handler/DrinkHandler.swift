@@ -9,13 +9,15 @@ import SQLite3
 import Foundation
 
 class DrinkHandler {
-    static private let db = DatabaseManager.shared.openDatabase()
+    public static let shared = DrinkHandler()
+    private let db: OpaquePointer?
     
-    init() {
-        DrinkHandler.createTable()
+    private init() {
+        db = DatabaseManager.shared.getDB()
+        createTable()
     }
     
-    static func createTable() {
+    private func createTable() {
         let createTableQuery = """
         CREATE TABLE IF NOT EXISTS Drink (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -32,13 +34,13 @@ class DrinkHandler {
         executeQuery(query: createTableQuery, description: "Create Drink Table")
     }
     
-    static func dropTable() {
+    private func dropTable() {
         let dropTableQuery = "DROP TABLE IF EXISTS Drink;"
         executeQuery(query: dropTableQuery, description: "Drink table dropped")
     }
     
     
-    static func executeQuery(query: String, description: String) {
+    private func executeQuery(query: String, description: String) {
         var statement: OpaquePointer?
         if sqlite3_prepare_v2(db, query, -1, &statement, nil) == SQLITE_OK {
             if sqlite3_step(statement) == SQLITE_DONE {
@@ -50,10 +52,10 @@ class DrinkHandler {
         sqlite3_finalize(statement)
     }
     
-    static func insert(drink: DrinkDTO) {
+    func insert(drink: DrinkDTO) {
         let insertQuery = "INSERT INTO Drink (code, name, baseCode, type, volume, alcohol, description) VALUES (?, ?, ?, ?, ?, ?, ?);"
         var statement: OpaquePointer?
-        print("in insert Drink : \(drink.name)")
+        // print("in insert Drink : \(drink.name)")
         if sqlite3_prepare_v2(db, insertQuery, -1, &statement, nil) == SQLITE_OK {
             sqlite3_bind_text(statement, 1, (drink.code as NSString).utf8String, -1, nil)
             sqlite3_bind_text(statement, 2, (drink.name as NSString).utf8String, -1, nil)
@@ -64,7 +66,7 @@ class DrinkHandler {
             sqlite3_bind_text(statement, 7, (drink.description as NSString).utf8String, -1, nil)
             
             if sqlite3_step(statement) == SQLITE_DONE {
-                print("Successfully inserted drink.")
+                // print("Successfully inserted drink.")
             } else {
                 print("Failed to insert drink.")
             }
@@ -72,7 +74,7 @@ class DrinkHandler {
         sqlite3_finalize(statement)
     }
     
-    static func delete(drink: DrinkDTO) {
+    func delete(drink: DrinkDTO) {
         let deleteQuery = "DELETE FROM Drink WHERE code = ?;"
         var statement: OpaquePointer?
         
@@ -88,7 +90,7 @@ class DrinkHandler {
         sqlite3_finalize(statement)
     }
     
-    static func searchAll() -> [DrinkDTO] {
+    func searchAll() -> [DrinkDTO] {
         var drinks: [DrinkDTO] = []
         let query = "SELECT code, name, baseCode, type, volume, alcohol, description FROM Drink;"
         var statement: OpaquePointer?
@@ -112,17 +114,19 @@ class DrinkHandler {
         sqlite3_finalize(statement)
         return drinks
     }
+    
+    func getAllDrinkCodes() -> [String] {
+        let allDrinkDTOs = searchAll()
+        var codes: [String] = []
+        for drinkDTO in allDrinkDTOs {
+            let code = drinkDTO.baseCode
+            if !codes.contains(code) {
+                codes.append(code)
+            }
+        }
+        print(codes)
+        return codes
+    }
+
 }
 
-func getAllDrinkCodes() -> [String] {
-    let allDrinkDTOs = DrinkHandler.searchAll()
-    var codes: [String] = []
-    for drinkDTO in allDrinkDTOs {
-        let code = drinkDTO.baseCode
-        if !codes.contains(code) {
-            codes.append(code)
-        }
-    }
-    print(codes)
-    return codes
-}

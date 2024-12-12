@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct AdditionCard: View {
-    private let drinkHandler = DrinkHandler()
-    
     var code: String
     
     var body: some View {

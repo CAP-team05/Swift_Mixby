@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ChallengeCard: View {
     @State var isTouch: Bool = false
+    let id: Int
     let title: String
     let description: String
     let isUnlocked: Bool
@@ -34,6 +35,9 @@ struct ChallengeCard: View {
         .frame(width: UIScreen.screenWidth, height: 60)
         .onTapGesture {
             isTouch.toggle()
+            if !isUnlocked {
+                ChallengeHandler.shared.unlockChallenge(id: id)
+            }
         }
     }
 }

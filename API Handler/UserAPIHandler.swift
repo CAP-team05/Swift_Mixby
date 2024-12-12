@@ -8,14 +8,13 @@
 import Foundation
 
 class UserAPIHandler {
+    public static let shared = UserAPIHandler()
     private let apiUrl: String = "http://cocktail.mixby.kro.kr:2222/persona"
-    private let userHandler = UserHandler()
-    private let tastingNoteHandler = TastingNoteHandler()
 
     // API로 JSON 데이터를 전송
     func sendUserDataToAPI() {
-        let users = UserHandler.searchAll()
-        let allNotes = TastingNoteHandler.searchAll()
+        let users = UserHandler.shared.searchAll()
+        let allNotes = TastingNoteHandler.shared.searchAll()
         let notes = allNotes.filter { $0.eval >= 0 }
         let jsonEncoder = JSONEncoder()
         jsonEncoder.outputFormatting = .prettyPrinted
@@ -74,7 +73,7 @@ class UserAPIHandler {
                                 print("Decoded user: \(user), persona: \(user.persona)")
                                 
                                 // Update the database using updatePersona
-                                UserHandler.updatePersona(user: user)
+                                UserHandler.shared.updatePersona(user: user)
                             } else if let result = decodedData["result"] {
                                 print("Result received from API: \(result)")
                             }

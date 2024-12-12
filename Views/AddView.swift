@@ -16,8 +16,6 @@ struct AddView: View {
     
     @Environment(\.presentationMode) private var presentationMode : Binding<PresentationMode>
     
-    private let drinkHandler = DrinkHandler()
-    
     var body: some View {
         ZStack {
             BackGround(weatherName: weatherName)
@@ -64,12 +62,12 @@ struct AddView: View {
                     Button (action : {
                         for code in scannedCodes{
                             let tempDrink = getDrinkDTOFromApi(barcode: code)
-                            let drinks = DrinkHandler.searchAll()
+                            let drinks = DrinkHandler.shared.searchAll()
                             let contains = drinks.contains { drink in
                                 drink.name == tempDrink.name
                             }
                             if !contains {
-                                DrinkHandler.insert(drink: tempDrink)
+                                DrinkHandler.shared.insert(drink: tempDrink)
                                 print("추가 완료")
                             }
                             else {

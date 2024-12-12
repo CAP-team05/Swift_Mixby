@@ -28,9 +28,8 @@ extension Array: @retroactive RawRepresentable where Element: Codable {
 }
 
 func generateRecipeDTOsByGetKeywords(doPlus: Bool, keys: [String]) {
-    RecipeHandler.dropTable()
-    RecipeHandler.createTable()
-    var keyword = getKeywordsByDrinkDTO(drinks: DrinkHandler.searchAll())
+    RecipeHandler.shared.deleteAll()
+    var keyword = getKeywordsByDrinkDTO(drinks: DrinkHandler.shared.searchAll())
     if doPlus {
         for key in keys {
             keyword = keyword + key
@@ -39,23 +38,23 @@ func generateRecipeDTOsByGetKeywords(doPlus: Bool, keys: [String]) {
     print("keyword: \(keyword)")
     let recipeDTOArray = getRecipeDTOListWithKeywords(key: keyword)
     for recipeDTO in recipeDTOArray {
-        RecipeHandler.insert(recipe: recipeDTO)
+        RecipeHandler.shared.insert(recipe: recipeDTO)
     }
     print("recipeDTO generated completely")
 }
 
 func generateIngredientDTOsFromAPI() {
-    IngredientHandler.dropTable()
-    IngredientHandler.createTable()
+    IngredientHandler.shared.deleteAll()
     let ingredientDTOs = getAllIngredientsFromAPI()
     for ingredientDTO in ingredientDTOs {
-        IngredientHandler.insert(ingredient: ingredientDTO)
+        IngredientHandler.shared.insert(ingredient: ingredientDTO)
     }
     print("ingredientDTO generated completely")
 }
 
 @main
 struct mixby2App: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @AppStorage("ownedIngs") var ownedIngs: [String] = []
     
     @State private var showTutorial: Bool = true
@@ -81,8 +80,16 @@ struct mixby2App: App {
     func performInitialization() {
         audioPlayer?.playSound(fileName: "pouring", fileType: "mp3", volume: 0.2)
         
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+            if granted {
+                print("알림 권한 허용됨")
+            } else {
+                print("알림 권한 거부됨: \(error?.localizedDescription ?? "알 수 없는 오류")")
+            }
+        }
+        
         let serialQueue = DispatchQueue(label: "com.mixby.recommend.insertQueue")
-
+        
         DispatchQueue.main.async {
             generateIngredientDTOsFromAPI()
             generateRecipeDTOsByGetKeywords(doPlus: true, keys: ownedIngs)
@@ -90,9 +97,9 @@ struct mixby2App: App {
             // 초기화 작업 시작
             serialQueue.sync {
                 let refreshTask = Task {
-                    showTutorial = UserHandler.searchAll().isEmpty
+                    showTutorial = UserHandler.shared.searchAll().isEmpty
                     if !showTutorial {
-                        UserAPIHandler().sendUserDataToAPI()
+                        UserAPIHandler.shared.sendUserDataToAPI()
                     }
                 }
                 let _ = getWeatherFromAPI { weather in

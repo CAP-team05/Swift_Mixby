@@ -9,13 +9,15 @@ import SQLite3
 import Foundation
 
 class IngredientHandler {
-    static private let db = DatabaseManager.shared.openDatabase()
-    
-    init() {
-        IngredientHandler.createTable()
+    public static let shared = IngredientHandler()
+    private let db: OpaquePointer?
+        
+    private init() {
+        db = DatabaseManager.shared.getDB()
+        createTable()
     }
     
-    static func createTable() {
+    private func createTable() {
         let createTableQuery = """
         CREATE TABLE IF NOT EXISTS Ingredient (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -27,13 +29,13 @@ class IngredientHandler {
         executeQuery(query: createTableQuery, description: "Create Ingredient Table")
     }
     
-    static func dropTable() {
+    private func dropTable() {
         let dropTableQuery = "DROP TABLE IF EXISTS Ingredient;"
         executeQuery(query: dropTableQuery, description: "Ingredient table dropped")
     }
     
     
-    static func executeQuery(query: String, description: String) {
+    private func executeQuery(query: String, description: String) {
         var statement: OpaquePointer?
         if sqlite3_prepare_v2(db, query, -1, &statement, nil) == SQLITE_OK {
             if sqlite3_step(statement) == SQLITE_DONE {
@@ -45,16 +47,16 @@ class IngredientHandler {
         sqlite3_finalize(statement)
     }
     
-    static func insert (ingredient: IngredientDTO) {
+    func insert (ingredient: IngredientDTO) {
         let insertQuery = "INSERT INTO Ingredient (code, name) VALUES (?, ?);"
         var statement: OpaquePointer?
-        print("in insert Ingredient : \(ingredient.name)")
+        //print("in insert Ingredient : \(ingredient.name)")
         if sqlite3_prepare_v2(db, insertQuery, -1, &statement, nil) == SQLITE_OK {
             sqlite3_bind_text(statement, 1, (ingredient.code as NSString).utf8String, -1, nil)
             sqlite3_bind_text(statement, 2, (ingredient.name as NSString).utf8String, -1, nil)
             
             if sqlite3_step(statement) == SQLITE_DONE {
-                print("Successfully inserted ingredient.")
+                //print("Successfully inserted ingredient.")
             } else {
                 print("Failed to insert ingredient.")
             }
@@ -62,7 +64,7 @@ class IngredientHandler {
         sqlite3_finalize(statement)
     }
     
-    static func delete(ingredient: IngredientDTO) {
+    func delete(ingredient: IngredientDTO) {
         let deleteQuery = "DELETE FROM Drink WHERE code = ?;"
         var statement: OpaquePointer?
         
@@ -78,7 +80,12 @@ class IngredientHandler {
         sqlite3_finalize(statement)
     }
     
-    static func searchAll() -> [IngredientDTO] {
+    func deleteAll() {
+        let deleteQuery = "DELETE FROM Drink"
+        executeQuery(query: deleteQuery, description: "delete all drink")
+    }
+    
+    func searchAll() -> [IngredientDTO] {
         var ingredients: [IngredientDTO] = []
         let query = "SELECT code, name FROM Ingredient;"
         var statement: OpaquePointer?

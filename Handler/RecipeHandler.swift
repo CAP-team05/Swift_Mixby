@@ -10,13 +10,15 @@ import SQLite3
 import Foundation
 
 class RecipeHandler {
-    static private let db = DatabaseManager.shared.openDatabase()
+    static let shared = RecipeHandler()
+    private let db: OpaquePointer?
     
-    init() {
-        RecipeHandler.createTable()
+    private init() {
+        db = DatabaseManager.shared.getDB()
+        createTable()
     }
     
-    static func createTable() {
+    private func createTable() {
         let createTableQuery = """
         CREATE TABLE IF NOT EXISTS Recipe (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -32,13 +34,13 @@ class RecipeHandler {
         executeQuery(query: createTableQuery, description: "Create Recipe Table")
     }
     
-    static func dropTable() {
+    private func dropTable() {
         let dropTableQuery = "DROP TABLE IF EXISTS Recipe;"
         executeQuery(query: dropTableQuery, description: "Recipe table dropped")
     }
     
     
-    static func executeQuery(query: String, description: String) {
+    private func executeQuery(query: String, description: String) {
         var statement: OpaquePointer?
         if sqlite3_prepare_v2(db, query, -1, &statement, nil) == SQLITE_OK {
             if sqlite3_step(statement) == SQLITE_DONE {
@@ -50,10 +52,10 @@ class RecipeHandler {
         sqlite3_finalize(statement)
     }
     
-    static func insert(recipe: RecipeDTO) {
+    func insert(recipe: RecipeDTO) {
         let insertQuery = "INSERT INTO Recipe (code, english_name, korean_name, tag1, tag2, have) VALUES (?, ?, ?, ?, ?, ?);"
         var statement: OpaquePointer?
-        print("in insert Recipe : \(recipe.korean_name)")
+//        print("in insert Recipe : \(recipe.korean_name)")
         if sqlite3_prepare_v2(db, insertQuery, -1, &statement, nil) == SQLITE_OK {
             sqlite3_bind_text(statement, 1, (recipe.code as NSString).utf8String, -1, nil)
             sqlite3_bind_text(statement, 2, (recipe.english_name as NSString).utf8String, -1, nil)
@@ -63,7 +65,7 @@ class RecipeHandler {
             sqlite3_bind_text(statement, 6, (recipe.have as NSString).utf8String, -1, nil)
             
             if sqlite3_step(statement) == SQLITE_DONE {
-                print("Successfully inserted recipe.")
+                //print("Successfully inserted recipe.")
             } else {
                 print("Failed to insert recipe.")
             }
@@ -71,7 +73,7 @@ class RecipeHandler {
         sqlite3_finalize(statement)
     }
     
-    static func delete(recipe: RecipeDTO) {
+    func delete(recipe: RecipeDTO) {
         let deleteQuery = "DELETE FROM Recipe WHERE code = ?;"
         var statement: OpaquePointer?
         
@@ -87,7 +89,12 @@ class RecipeHandler {
         sqlite3_finalize(statement)
     }
     
-    static func searchHave() -> [RecipeDTO] {
+    func deleteAll() {
+        let deleteQuery = "DELETE FROM Recipe;"
+        executeQuery(query: deleteQuery, description: "delete all recipes")
+    }
+    
+    func searchHave() -> [RecipeDTO] {
         var recipes: [RecipeDTO] = []
         let query = "SELECT code, english_name, korean_name, tag1, tag2, have FROM Recipe;"
         var statement: OpaquePointer?
@@ -125,7 +132,7 @@ class RecipeHandler {
         return recipes
     }
     
-    static func searchAll() -> [RecipeDTO] {
+    func searchAll() -> [RecipeDTO] {
         var recipes: [RecipeDTO] = []
         let query = "SELECT code, english_name, korean_name, tag1, tag2, have FROM Recipe;"
         var statement: OpaquePointer?

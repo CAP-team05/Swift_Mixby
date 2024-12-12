@@ -10,6 +10,16 @@ import WebKit
 
 struct SplashScreenView: View {
     var body: some View {
+        let loadingTexts = [
+            "마티니 글래스 말리는 중..",
+            "지거 닦는 중..",
+            "창 밖으로 날씨 확인하는 중..",
+            "냉장고에서 재료 찾는 중..",
+            "레몬 껍질 벗기는 중..",
+            "토치 건전지 교체 중..",
+            "수염 만지작 거리는 중..",
+            "레시피 골똘히 생각하는 중.."
+        ]
         ZStack {
             Image("city")
                 .resizable()
@@ -38,7 +48,7 @@ struct SplashScreenView: View {
                 TransparentGIFView(gifName: "loading")
                     .frame(width: 200, height: 200)
                 
-                Text("앱 실행 중..")
+                Text(loadingTexts[Int.random(in: 0..<loadingTexts.count)])
                     .font(.gbRegular26)
                     .foregroundColor(.white)
                 
