@@ -22,13 +22,15 @@ func testCode() {
 }
 
 // API로 JSON 데이터를 전송
-func getRecommend(weather: String, completion: @escaping (String) -> Void) {
+func getRecommend(weather: String, id: Int, completion: @escaping (String) -> Void) {
     let userPersona = UserHandler.searchAll().last?.persona
     let haveRecipes = RecipeHandler.searchAll()
     let time = TimeHandler.getCurrentHour()
     
     let jsonEncoder = JSONEncoder()
-    let apiUrl: String = "http://cocktail.mixby.kro.kr:2222/recommend"
+    let apiUrl: String = "http://cocktail.mixby.kro.kr:2222/recommend/\(id)"
+    // let apiUrl: String = "http://127.0.0.1:2222/recommend/\(id)"
+    print(apiUrl)
     jsonEncoder.outputFormatting = .prettyPrinted
     
     var strHaveRecipe = ""
@@ -98,7 +100,7 @@ func refreshDefaultRecommendDTOs(weather: String, completion: @escaping () -> Vo
         RecommendHandler.dropTable()
         RecommendHandler.createTable()
         
-        let _ = getRecommend(weather: weather) { json in
+        let _ = getRecommend(weather: weather, id: 0) { json in
             print("getting recommends")
             let cleanedJson = json
                 .replacingOccurrences(of: "\\\"", with: "\"")

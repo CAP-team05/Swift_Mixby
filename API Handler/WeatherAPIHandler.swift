@@ -8,9 +8,11 @@
 import Foundation
 
 func getWeatherFromAPI(updateWeatherName: @escaping (String) -> Void) {
-    let locationManager = LocationManager()
+    print("in weather from API")
+    let locationManager = LocationManager.shared
     locationManager.onLocationUpdate = { latitude, longitude in
         let url = "http://cocktail.mixby.kro.kr:2222/weather/lat=\(latitude)/long=\(longitude)"
+        print("weather url : \(url)")
         let json = GetJsonFromURL(url: url)
 
         var weather = json.split(separator: "weather")[1]
@@ -20,6 +22,7 @@ func getWeatherFromAPI(updateWeatherName: @escaping (String) -> Void) {
 
         DispatchQueue.main.async {
             let weatherName = getWeatherNameFromCode(weatherCode: String(id))
+            print(weatherName)
             updateWeatherName(weatherName) // 전달받은 클로저를 사용해 상태 업데이트
         }
     }

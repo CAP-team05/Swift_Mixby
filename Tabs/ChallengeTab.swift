@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct ChallengeTab: View {
+    let challengeHandler = ChallengeHandler.shared
+    
     var body: some View {
         VStack (spacing: 0) {
             // title dummy
@@ -19,9 +21,16 @@ struct ChallengeTab: View {
                 VStack (spacing: 20) {
                     Spacer().frame(height: 10)
                     
-                    ForEach(0..<5) { _ in
-                        ChallengeCard()
+                    // Display unlocked challenges first
+                    ForEach(Array(challengeHandler.challenges.enumerated().filter({ $0.element.isUnlocked }).sorted { !$1.element.isUnlocked && $0.element.isUnlocked }), id: \.element.id) { index, challenge in
+                        ChallengeCard(title: challenge.title, description: challenge.description, isUnlocked: challenge.isUnlocked)
                     }
+
+                    // Then display locked challenges
+                    ForEach(Array(challengeHandler.challenges.enumerated().filter({ !$0.element.isUnlocked }).sorted { !$1.element.isUnlocked && $0.element.isUnlocked }), id: \.element.id) { index, challenge in
+                        ChallengeCard(title: challenge.title, description: challenge.description, isUnlocked: challenge.isUnlocked)
+                    }
+
                     // bottom dummy
                     Spacer().frame(height: 200)
                 }
