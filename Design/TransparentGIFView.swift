@@ -5,7 +5,7 @@
 //  Created by Anthony on 12/11/24.
 //
 
-import SwiftUIan
+import SwiftUI
 import UIKit
 
 struct TransparentGIFView: UIViewRepresentable {
