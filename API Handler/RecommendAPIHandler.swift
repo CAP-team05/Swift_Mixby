@@ -22,13 +22,15 @@ func testCode() {
 }
 
 // API로 JSON 데이터를 전송
-func getRecommend(weather: String, completion: @escaping (String) -> Void) {
+func getRecommend(weather: String, id: Int, completion: @escaping (String) -> Void) {
     let userPersona = UserHandler.searchAll().last?.persona
     let haveRecipes = RecipeHandler.searchAll()
     let time = TimeHandler.getCurrentHour()
     
     let jsonEncoder = JSONEncoder()
-    let apiUrl: String = "http://cocktail.mixby.kro.kr:2222/recommend"
+    let apiUrl: String = "http://cocktail.mixby.kro.kr:2222/recommend/\(id)"
+    // let apiUrl: String = "http://127.0.0.1:2222/recommend/\(id)"
+    print(apiUrl)
     jsonEncoder.outputFormatting = .prettyPrinted
     
     var strHaveRecipe = ""
@@ -91,14 +93,14 @@ func getRecommend(weather: String, completion: @escaping (String) -> Void) {
 
 private let serialQueue = DispatchQueue(label: "com.mixby.recommend.insertQueue")
 
-func refreshDefaultRecommendDTOs(weather: String, completion: @escaping () -> Void) {
+func refreshDefaultRecommendDTOs(weather: String, id: Int, completion: @escaping () -> Void) {
     print("getting recommends until get 3")
     
-    DispatchQueue.global().async {
-        RecommendHandler.dropTable()
-        RecommendHandler.createTable()
-        
-        let _ = getRecommend(weather: weather) { json in
+    RecommendHandler.dropTable()
+    RecommendHandler.createTable()
+    
+    serialQueue.sync {
+        getRecommend(weather: weather, id: id) { json in
             print("getting recommends")
             let cleanedJson = json
                 .replacingOccurrences(of: "\\\"", with: "\"")
@@ -108,7 +110,6 @@ func refreshDefaultRecommendDTOs(weather: String, completion: @escaping () -> Vo
                 .trimmingCharacters(in: CharacterSet(charactersIn: "\""))
             
             let arr = cleanedJson.split(separator: "},")
-            print(arr.count, cleanedJson)
             
             for a in arr {
                 let eng_name = getTagFromJson(json: String(a), tag: "name")
@@ -117,18 +118,14 @@ func refreshDefaultRecommendDTOs(weather: String, completion: @escaping () -> Vo
                 
                 let recommendDTO = RecommendDTO(name: eng_name, reason: reason, tag: tag)
                 
-                // RecommendHandler.insert를 직렬적으로 실행
-                serialQueue.sync {
-                    RecommendHandler.insert(recommend: recommendDTO)
-                }
+                RecommendHandler.insert(recommend: recommendDTO)
             }
             
             let cnt = RecommendHandler.searchAll().count
             print("recommendDTO inserted: \(cnt)")
             
-            DispatchQueue.main.async {
-                completion() // 완료 후 호출
-            }
+            // 모든 작업이 끝난 후에 completion 호출
+            completion()
         }
     }
 }

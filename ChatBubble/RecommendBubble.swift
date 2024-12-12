@@ -21,16 +21,14 @@ struct RecommendBubble: View {
                 Rectangle()
                     .background(VisualEffectView(effect: UIBlurEffect(style: .dark)))
                     .foregroundColor(Color.mixbyColor2.opacity(0.1))
-                    .frame(width: UIScreen.screenWidth-60, height: 200)
+                    .frame(width: UIScreen.screenWidth-120, height: 160)
                     .shadow(color: Color.mixbyShadow, radius: 4)
                     .mask(
                         BubbleShape(myMessage: false)
                     )
                 
                 VStack {
-                    Spacer().frame(height: 10)
                     HStack {
-                        
                         let image_url = URL(string: "http://cocktail.mixby.kro.kr:2222/recipe/image="+recipeDTO.english_name)
                         
                         Spacer().frame(width: 15)
@@ -40,9 +38,10 @@ struct RecommendBubble: View {
                                 .resizable()
                                 .scaledToFill()
                         }
-                        .frame(width: 100, height: 100)
+                        .frame(width: 80, height: 80)
                         .cornerRadius(12)
                         .shadow(color: Color.white.opacity(1), radius: 2)
+                        .offset(y: 10)
                         
                         Spacer()
                         
@@ -64,12 +63,13 @@ struct RecommendBubble: View {
                     Text(reason)
                         .font(.gbRegular16)
                         .foregroundColor(.white)
-                        .frame(width: 200)
+                        .frame(width: 260)
                         .multilineTextAlignment(.leading)
+                        .lineLimit(2)
                     
                     Spacer()
                 }
-                .frame(width: UIScreen.screenWidth-80, height: 200)
+                .frame(width: UIScreen.screenWidth-120, height: 160)
             }
             Spacer()
         }

@@ -8,29 +8,32 @@
 import SwiftUI
 
 struct ChallengeCard: View {
-    
-    var isUnlocked: Bool = false
+    @State var isTouch: Bool = false
+    let title: String
+    let description: String
+    let isUnlocked: Bool
     
     var body: some View {
         ZStack {
-            Rectangle()
-                .background(VisualEffectView(effect: UIBlurEffect(style: .dark)))
-                .foregroundColor(Color.white)
-                .opacity(0.2)
-                .shadow(color: Color.mixbyShadow, radius: 4)
-                .cornerRadius(50)
+            Capsule()
+                .stroke(isUnlocked ? Color.mixbyColor3 : Color.white, lineWidth: 3)
+                .shadow(color: Color.white, radius: isUnlocked ? 2 : 0)
+                .frame(width: UIScreen.screenWidth-40, height: 60)
             
-            if isUnlocked {
-                Text("도전과제 설명")
-                    .font(.gbRegular16)
+            if isUnlocked || isTouch {
+                Text(title)
+                    .font(.gbRegular20)
                     .foregroundColor(.white)
-                    .frame(width: UIScreen.screenWidth-60, height: 40)
+                    .frame(width: UIScreen.screenWidth-80, height: 60)
             } else {
                 Image(systemName: "lock")
                     .font(.system(size: 20))
                     .foregroundColor(.white)
             }
         }
-        .frame(width: UIScreen.screenWidth-40, height: 40)
+        .frame(width: UIScreen.screenWidth, height: 60)
+        .onTapGesture {
+            isTouch.toggle()
+        }
     }
 }

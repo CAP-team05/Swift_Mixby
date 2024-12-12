@@ -47,10 +47,16 @@ struct ChatScrollView: View {
     
     @State private var clickedButton: String = "None"
     @State private var canClickButton: Bool = true
-    @State private var isRecipeEmpty: Bool = true
+    @State private var isRefreshing: Bool = false
+    @State private var showError: Bool = false
+    @State private var isRecipeEmpty: Bool = false
     @State private var inputMode: Int = 0
     
+    @AppStorage("hello") private var hello: String = ""
+    @AppStorage("question") private var question: String = ""
+    
     @State var userName: String
+    @State var weatherName: String
     
     @State private var scrollPosition: String? = nil // 스크롤 위치를 관리하는 상태 변수
     
@@ -70,6 +76,43 @@ struct ChatScrollView: View {
                 .opacity(0.1)
                 .cornerRadius(40)
             
+            Spacer()
+            .alert(isPresented: $showError) {
+                Alert(
+                    title: Text("조금만 기다려주세요."),
+                    message: Text("아직 로딩이 완료되지 않았습니다."),
+                    dismissButton: .default(Text("확인"), action: {
+                        showError = false // 상태 변수 리셋
+                    })
+                )
+            }
+            .opacity(0.5)
+            
+            if isRefreshing {
+                VStack {
+                    TransparentGIFView(gifName: "loading")
+                        .frame(width: 100, height: 100)
+                        .offset(y: -100)
+                    
+                    let loadingTexts = [
+                        "마티니 글래스 말리는 중..",
+                        "지거 닦는 중..",
+                        "창 밖으로 날씨 확인하는 중..",
+                        "냉장고에서 재료 찾는 중..",
+                        "레몬 껍질 벗기는 중..",
+                        "토치 건전지 교체 중..",
+                        "수염 만지작 거리는 중..",
+                        "레시피 골똘히 생각하는 중..",
+                        "\(userName)님을 지그시 쳐다보는 중.."
+                    ]
+                    
+                    Text(loadingTexts[Int.random(in: 0..<loadingTexts.count)])
+                        .font(.gbRegular20)
+                        .foregroundColor(.white)
+                        .offset(y: -100)
+                }
+            }
+            
             VStack {
                 ScrollViewReader { proxy in
                     ScrollView {
@@ -81,8 +124,8 @@ struct ChatScrollView: View {
                         }
                     }
                     .refreshable {
-                        canClickButton = false
-                        await performRefresh()
+                        resetChat()
+                        setRandomMessage()
                     }
                     .mask(Rectangle().cornerRadius(40))
                     .shadow(color: Color.mixbyShadow, radius: 4, x: 0, y: 0)
@@ -122,26 +165,29 @@ struct ChatScrollView: View {
             inputSection
         }
         .onAppear {
-            print("main page appeared")
-            
-            let recipeDTOs = RecipeHandler.searchAll()
-            isRecipeEmpty = recipeDTOs.isEmpty
-            
-            canClickButton = true
-            loadMessages()
-            inputMode = 0
-            if appJustLaunched {
-                appJustLaunched = false
-                resetChat()
+            Task {
+                print("main page appeared")
+                
+                canClickButton = true
+                loadMessages()
+                inputMode = 0
+                
+                if appJustLaunched {
+//                    let recipeDTOs = RecipeHandler.searchAll()
+//                    isRecipeEmpty = recipeDTOs.isEmpty
+                    resetChat()
+                    setRandomMessage()
+                    appJustLaunched = false
+                }
             }
         }
     }
     
     private var welcomeMessage: some View {
         if isRecipeEmpty {
-            return BartenderChatBubble(firstLine: "\(userName)님, 환영합니다.", secondLine: "추천 가능한 레시피가 없네요.")
+            return BartenderChatBubble(firstLine: "\(userName)님, \(hello)", secondLine: "추천 가능한 레시피가 없네요.")
         } else {
-            return BartenderChatBubble(firstLine: "\(userName)님, 환영합니다.", secondLine: "어떤 술을 추천드릴까요?")
+            return BartenderChatBubble(firstLine: "\(userName)님, \(hello)", secondLine: question)
         }
     }
     
@@ -189,8 +235,10 @@ struct ChatScrollView: View {
         
         print(canClickButton)
         
-        if !isRecipeEmpty {
-            if canClickButton {
+        if isRefreshing {
+            showError = true
+        } else {
+            if canClickButton && !isRecipeEmpty {
                 canClickButton = false
                 
                 addMessage(type: "User", param: buttonOptions[index], recipe: nil)
@@ -200,86 +248,98 @@ struct ChatScrollView: View {
                     withAnimation { inputMode = index - 2 }
                     addMessage(type: "Bartender", param: buttonOptions[index], recipe: nil)
                 } else {
-                    let recommendDTOs = RecommendHandler.searchAll()
-                    let cnt = recommendDTOs.count
-                    
                     audioPlayer?.playSound(fileName: "ice", fileType: "mp3", volume: 0.05)
                     
-                    if index < cnt {
-                        addMessage(
-                            type: "Recommand",
-                            param: buttonOptions[index],
-                            recipe: getRecipeDTObyName(name: recommendDTOs[index].name),
-                            reason: recommendDTOs[index].reason,
-                            tag: recommendDTOs[index].tag
-                        )
+                    let ind: Int = index / 3
+                    performRefresh(id: ind) {
+                        // performRefresh 완료 후 실행
+                        let recommendDTOs = RecommendHandler.searchAll()
+                        let cnt = recommendDTOs.count
+                        print("cnt: \(cnt)")
+                        
+                        if index < cnt {
+                            addMessage(
+                                type: "Recommand",
+                                param: buttonOptions[index],
+                                recipe: getRecipeDTObyName(name: recommendDTOs[index].name),
+                                reason: recommendDTOs[index].reason,
+                                tag: recommendDTOs[index].tag
+                            )
+                        }
                     }
                 }
+                canClickButton = true
             }
         }
     }
     
     private func handleFeelingInput(_ index: Int) {
         print("handleFeelingInput, index: \(index)")
-        withAnimation { inputMode = 0 }
         
         addMessage(type: "Option", param: getImoji(param: feelingOptions[index]) + feelingOptions[index], recipe: nil)
         
         if index == 3 {
             audioPlayer?.playSound(fileName: "drop", fileType: "mp3", volume: 0.15)
+            withAnimation { inputMode = 0 }
         } else {
-            let recommendDTOs = RecommendHandler.searchAll()
-            let cnt = recommendDTOs.count
-            
             audioPlayer?.playSound(fileName: "ice", fileType: "mp3", volume: 0.05)
             
-            if index+3 < cnt {
-                addMessage(
-                    type: "Recommand",
-                    param: buttonOptions[index],
-                    recipe: getRecipeDTObyName(name: recommendDTOs[index+3].name),
-                    reason: recommendDTOs[index+3].reason,
-                    tag: recommendDTOs[index+3].tag
-                )
+            let ind: Int = index / 3
+            performRefresh(id: ind) {
+                
+                let recommendDTOs = RecommendHandler.searchAll()
+                let cnt = recommendDTOs.count
+                
+                if index < cnt {
+                    addMessage(
+                        type: "Recommand",
+                        param: buttonOptions[index],
+                        recipe: getRecipeDTObyName(name: recommendDTOs[index].name),
+                        reason: recommendDTOs[index].reason,
+                        tag: recommendDTOs[index].tag
+                    )
+                }
             }
         }
     }
     
     private func handleScheduleInput(_ index: Int) {
         print("handleScheduleInput, index: \(index)")
-        withAnimation { inputMode = 0 }
         
         if index == 3 {
             audioPlayer?.playSound(fileName: "drop", fileType: "mp3", volume: 0.15)
+            withAnimation { inputMode = 0 }
         } else {
-            let recommendDTOs = RecommendHandler.searchAll()
-            let cnt = recommendDTOs.count
-            
             audioPlayer?.playSound(fileName: "ice", fileType: "mp3", volume: 0.05)
             
-            if index+6 < cnt {
-                addMessage(
-                    type: "Recommand",
-                    param: buttonOptions[index],
-                    recipe: getRecipeDTObyName(name: recommendDTOs[index+6].name),
-                    reason: recommendDTOs[index+6].reason,
-                    tag: recommendDTOs[index+6].tag
-                )
+            let ind: Int = index / 3
+            performRefresh(id: ind) {
+                let recommendDTOs = RecommendHandler.searchAll()
+                let cnt = recommendDTOs.count
+                
+                if index-6 < cnt {
+                    addMessage(
+                        type: "Recommand",
+                        param: buttonOptions[index],
+                        recipe: getRecipeDTObyName(name: recommendDTOs[index].name),
+                        reason: recommendDTOs[index].reason,
+                        tag: recommendDTOs[index].tag
+                    )
+                }
             }
         }
     }
     
-    func performRefresh() async {
-        // 비동기 작업 시작
-        print("getting new recommends")
-        
-        var weather: String = ""
-        getWeatherFromAPI { weatherName in
-            weather = weatherName
-        }
-        refreshDefaultRecommendDTOs(weather: weather) {
-            print("recommends refreshed completly")
-            resetChat()
+    func performRefresh(id: Int, completion: @escaping () -> Void) {
+        isRefreshing = true
+        DispatchQueue.global().async {
+            refreshDefaultRecommendDTOs(weather: weatherName, id: id) {
+                print("recommends refreshed completly")
+                DispatchQueue.main.async {
+                    isRefreshing = false
+                    completion()
+                }
+            }
         }
     }
     
@@ -295,6 +355,25 @@ struct ChatScrollView: View {
         canClickButton = true
         
         print("Chat reset successfully!")
+    }
+    
+    private func setRandomMessage() {
+        let randomHello = [
+            "환영합니다.",
+            "어서오세요.",
+            "안녕하세요.",
+            "반갑습니다.",
+            "기다리고 있었습니다."
+        ]
+        
+        let randomQuestions = [
+            "어떤 술을 추천드릴까요?",
+            "어떤 술을 드시고 싶으신가요?",
+            "오늘은 어떤걸 원하시나요?"
+        ]
+        
+        hello = randomHello[Int.random(in: 0..<randomHello.count)]
+        question = randomQuestions[Int.random(in: 0..<randomQuestions.count)]
     }
     
     private func addMessage(type: String, param: String, recipe: RecipeDTO?, reason: String = "", tag: String = "") {
@@ -317,28 +396,24 @@ struct ChatScrollView: View {
             switch message.type {
             case "User":
                 UserBubble(param: message.param, res: "res")
-                    // .onAppear { canClickButton = true }
                 
             case "Option":
                 OptionBubble(param: message.param)
-                    // .onAppear { canClickButton = true }
                 
             case "Bartender":
                 BartenderChatBubble(
                     firstLine: getPromptTitle(for: message.param),
                     secondLine: "아래 옵션을 선택해주세요."
                 )
-                .onAppear { canClickButton = true }
                 
             case "Recommand":
-                let recipeDTO = message.recipe ?? getRandomRecipe()
+                let recipeDTO = message.recipe!
                 NavigationLink {
                     RecipeView(recipeDTO: recipeDTO, ownedTools: ownedTools, ownedIngs: ownedIngs)
                 } label: {
                     RecommendBubble(
                         recipeDTO: recipeDTO, reason: message.reason, tag: message.tag
                     )
-                    .onAppear { canClickButton = true }
                 }
                 
             default:

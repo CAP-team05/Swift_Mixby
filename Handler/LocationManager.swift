@@ -9,6 +9,7 @@ import Foundation
 import CoreLocation
 
 class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
+    static let shared = LocationManager()
     private var locationManager = CLLocationManager()
 
     @Published var latitude: Double = 0.0
@@ -26,6 +27,10 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.first else { return }
+        
+        if CLLocationManager.authorizationStatus() == .denied {
+            print("위치 권한이 거부되었습니다. 설정에서 권한을 허용하세요.")
+        }
         
         // 위치 업데이트 저장
         latitude = location.coordinate.latitude

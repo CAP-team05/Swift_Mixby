@@ -61,7 +61,7 @@ struct mixby2App: App {
     @State private var showTutorial: Bool = true
     @State private var showSplash = true // 스플래시 상태
     
-    @State private var weatherName: String = "미정의"
+    @State private var weatherName: String = "null"
     
     var body: some Scene {
         WindowGroup {
@@ -89,24 +89,18 @@ struct mixby2App: App {
             
             // 초기화 작업 시작
             serialQueue.sync {
-                showTutorial = UserHandler.searchAll().isEmpty
-                if !showTutorial {
-                    UserAPIHandler().sendUserDataToAPI()
+                let refreshTask = Task {
+                    showTutorial = UserHandler.searchAll().isEmpty
+                    if !showTutorial {
+                        UserAPIHandler().sendUserDataToAPI()
+                    }
                 }
-                
                 let _ = getWeatherFromAPI { weather in
                     weatherName = weather
                 }
                 
-                let refreshTask = Task {
-                        print("getting new recommends")
-                        refreshDefaultRecommendDTOs(weather: weatherName) {
-                            print("recommends refreshed completly")
-                        }
-                }
-                
                 // 최소 6초 보장
-                DispatchQueue.main.asyncAfter(deadline: .now() + 6.0) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
                     Task {
                         await refreshTask.value // refreshTask가 끝나기를 기다림
                         withAnimation { showSplash = false }
