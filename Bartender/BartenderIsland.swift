@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct BartenderIsland: View {
+    @Binding var currentTab: Int
     @Binding var showBartender: Bool
     
     var body: some View {
@@ -21,22 +22,29 @@ struct BartenderIsland: View {
                         .fill(Color.black)
                         .cornerRadius(22)
                         .frame(
-                            width: showBartender ? 128 : 125,
-                            height: showBartender ? 128 : 36)
-                        .offset(y: showBartender ? 0 : -46)
+                            width: 128,
+                            height: 128)
+                        .offset(y: 0)
                     
                     
                     TransparentGIFView(gifName: "faceAnimation")
                         .frame(
-                            width: showBartender ? 80 : 20,
-                            height: showBartender ? 80 : 20)
-                        .offset(y: showBartender ? 5 : -48)
-                        .opacity(showBartender ? 1 : 0)
+                            width: 80,
+                            height: 80)
+                        .offset(y: 5)
+                        .opacity(1)
                 }
                 .frame(width: 128, height: 128)
                 Spacer()
             }
         }
         .ignoresSafeArea()
+        .onTapGesture {
+            withAnimation(.easeInOut(duration: 0.3)) {
+                if currentTab != 3 {
+                    showBartender.toggle()
+                }
+            }
+        }
     }
 }

@@ -76,7 +76,7 @@ struct TutorialView: View {
             )
             .ignoresSafeArea()
             
-            BartenderIsland(showBartender: $showBartender)
+            BartenderIsland(currentTab: $currentTab, showBartender: $showBartender)
         }
     }
     

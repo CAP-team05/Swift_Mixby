@@ -23,7 +23,7 @@ struct MainContentView: View {
     @State var tabSelection = 3
     @State var currentTab = 3
     @State var bgPos: Int = 0
-    @State var showBartender: Bool = true
+    @State var showBartender: Bool = false
     
     @State var isLoading: Bool = false
     @State var appJustLaunched: Bool = true
@@ -36,32 +36,48 @@ struct MainContentView: View {
                 ZStack {
                     // Background with animation
                     BackGround(bgPos: bgPos, weatherName: weatherName)
-                    
-                    // Conditional rendering based on `currentTab`
-                    if currentTab == 1 {
-                        RecipeTab(
-                            tabSelection: $tabSelection,
-                            isLoading: $isLoading,
-                            ownedIngs: $ownedIngs,
-                            ownedTools: $ownedTools
-                        )
-                        .toolbar(.hidden, for: .tabBar)
-                    }
-                    if currentTab == 2 {
-                        CabinetTab(ownedIngs: $ownedIngs, ownedTools: $ownedTools, weatherName: weatherName)
-                            .toolbar(.hidden, for: .tabBar)
-                    }
-                    if currentTab == 3 {
-                        HomeTab(appJustLaunched: $appJustLaunched, userName: userName, ownedTools: ownedTools, ownedIngs: ownedIngs)
-                            .toolbar(.hidden, for: .tabBar)
-                    }
-                    if currentTab == 4 {
-                        NoteTab(isLoading: $isLoading)
-                            .toolbar(.hidden, for: .tabBar)
-                    }
-                    if currentTab == 5 {
-                        ChallengeTab()
-                            .toolbar(.hidden, for: .tabBar)
+                        
+                        Group {
+                            // Conditional rendering based on `currentTab`
+                            if currentTab == 1 {
+                                RecipeTab(
+                                    tabSelection: $tabSelection,
+                                    showBartender: $showBartender,
+                                    isLoading: $isLoading,
+                                    ownedIngs: $ownedIngs,
+                                    ownedTools: $ownedTools
+                                )
+                                .toolbar(.hidden, for: .tabBar)
+                            }
+                            if currentTab == 2 {
+                                CabinetTab(
+                                    showBartender: $showBartender,
+                                    ownedIngs: $ownedIngs,
+                                    ownedTools: $ownedTools,
+                                    weatherName: weatherName)
+                                    .toolbar(.hidden, for: .tabBar)
+                            }
+                            if currentTab == 3 {
+                                HomeTab(
+                                    appJustLaunched: $appJustLaunched,
+                                    userName: userName,
+                                    weatherName: weatherName,
+                                    ownedTools: ownedTools,
+                                    ownedIngs: ownedIngs)
+                                    .toolbar(.hidden, for: .tabBar)
+                            }
+                            if currentTab == 4 {
+                                NoteTab(
+                                    isLoading: $isLoading,
+                                    showBartender: $showBartender)
+                                    .toolbar(.hidden, for: .tabBar)
+                            }
+                            if currentTab == 5 {
+                                ChallengeTab(
+                                    showBartender: $showBartender
+                                )
+                                    .toolbar(.hidden, for: .tabBar)
+                            }
                     }
                 }
             }
@@ -72,12 +88,13 @@ struct MainContentView: View {
                     .onChange(of: tabSelection) { oldValue, newValue in
                         if !isLoading {
                             switchTab(newValue)
+                            showBartender = false
                         }
                     }
                 
                 // Bartender
-                BartenderBubble(currentTab: $currentTab, userName: userName)
-                BartenderIsland(showBartender: $showBartender)
+                BartenderIsland(currentTab: $currentTab, showBartender: $showBartender)
+                BartenderBubble(currentTab: $currentTab, showBartender: $showBartender, userName: userName)
             }
         }
         .tint(.white)

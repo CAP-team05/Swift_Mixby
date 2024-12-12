@@ -9,6 +9,7 @@ import SwiftUI
 
 struct RecipeTab: View {
     @Binding var tabSelection: Int
+    @Binding var showBartender: Bool
     @Binding var isLoading: Bool
     @Binding var ownedIngs: [String]
     @Binding var ownedTools: [String]
@@ -27,11 +28,8 @@ struct RecipeTab: View {
     var audioPlayer: AudioPlayer? = AudioPlayer()
     
     var body: some View {
-        VStack(spacing: 0) {
-            // title dummy
-            Rectangle()
-                .frame(height: UIScreen.screenHeight * 0.25)
-                .opacity(0)
+        VStack {
+            Spacer().frame(height: showBartender ? 250 : 150)
             
             TabOptions(
                 tabOption: $tabOption,
@@ -43,39 +41,34 @@ struct RecipeTab: View {
                     ProgressView("로딩 중...")
                         .font(.gbRegular20)
                         .foregroundColor(.white.opacity(0.5))
-                        .offset(y: -100)
                 } else {
-                    VStack {
-                        if tabOption == 0 {
-                            recipeGrid(
-                                recipes: unlockedRecipes,
-                                doNavigate: true,
-                                isEmpty: $noUnlocked
-                            )
-                            if noUnlocked {
-                                EmptyBox().offset(y: -500)
-                            }
+                    if tabOption == 0 {
+                        if noUnlocked {
+                            EmptyBox().offset(y: showBartender ? -250 : -290)
                         }
-                        if tabOption == 1 {
-                            recipeGrid(
-                                recipes: lockedRecipes,
-                                doNavigate: true,
-                                isEmpty: $noLocked
-                            )
-                            if noLocked {
-                                EmptyBox().offset(y: -500)
-                            }
+                        recipeGrid(
+                            recipes: unlockedRecipes,
+                            doNavigate: true,
+                            isEmpty: $noUnlocked
+                        )
+                    }
+                    if tabOption == 1 {
+                        if noLocked {
+                            EmptyBox().offset(y: showBartender ? -250 : -290)
                         }
-                        Spacer()
+                        recipeGrid(
+                            recipes: lockedRecipes,
+                            doNavigate: true,
+                            isEmpty: $noLocked
+                        )
                     }
                 }
-            } // ZStack
-            .frame(height: UIScreen.screenHeight - 300)
+            }
+            Spacer()
+            
         } // VStack
         .frame(width: UIScreen.screenWidth, height: UIScreen.screenHeight)
-        .onAppear {
-            Task { await loadRecipes() }
-        }
+        .onAppear { Task { await loadRecipes() }}
     }
     
     @ViewBuilder

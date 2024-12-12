@@ -38,7 +38,7 @@ struct SplashScreenView: View {
                 TransparentGIFView(gifName: "loading")
                     .frame(width: 200, height: 200)
                 
-                Text("로딩 중...")
+                Text("앱 실행 중..")
                     .font(.gbRegular26)
                     .foregroundColor(.white)
                 

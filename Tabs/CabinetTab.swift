@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct CabinetTab: View {
+    @Binding var showBartender: Bool
     @Binding var ownedIngs: [String]
     @Binding var ownedTools: [String]
     
@@ -18,33 +19,8 @@ struct CabinetTab: View {
     var audioPlayer: AudioPlayer? = AudioPlayer()
     
     var body: some View {
-        
-        VStack (spacing: 0) {
-            ZStack {
-                // title dummy
-                Rectangle()
-                    .frame(height: UIScreen.screenHeight * 0.25)
-                    .opacity(0)
-                
-                NavigationLink(
-                    destination: AddView(pageRefreshed: $pageRefreshed, weatherName: weatherName),
-                    label: {
-                        VStack (spacing: 2) {
-                            Image(systemName: "barcode.viewfinder")
-                                .font(.system(size: 40))
-                                .foregroundColor(.white)
-                            Text("추가하기")
-                                .font(.gbRegular10)
-                                .foregroundColor(.white)
-                        }
-                })
-                .offset(x: 130, y: -30)
-                .simultaneousGesture(
-                    TapGesture().onEnded {
-                        audioPlayer?.playSound(fileName: "refresh", fileType: "mp3", volume: 0.15)
-                    }
-                )
-            }
+        VStack {
+            Spacer().frame(height: showBartender ? 250 : 150)
             
             TabOptions(
                 tabOption: $tabOption,
@@ -72,8 +48,27 @@ struct CabinetTab: View {
                 }
                 
             } // ZStack
-            .frame(height: UIScreen.screenHeight-300)
         } // VStack
         .frame(width: UIScreen.screenWidth, height: UIScreen.screenHeight)
+        .overlay {
+            NavigationLink(
+                destination: AddView(pageRefreshed: $pageRefreshed, weatherName: weatherName),
+                label: {
+                    VStack (spacing: 2) {
+                        Image(systemName: "barcode.viewfinder")
+                            .font(.system(size: 40))
+                            .foregroundColor(.white)
+                        Text("추가하기")
+                            .font(.gbRegular10)
+                            .foregroundColor(.white)
+                    }
+            })
+            .offset(x: 130, y: UIScreen.screenHeight * -0.4)
+            .simultaneousGesture(
+                TapGesture().onEnded {
+                    audioPlayer?.playSound(fileName: "refresh", fileType: "mp3", volume: 0.15)
+                }
+            )
+        }
     }
 }
