@@ -11,7 +11,6 @@
 		D44466962CF61FCD00D4A3D0 /* 경기천년바탕OTF_Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = D44466942CF61FCD00D4A3D0 /* 경기천년바탕OTF_Bold.otf */; };
 		D44466972CF61FCD00D4A3D0 /* 경기천년바탕OTF_Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = D44466952CF61FCD00D4A3D0 /* 경기천년바탕OTF_Regular.otf */; };
 		D44466AB2CF622F700D4A3D0 /* CustomTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = D44466AA2CF622F700D4A3D0 /* CustomTabBar.swift */; };
-		D44466B22CF6279D00D4A3D0 /* AnalogClockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D44466B12CF6279D00D4A3D0 /* AnalogClockView.swift */; };
 		D49616802CF71F2200336617 /* TestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D496167F2CF71F2200336617 /* TestView.swift */; };
 /* End PBXBuildFile section */
 
@@ -39,7 +38,6 @@
 		D44466942CF61FCD00D4A3D0 /* 경기천년바탕OTF_Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "경기천년바탕OTF_Bold.otf"; sourceTree = "<group>"; };
 		D44466952CF61FCD00D4A3D0 /* 경기천년바탕OTF_Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "경기천년바탕OTF_Regular.otf"; sourceTree = "<group>"; };
 		D44466AA2CF622F700D4A3D0 /* CustomTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBar.swift; sourceTree = "<group>"; };
-		D44466B12CF6279D00D4A3D0 /* AnalogClockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalogClockView.swift; sourceTree = "<group>"; };
 		D496167F2CF71F2200336617 /* TestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -160,7 +158,6 @@
 			children = (
 				D44466942CF61FCD00D4A3D0 /* 경기천년바탕OTF_Bold.otf */,
 				D44466952CF61FCD00D4A3D0 /* 경기천년바탕OTF_Regular.otf */,
-				D44466B12CF6279D00D4A3D0 /* AnalogClockView.swift */,
 				D49661FF2CFB596E00496F13 /* API Handler */,
 				D444669F2CF6209500D4A3D0 /* Bartender */,
 				D444668D2CF61B5D00D4A3D0 /* Cards */,
@@ -352,7 +349,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D44466B22CF6279D00D4A3D0 /* AnalogClockView.swift in Sources */,
 				D49616802CF71F2200336617 /* TestView.swift in Sources */,
 				D44466AB2CF622F700D4A3D0 /* CustomTabBar.swift in Sources */,
 			);

@@ -13,17 +13,20 @@ struct ChallengeTab: View {
             // title dummy
             Rectangle()
                 .frame(height: UIScreen.screenHeight * 0.3)
-                .opacity(0.1)
+                .opacity(0)
             
             ScrollView(.vertical) {
-                Spacer().frame(height: 10)
-                ForEach(0..<5) { _ in
-                    ChallengeCard()
-                    Spacer().frame(height: 20)
+                VStack (spacing: 20) {
+                    Spacer().frame(height: 10)
+                    
+                    ForEach(0..<5) { _ in
+                        ChallengeCard()
+                    }
+                    // bottom dummy
+                    Spacer().frame(height: 200)
                 }
-                // bottom dummy
-                Spacer().frame(height: 200)
             }
+            .frame(width: UIScreen.screenWidth)
         }
         .ignoresSafeArea()
         .frame(width: UIScreen.screenWidth, height: UIScreen.screenHeight)

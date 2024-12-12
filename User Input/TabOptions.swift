@@ -16,9 +16,6 @@ struct TabOptions: View {
     
     var body: some View {
         ZStack {
-            Rectangle()
-                .frame(height: 40)
-                .foregroundColor(.black.opacity(0.1))
             HStack {
                 let defaultSize = UIScreen.screenWidth/CGFloat(options.count)-10
                 let activeSize = defaultSize + 36

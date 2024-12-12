@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+
 struct RecipeTab: View {
     @Binding var tabSelection: Int
     @Binding var isLoading: Bool
@@ -26,32 +27,11 @@ struct RecipeTab: View {
     var audioPlayer: AudioPlayer? = AudioPlayer()
     
     var body: some View {
-        VStack (spacing: 0) {
-            
-            ZStack {
-                // title dummy
-                Rectangle()
-                    .frame(height: UIScreen.screenHeight * 0.25)
-                    .opacity(0.1)
-                
-                Button {
-                    audioPlayer?.playSound(fileName: "refresh", fileType: "mp3", volume: 0.15)
-                    isLoading = true
-                    generateRecipeDTOsByGetKeywords(doPlus: true, keys: ownedIngs)
-                    loadRecipes()
-                } label: {
-                    VStack (spacing: 2) {
-                        Image(systemName: "arrow.clockwise.square")
-                            .font(.system(size: 40))
-                            .foregroundColor(.white)
-                        Text("새로고침")
-                            .font(.gbRegular10)
-                            .foregroundColor(.white)
-                    }
-                }
-                .offset(x: 130, y: -30)
-                
-            }
+        VStack(spacing: 0) {
+            // title dummy
+            Rectangle()
+                .frame(height: UIScreen.screenHeight * 0.25)
+                .opacity(0)
             
             TabOptions(
                 tabOption: $tabOption,
@@ -62,7 +42,7 @@ struct RecipeTab: View {
                 if isLoading {
                     ProgressView("로딩 중...")
                         .font(.gbRegular20)
-                        .foregroundColor(.white.opacity(isLoading ? 0.5 : 0))
+                        .foregroundColor(.white.opacity(0.5))
                         .offset(y: -100)
                 } else {
                     VStack {
@@ -94,9 +74,7 @@ struct RecipeTab: View {
         } // VStack
         .frame(width: UIScreen.screenWidth, height: UIScreen.screenHeight)
         .onAppear {
-            Task {
-                loadRecipes()
-            }
+            Task { await loadRecipes() }
         }
     }
     
@@ -139,19 +117,25 @@ struct RecipeTab: View {
         }
     }
     
-    func loadRecipes() {
-        print("recipe loading start")
+    func loadRecipes() async {
+        await MainActor.run {
+            isLoading = true
+        }
         
-        Task {
+        // UI 업데이트는 반드시 MainActor에서 실행
+        
+        Task.detached {
             // 데이터 로드
-            let loadedRecipes = RecipeHandler.searchAll()
+            try? await Task.sleep(nanoseconds: 1_000_000_000) // 테스트용 딜레이
             
-            // UI 업데이트는 반드시 MainActor에서 실행
+            generateRecipeDTOsByGetKeywords(doPlus: true, keys: ownedIngs)
+            
             await MainActor.run {
+                let loadedRecipes = RecipeHandler.searchAll()
                 unlockedRecipes = loadedRecipes.filter { $0.have.first == $0.have.last }
                 lockedRecipes = loadedRecipes.filter { $0.have.first != $0.have.last }
                 
-                isLoading = false
+                isLoading = false // 로딩 상태 종료
                 print("recipe loaded")
             }
         }

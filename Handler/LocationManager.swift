@@ -14,6 +14,8 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var latitude: Double = 0.0
     @Published var longitude: Double = 0.0
 
+    var onLocationUpdate: ((Double, Double) -> Void)?
+
     override init() {
         super.init()
         locationManager.delegate = self
@@ -29,6 +31,9 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         latitude = location.coordinate.latitude
         longitude = location.coordinate.longitude
 
+        // 위치 업데이트 클로저 호출
+        onLocationUpdate?(latitude, longitude)
+
         // 위치 업데이트 중지
         locationManager.stopUpdatingLocation()
         print("위치 업데이트 완료: \(latitude), \(longitude)")
@@ -38,3 +43,4 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         print("위치 정보를 가져오는데 실패했습니다: \(error.localizedDescription)")
     }
 }
+

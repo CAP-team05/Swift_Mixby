@@ -9,11 +9,11 @@ import SwiftUI
 
 struct ContentView: View {
     @Binding var ownedIngs: [String]
-    @Binding var lastUpdate: Date
     
     @State var weatherName: String
+    @State var showTutorial: Bool
+    
     @State private var isLoading: Bool = true
-    @State private var showTutorial: Bool = true
     
     var body: some View {
         ZStack {
@@ -22,16 +22,11 @@ struct ContentView: View {
                     TutorialView(showTutorial: $showTutorial)
                 }
                 else {
-                    MainContentView(ownedIngs: $ownedIngs, lastUpdate: $lastUpdate, weatherName: weatherName)
+                    MainContentView(ownedIngs: $ownedIngs, weatherName: weatherName)
                 }
             }
         }
         .onAppear {
-            showTutorial = UserHandler.searchAll().isEmpty
-            if !showTutorial {
-                UserAPIHandler().sendUserDataToAPI()
-            }
-            print("Content View onAppear, \(UserHandler.searchAll().count)")
             isLoading = false
         }
     }

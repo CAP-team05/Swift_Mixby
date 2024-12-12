@@ -24,7 +24,7 @@ struct CabinetTab: View {
                 // title dummy
                 Rectangle()
                     .frame(height: UIScreen.screenHeight * 0.25)
-                    .opacity(0.1)
+                    .opacity(0)
                 
                 NavigationLink(
                     destination: AddView(pageRefreshed: $pageRefreshed, weatherName: weatherName),

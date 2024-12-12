@@ -12,21 +12,19 @@ struct  BartenderBubble: View {
     
     @State private var showComment: Bool = false
     @State private var showBubble: Bool = false
-    @State private var userName: String = ""
     
-    //    private let drinkHandler = DrinkHandler()
+    @State var userName: String
     
     // Speech Bubble
     var body: some View {
         
-        let comments: [String] = [
-            "레시피 개수: \(RecipeHandler.searchAll().count)",
-            "상품 개수: \(DrinkHandler.searchAll().count)",
-            "환영합니다. \(UserHandler.searchAll().count)님!",
-            "테이스팅 노트",
-            "도전과제"
+        let comments: [[String]] = [
+            ["레시피를 해금하고 싶다면 재료를 등록해보세요."],
+            ["\(userName)님의 술은 잘 보관하고 있습니다."],
+            [""],
+            ["테이스팅 노트를 등록하면 더 정확한 추천이 가능해요."],
+            [""]
         ]
-        
         
         ZStack {
             Rectangle()
@@ -39,7 +37,7 @@ struct  BartenderBubble: View {
                     height: showBubble ? 100 : 0
                 )
             
-            Text(comments[currentTab-1])
+            Text(comments[currentTab-1][0])
                 .font(.gbRegular22)
                 .foregroundColor(.white)
                 .multilineTextAlignment(.center)

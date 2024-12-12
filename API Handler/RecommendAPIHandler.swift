@@ -22,11 +22,10 @@ func testCode() {
 }
 
 // API로 JSON 데이터를 전송
-func getRecommend(completion: @escaping (String) -> Void) {
+func getRecommend(weather: String, completion: @escaping (String) -> Void) {
     let userPersona = UserHandler.searchAll().last?.persona
-    let haveRecipes = RecipeHandler.searchHave()
+    let haveRecipes = RecipeHandler.searchAll()
     let time = TimeHandler.getCurrentHour()
-    let weather = getWeatherFromAPI()
     
     let jsonEncoder = JSONEncoder()
     let apiUrl: String = "http://cocktail.mixby.kro.kr:2222/recommend"
@@ -89,14 +88,18 @@ func getRecommend(completion: @escaping (String) -> Void) {
     }
 }
 
-func refreshDefaultRecommendDTOs(completion: @escaping () -> Void) {
+
+private let serialQueue = DispatchQueue(label: "com.mixby.recommend.insertQueue")
+
+func refreshDefaultRecommendDTOs(weather: String, completion: @escaping () -> Void) {
     print("getting recommends until get 3")
     
     DispatchQueue.global().async {
         RecommendHandler.dropTable()
         RecommendHandler.createTable()
         
-        let _ = getRecommend() { json in
+        let _ = getRecommend(weather: weather) { json in
+            print("getting recommends")
             let cleanedJson = json
                 .replacingOccurrences(of: "\\\"", with: "\"")
                 .replacingOccurrences(of: "\\n", with: "\n")
@@ -114,17 +117,15 @@ func refreshDefaultRecommendDTOs(completion: @escaping () -> Void) {
                 
                 let recommendDTO = RecommendDTO(name: eng_name, reason: reason, tag: tag)
                 
-                RecommendHandler.insert(recommend: recommendDTO)
+                // RecommendHandler.insert를 직렬적으로 실행
+                serialQueue.sync {
+                    RecommendHandler.insert(recommend: recommendDTO)
+                }
             }
             
             let cnt = RecommendHandler.searchAll().count
             print("recommendDTO inserted: \(cnt)")
             
-            if cnt < 3 {
-                print("Count is less than 3. Retrying...")
-            } else {
-                print("Count is 3 or more. Ending...")
-            }
             DispatchQueue.main.async {
                 completion() // 완료 후 호출
             }

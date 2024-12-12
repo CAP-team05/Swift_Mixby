@@ -71,57 +71,39 @@ struct TastingNoteView: View {
                 Spacer().frame(height: 20)
                 
                 HStack {
-                    VStack (spacing: 20) {
+                    VStack (spacing: 40) {
                         
                         SevenButtons(value: $eval,
                                      title: "종합 평가",
-                                     color: .yellow.opacity(0.8))
+                                     color: .white.opacity(0.8))
                         SevenButtons(value: $sweetness,
                                      title: "당도",
-                                     color: .white.opacity(0.8))
+                                     color: .yellow.opacity(1))
                         SevenButtons(value: $sourness,
                                      title: "산도",
-                                     color: .white.opacity(0.8))
+                                     color: .yellow.opacity(1))
                         SevenButtons(value: $alcohol,
                                      title: "알코올",
-                                     color: .white.opacity(0.8))
+                                     color: .yellow.opacity(1))
                         
                         HStack {
-                            VStack {
-                                Image("less")
-                                    .resizable()
-                                    .frame(width: 50, height: 50)
-                                Text("부족")
-                                    .font(.gbRegular18)
-                                    .foregroundColor(.white)
-                            }
-                            
+                            Text("부족해요")
+                                .font(.gbBold16)
+                                .foregroundColor(.white.opacity(1))
                             Spacer()
-                            
-                            VStack {
-                                Image("best")
-                                    .resizable()
-                                    .frame(width: 50, height: 50)
-                                Text("최고")
-                                    .font(.gbRegular18)
-                                    .foregroundColor(.white)
-                            }
-                            
+                            Text("최고에요")
+                                .font(.gbBold16)
+                                .foregroundColor(.white.opacity(1))
                             Spacer()
-                            
-                            VStack {
-                                Image("much")
-                                    .resizable()
-                                    .frame(width: 50, height: 50)
-                                Text("과도")
-                                    .font(.gbRegular18)
-                                    .foregroundColor(.white)
-                            }
-                        }.frame(width: UIScreen.screenWidth - 20)
+                            Text("과해요")
+                                .font(.gbBold16)
+                                .foregroundColor(.white.opacity(1))
+                        }
+                        .frame(width: UIScreen.screenWidth - 60)
                     }
                 }
                 
-                Spacer().frame(height: 30)
+                Spacer().frame(height: 50)
                 
                 HStack {
                     Button {

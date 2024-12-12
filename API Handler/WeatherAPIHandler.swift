@@ -7,19 +7,22 @@
 
 import Foundation
 
-func getWeatherFromAPI() -> String {
+func getWeatherFromAPI(updateWeatherName: @escaping (String) -> Void) {
     let locationManager = LocationManager()
-    let lat = locationManager.latitude
-    let long = locationManager.longitude
-    
-    let json = GetJsonFromURL(url: "http://cocktail.mixby.kro.kr:2222/weather/lat=\(lat)/long=\(long)")
-    
-    var weather = json.split(separator: "weather")[1]
-    weather = weather.split(separator: "]")[0]
-    var id = weather.split(separator: "\"id\": ")[1]
-    id = id.split(separator: ",")[0]
-    
-    return getWeatherNameFromCode(weatherCode: String(id))
+    locationManager.onLocationUpdate = { latitude, longitude in
+        let url = "http://cocktail.mixby.kro.kr:2222/weather/lat=\(latitude)/long=\(longitude)"
+        let json = GetJsonFromURL(url: url)
+
+        var weather = json.split(separator: "weather")[1]
+        weather = weather.split(separator: "]")[0]
+        var id = weather.split(separator: "\"id\": ")[1]
+        id = id.split(separator: ",")[0]
+
+        DispatchQueue.main.async {
+            let weatherName = getWeatherNameFromCode(weatherCode: String(id))
+            updateWeatherName(weatherName) // 전달받은 클로저를 사용해 상태 업데이트
+        }
+    }
 }
 
 func getWeatherNameFromCode(weatherCode: String) -> String {

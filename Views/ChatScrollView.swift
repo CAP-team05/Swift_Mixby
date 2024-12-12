@@ -38,7 +38,7 @@ struct ChatMessage: Codable, Identifiable {
 struct ChatScrollView: View {
     @AppStorage("messages") private var messagesData: String = "[]"
     
-    @Binding var lastUpdate: Date
+    @Binding var appJustLaunched: Bool
     
     @State private var messages: [ChatMessage] = []
     
@@ -47,48 +47,75 @@ struct ChatScrollView: View {
     
     @State private var clickedButton: String = "None"
     @State private var canClickButton: Bool = true
+    @State private var isRecipeEmpty: Bool = true
     @State private var inputMode: Int = 0
+    
+    @State var userName: String
+    
+    @State private var scrollPosition: String? = nil // 스크롤 위치를 관리하는 상태 변수
     
     private let buttonOptions = ["계절", "시간", "날씨", "기분", "일정"]
     private let feelingOptions = ["행복", "피곤", "화남", "뒤로"]
     private let scheduleOptions = ["바쁨", "한가", "여행", "뒤로"]
     
     var ownedTools: [String]
+    var ownedIngs: [String]
     
     var audioPlayer: AudioPlayer? = AudioPlayer()
     
     var body: some View {
         ZStack {
-            Button(
-                action: {
-                    audioPlayer?.playSound(fileName: "refresh", fileType: "mp3", volume: 0.15)
-                    resetChat()
-                    print("reset chat")
-                }, label: {
-                    VStack (spacing: 2) {
-                        Image(systemName: "trash.square")
-                            .font(.system(size: 40))
-                            .foregroundColor(.white)
-                        Text("초기화")
-                            .font(.gbRegular10)
-                            .foregroundColor(.white)
-                    }
-                })
-            .offset(x: 130, y: -410)
+            Rectangle()
+                .foregroundColor(.white)
+                .opacity(0.1)
+                .cornerRadius(40)
             
             VStack {
                 ScrollViewReader { proxy in
                     ScrollView {
                         VStack(spacing: 10) {
-                            Spacer().frame(height: 20)
+                            Spacer().frame(height: 20).id("TopDummy")
                             welcomeMessage
                             messageList
                             Spacer().frame(height: 170).id("BottomDummy")
                         }
                     }
-                    .background(Color.gray.opacity(0.2))
+                    .refreshable {
+                        canClickButton = false
+                        await performRefresh()
+                    }
+                    .mask(Rectangle().cornerRadius(40))
+                    .shadow(color: Color.mixbyShadow, radius: 4, x: 0, y: 0)
                     .onChange(of: messages.count) { _, _ in
                         scrollToBottom(proxy: proxy)
+                    }
+                    .overlay {
+                        ZStack {
+                            Capsule()
+                                .foregroundColor(Color.white.opacity(0.5))
+                            Image(systemName: "chevron.up")
+                                .font(.system(size: 10))
+                                .foregroundColor(.white)
+                        }
+                        .frame(width: 40, height: 40)
+                        .opacity(0.5)
+                        .offset(x: 110, y: -400)
+                        .onTapGesture {
+                            scrollToTop(proxy: proxy)
+                        }
+                        ZStack {
+                            Capsule()
+                                .foregroundColor(Color.white.opacity(0.5))
+                            Image(systemName: "chevron.down")
+                                .font(.system(size: 10))
+                                .foregroundColor(.white)
+                        }
+                        .frame(width: 40, height: 40)
+                        .opacity(0.5)
+                        .offset(x: 155, y: -400)
+                        .onTapGesture {
+                            scrollToBottom(proxy: proxy)
+                        }
                     }
                 }
             }
@@ -96,15 +123,26 @@ struct ChatScrollView: View {
         }
         .onAppear {
             print("main page appeared")
+            
+            let recipeDTOs = RecipeHandler.searchAll()
+            isRecipeEmpty = recipeDTOs.isEmpty
+            
             canClickButton = true
             loadMessages()
             inputMode = 0
+            if appJustLaunched {
+                appJustLaunched = false
+                resetChat()
+            }
         }
     }
     
     private var welcomeMessage: some View {
-        let userName = UserHandler.searchAll().last?.name ?? ""
-        return BartenderChatBubble(firstLine: "\(userName)님, 환영합니다.", secondLine: "어떤 술을 추천드릴까요?")
+        if isRecipeEmpty {
+            return BartenderChatBubble(firstLine: "\(userName)님, 환영합니다.", secondLine: "추천 가능한 레시피가 없네요.")
+        } else {
+            return BartenderChatBubble(firstLine: "\(userName)님, 환영합니다.", secondLine: "어떤 술을 추천드릴까요?")
+        }
     }
     
     private var messageList: some View {
@@ -121,7 +159,7 @@ struct ChatScrollView: View {
                 inputButtons
                 Spacer().frame(width: 10)
             }
-            Spacer().frame(height: 120)
+            Spacer().frame(height: 130)
         }
     }
     
@@ -150,41 +188,34 @@ struct ChatScrollView: View {
         clickedButton = buttonOptions[index]
         
         print(canClickButton)
-        if canClickButton {
-            canClickButton = false
-            
-        addMessage(type: "User", param: buttonOptions[index], recipe: nil)
         
-            if index >= 3 {
-                audioPlayer?.playSound(fileName: "drop", fileType: "mp3", volume: 0.15)
-                withAnimation { inputMode = index - 2 }
-                addMessage(type: "Bartender", param: buttonOptions[index], recipe: nil)
-            } else {
-                let recommendDTOs = RecommendHandler.searchAll()
-                let cnt = recommendDTOs.count
-                print("recommend count: \(cnt)")
+        if !isRecipeEmpty {
+            if canClickButton {
+                canClickButton = false
                 
-                audioPlayer?.playSound(fileName: "ice", fileType: "mp3", volume: 0.05)
+                addMessage(type: "User", param: buttonOptions[index], recipe: nil)
                 
-                if index < cnt {
-                    addMessage(
-                        type: "Recommand",
-                        param: buttonOptions[index],
-                        recipe: getRecipeDTObyName(name: recommendDTOs[index].name),
-                        reason: recommendDTOs[index].reason,
-                        tag: recommendDTOs[index].tag
-                    )
+                if index >= 3 {
+                    audioPlayer?.playSound(fileName: "drop", fileType: "mp3", volume: 0.15)
+                    withAnimation { inputMode = index - 2 }
+                    addMessage(type: "Bartender", param: buttonOptions[index], recipe: nil)
                 } else {
-                    addMessage(
-                        type: "Bartender",
-                        param: buttonOptions[index],
-                        recipe: getRandomRecipe(),
-                        reason: "out of range",
-                        tag: "그냥"
-                    )
+                    let recommendDTOs = RecommendHandler.searchAll()
+                    let cnt = recommendDTOs.count
+                    
+                    audioPlayer?.playSound(fileName: "ice", fileType: "mp3", volume: 0.05)
+                    
+                    if index < cnt {
+                        addMessage(
+                            type: "Recommand",
+                            param: buttonOptions[index],
+                            recipe: getRecipeDTObyName(name: recommendDTOs[index].name),
+                            reason: recommendDTOs[index].reason,
+                            tag: recommendDTOs[index].tag
+                        )
+                    }
                 }
             }
-            canClickButton = true
         }
     }
     
@@ -199,7 +230,6 @@ struct ChatScrollView: View {
         } else {
             let recommendDTOs = RecommendHandler.searchAll()
             let cnt = recommendDTOs.count
-            print("recommend count: \(cnt)")
             
             audioPlayer?.playSound(fileName: "ice", fileType: "mp3", volume: 0.05)
             
@@ -210,14 +240,6 @@ struct ChatScrollView: View {
                     recipe: getRecipeDTObyName(name: recommendDTOs[index+3].name),
                     reason: recommendDTOs[index+3].reason,
                     tag: recommendDTOs[index+3].tag
-                )
-            } else {
-                addMessage(
-                    type: "Bartender",
-                    param: buttonOptions[index],
-                    recipe: getRandomRecipe(),
-                    reason: "out of range",
-                    tag: "그냥"
                 )
             }
         }
@@ -232,7 +254,6 @@ struct ChatScrollView: View {
         } else {
             let recommendDTOs = RecommendHandler.searchAll()
             let cnt = recommendDTOs.count
-            print("recommend count: \(cnt)")
             
             audioPlayer?.playSound(fileName: "ice", fileType: "mp3", volume: 0.05)
             
@@ -244,17 +265,24 @@ struct ChatScrollView: View {
                     reason: recommendDTOs[index+6].reason,
                     tag: recommendDTOs[index+6].tag
                 )
-            } else {
-                addMessage(
-                    type: "Bartender",
-                    param: buttonOptions[index],
-                    recipe: getRandomRecipe(),
-                    reason: "out of range",
-                    tag: "그냥"
-                )
             }
         }
     }
+    
+    func performRefresh() async {
+        // 비동기 작업 시작
+        print("getting new recommends")
+        
+        var weather: String = ""
+        getWeatherFromAPI { weatherName in
+            weather = weatherName
+        }
+        refreshDefaultRecommendDTOs(weather: weather) {
+            print("recommends refreshed completly")
+            resetChat()
+        }
+    }
+    
     private func resetChat() {
         // 채팅 내역 삭제
         messages.removeAll()
@@ -289,11 +317,11 @@ struct ChatScrollView: View {
             switch message.type {
             case "User":
                 UserBubble(param: message.param, res: "res")
-                    .onAppear { canClickButton = true }
+                    // .onAppear { canClickButton = true }
                 
             case "Option":
                 OptionBubble(param: message.param)
-                    .onAppear { canClickButton = true }
+                    // .onAppear { canClickButton = true }
                 
             case "Bartender":
                 BartenderChatBubble(
@@ -303,10 +331,15 @@ struct ChatScrollView: View {
                 .onAppear { canClickButton = true }
                 
             case "Recommand":
-                RecommendBubble(
-                    recipeDTO: message.recipe ?? getRandomRecipe(), reason: message.reason, tag: message.tag
-                )
-                .onAppear { canClickButton = true }
+                let recipeDTO = message.recipe ?? getRandomRecipe()
+                NavigationLink {
+                    RecipeView(recipeDTO: recipeDTO, ownedTools: ownedTools, ownedIngs: ownedIngs)
+                } label: {
+                    RecommendBubble(
+                        recipeDTO: recipeDTO, reason: message.reason, tag: message.tag
+                    )
+                    .onAppear { canClickButton = true }
+                }
                 
             default:
                 EmptyView()
@@ -315,10 +348,10 @@ struct ChatScrollView: View {
         .id(message.id)
         .opacity(visibleMessages.contains(message.id) ? 1 : 0)
         .onAppear {
-            canClickButton = true
             withAnimation {
                 _ = visibleMessages.insert(message.id)
             }
+            canClickButton = true
         }
     }
     
@@ -326,9 +359,14 @@ struct ChatScrollView: View {
         param == "기분" ? "어떤 기분이신가요?" : "어떤 일정을 보내셨나요?"
     }
     
-    
+    private func scrollToTop(proxy: ScrollViewProxy) {
+        withAnimation(Animation.interpolatingSpring(stiffness: 50, damping: 5)) {
+            proxy.scrollTo("TopDummy", anchor: .top)
+        }
+    }
+
     private func scrollToBottom(proxy: ScrollViewProxy) {
-        withAnimation {
+        withAnimation(Animation.interpolatingSpring(stiffness: 50, damping: 5)) {
             proxy.scrollTo("BottomDummy", anchor: .bottom)
         }
     }

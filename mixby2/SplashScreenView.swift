@@ -35,15 +35,14 @@ struct SplashScreenView: View {
                 .mask(LinearGradient(gradient: Gradient(colors: [Color.black.opacity(0), Color.black.opacity(0.8)]), startPoint: .top, endPoint: .bottom))
             
             VStack {
-                ProgressView()
+                TransparentGIFView(gifName: "loading")
+                    .frame(width: 200, height: 200)
+                
                 Text("로딩 중...")
-                    .font(.gbBold30)
+                    .font(.gbRegular26)
                     .foregroundColor(.white)
                 
             }
-            //            .font(.gbRegular20)
-            //            .foregroundColor(.black.opacity(0.5))
-            
         }
     }
 }
