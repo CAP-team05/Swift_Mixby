@@ -21,7 +21,7 @@ struct RecipeTab: View {
     @State private var unlockedRecipes: [RecipeDTO] = []
     @State private var lockedRecipes: [RecipeDTO] = []
     
-    private let recipeHandler = RecipeHandler()
+    // static private let recipeHandler = RecipeHandler.shared
     
     private let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 3)
     
@@ -124,7 +124,7 @@ struct RecipeTab: View {
             generateRecipeDTOsByGetKeywords(doPlus: true, keys: ownedIngs)
             
             await MainActor.run {
-                let loadedRecipes = RecipeHandler.searchAll()
+                let loadedRecipes = RecipeHandler.shared.searchAll()
                 unlockedRecipes = loadedRecipes.filter { $0.have.first == $0.have.last }
                 lockedRecipes = loadedRecipes.filter { $0.have.first != $0.have.last }
                 

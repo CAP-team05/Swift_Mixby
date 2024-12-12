@@ -23,7 +23,7 @@ struct ProductView: View {
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button(action: {
-                            DrinkHandler.delete(drink: drinkDTO)
+                            DrinkHandler.shared.delete(drink: drinkDTO)
                             generateRecipeDTOsByGetKeywords(doPlus: false, keys: [])
                             presentationMode.wrappedValue.dismiss()
                         }, label: {

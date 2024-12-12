@@ -12,9 +12,15 @@ class DatabaseManager {
     static let shared = DatabaseManager()
     private var db: OpaquePointer?
 
-    private init() {}
+    private init() {
+        db = openDatabase()
+    }
+    
+    deinit {
+        closeDatabase()
+    }
 
-    func openDatabase() -> OpaquePointer? {
+    private func openDatabase() -> OpaquePointer? {
         if db == nil {
             do {
                 let fileURL = try FileManager.default
@@ -36,18 +42,17 @@ class DatabaseManager {
         }
         return db
     }
+    
+    func getDB() -> OpaquePointer? {
+        return db
+    }
 
-    func closeDatabase() {
-        if db != nil {
-            if sqlite3_close(db) == SQLITE_OK {
-                print("Database successfully closed")
-            } else {
-                let errorMessage = String(cString: sqlite3_errmsg(db))
-                print("Error while closing database: \(errorMessage)")
+    private func closeDatabase() {
+            if db != nil, sqlite3_close(db) == SQLITE_OK {
+                print("Database successfully closed.")
+                db = nil
+            } else if db != nil {
+                print("Error closing database.")
             }
-            db = nil
-        } else {
-            print("Database was already closed or not initialized")
-        }
     }
 }

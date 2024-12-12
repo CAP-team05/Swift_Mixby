@@ -10,14 +10,15 @@ import SQLite3
 import Foundation
 
 class UserHandler {
-    static private let db = DatabaseManager.shared.openDatabase()
-    
-    init() {
-        // UserHandler.dropTable()
-        UserHandler.createTable()
+    public static let shared = UserHandler()
+    private let db: OpaquePointer?
+        
+    private init() {
+        db = DatabaseManager.shared.getDB()
+        createTable()
     }
 
-    static func createTable() {
+    private func createTable() {
         let createTableQuery = """
         CREATE TABLE IF NOT EXISTS User (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -30,12 +31,12 @@ class UserHandler {
         executeQuery(query: createTableQuery, description: "User table created")
     }
     
-    static func dropTable() {
+    private func dropTable() {
         let dropTableQuery = "DROP TABLE IF EXISTS User;"
         executeQuery(query: dropTableQuery, description: "User table dropped")
     }
 
-    static func insert(user: UserDTO) {
+    func insert(user: UserDTO) {
         let insertQuery = "INSERT INTO User (name, gender, favoriteTaste, persona) VALUES (?, ?, ?, ?);"
         var statement: OpaquePointer?
         print("in insertUser : \(user.name)")
@@ -56,7 +57,7 @@ class UserHandler {
     
     
     // must not use gender, favoriteTaste
-    static func updatePersona(user: UserDTO) {
+    func updatePersona(user: UserDTO) {
         let updateQuery = """
         UPDATE User
         SET persona = ?
@@ -83,7 +84,7 @@ class UserHandler {
         sqlite3_finalize(statement)
     }
 
-    static private func executeQuery(query: String, description: String) {
+    private func executeQuery(query: String, description: String) {
         var statement: OpaquePointer?
         if sqlite3_prepare_v2(db, query, -1, &statement, nil) == SQLITE_OK {
             if sqlite3_step(statement) == SQLITE_DONE {
@@ -95,7 +96,7 @@ class UserHandler {
         sqlite3_finalize(statement)
     }
     
-    static func searchAll() -> [UserDTO] {
+    func searchAll() -> [UserDTO] {
         var users: [UserDTO] = []
         let query = "SELECT name, gender, favoriteTaste, persona FROM User;"
         var statement: OpaquePointer?

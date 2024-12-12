@@ -129,7 +129,7 @@ struct TastingNoteView: View {
                             sourness: sourness,
                             alcohol: alcohol
                         )
-                        TastingNoteHandler.update(note: newNote)
+                        TastingNoteHandler.shared.update(note: newNote)
                         print("note updated")
                         UserAPIHandler().sendUserDataToAPI()
                         presentationMode.wrappedValue.dismiss()

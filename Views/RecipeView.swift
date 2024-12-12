@@ -13,7 +13,7 @@ struct RecipeView: View {
     var ownedIngs: [String]
     
     @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
-    private let recipeHandler = RecipeHandler()
+    // static private let recipeHandler = RecipeHandler.shared
     
     var body: some View {
         ZStack {
@@ -75,7 +75,7 @@ struct RecipeView: View {
                             ForEach(0..<ings.count, id: \.self) { i in
                                 HStack {
                                     let doHaveIng = ownedIngs.contains(ings[i].code)
-                                    let doHaveDrink = getAllDrinkCodes().contains(ings[i].code)
+                                    let doHaveDrink = DrinkHandler.shared.getAllDrinkCodes().contains(ings[i].code)
                                     
                                     Image(systemName: doHaveIng || doHaveDrink ? "checkmark.circle" : "x.circle")
                                         .font(.system(size: 24))

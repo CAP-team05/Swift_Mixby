@@ -10,13 +10,15 @@ import SQLite3
 import Foundation
 
 class RecommendHandler {
-    static private let db = DatabaseManager.shared.openDatabase()
-    
-    init() {
-        RecommendHandler.createTable()
+    public static let shared = RecommendHandler()
+    private let db: OpaquePointer?
+        
+    private init() {
+        db = DatabaseManager.shared.getDB()
+        createTable()
     }
     
-    static func createTable() {
+    private func createTable() {
         let createTableQuery = """
         CREATE TABLE IF NOT EXISTS Recommend (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -28,13 +30,13 @@ class RecommendHandler {
         executeQuery(query: createTableQuery, description: "Create Recommend Table")
     }
     
-    static func dropTable() {
+    private func dropTable() {
         let dropTableQuery = "DROP TABLE IF EXISTS Recommend;"
         executeQuery(query: dropTableQuery, description: "Recommend table dropped")
     }
     
     
-    static func executeQuery(query: String, description: String) {
+    private func executeQuery(query: String, description: String) {
         var statement: OpaquePointer?
         if sqlite3_prepare_v2(db, query, -1, &statement, nil) == SQLITE_OK {
             if sqlite3_step(statement) == SQLITE_DONE {
@@ -46,7 +48,7 @@ class RecommendHandler {
         sqlite3_finalize(statement)
     }
     
-    static func insert(recommend: RecommendDTO) {
+    func insert(recommend: RecommendDTO) {
         let insertQuery = "INSERT INTO Recommend (name, reason, tag) VALUES (?, ?, ?);"
         var statement: OpaquePointer?
         print("in insert Recommend : \(recommend.name)")
@@ -64,7 +66,7 @@ class RecommendHandler {
         sqlite3_finalize(statement)
     }
     
-    static func delete(recommend: RecommendDTO) {
+    func delete(recommend: RecommendDTO) {
         let deleteQuery = "DELETE FROM Recommend WHERE code = ?;"
         var statement: OpaquePointer?
         
@@ -80,7 +82,12 @@ class RecommendHandler {
         sqlite3_finalize(statement)
     }
     
-    static func searchAll() -> [RecommendDTO] {
+    func deleteAll() {
+        let deleteQuery = "DELETE FROM Recommend;"
+        executeQuery(query: deleteQuery, description: "Delete all Recommends")
+    }
+    
+    func searchAll() -> [RecommendDTO] {
         var recommends: [RecommendDTO] = []
         let query = "SELECT name, reason, tag FROM Recommend;"
         var statement: OpaquePointer?

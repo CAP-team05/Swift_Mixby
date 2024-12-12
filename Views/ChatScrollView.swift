@@ -88,30 +88,6 @@ struct ChatScrollView: View {
             }
             .opacity(0.5)
             
-            if isRefreshing {
-                VStack {
-                    TransparentGIFView(gifName: "loading")
-                        .frame(width: 100, height: 100)
-                        .offset(y: -100)
-                    
-                    let loadingTexts = [
-                        "마티니 글래스 말리는 중..",
-                        "지거 닦는 중..",
-                        "창 밖으로 날씨 확인하는 중..",
-                        "냉장고에서 재료 찾는 중..",
-                        "레몬 껍질 벗기는 중..",
-                        "토치 건전지 교체 중..",
-                        "수염 만지작 거리는 중..",
-                        "레시피 골똘히 생각하는 중..",
-                        "\(userName)님을 지그시 쳐다보는 중.."
-                    ]
-                    
-                    Text(loadingTexts[Int.random(in: 0..<loadingTexts.count)])
-                        .font(.gbRegular20)
-                        .foregroundColor(.white)
-                        .offset(y: -100)
-                }
-            }
             
             VStack {
                 ScrollViewReader { proxy in
@@ -160,6 +136,26 @@ struct ChatScrollView: View {
                             scrollToBottom(proxy: proxy)
                         }
                     }
+                }
+            }
+            .overlay {
+                if isRefreshing {
+                    ZStack {
+                        Rectangle()
+                            .foregroundColor(.black.opacity(0.5))
+                            .cornerRadius(40)
+                        VStack {
+                            TransparentGIFView(gifName: "loading")
+                                .frame(width: 100, height: 100)
+                                .offset(y: -100)
+                            
+                            Text("로딩 중..")
+                                .font(.gbRegular20)
+                                .foregroundColor(.white)
+                                .offset(y: -100)
+                        }
+                    }
+                    .ignoresSafeArea()
                 }
             }
             inputSection
@@ -229,6 +225,7 @@ struct ChatScrollView: View {
         }
     }
     
+    
     private func handleDefaultInput(_ index: Int) {
         print("handlerDefaultInput, index: \(index)")
         clickedButton = buttonOptions[index]
@@ -253,7 +250,7 @@ struct ChatScrollView: View {
                     let ind: Int = index / 3
                     performRefresh(id: ind) {
                         // performRefresh 완료 후 실행
-                        let recommendDTOs = RecommendHandler.searchAll()
+                        let recommendDTOs = RecommendHandler.shared.searchAll()
                         let cnt = recommendDTOs.count
                         print("cnt: \(cnt)")
                         
@@ -276,18 +273,18 @@ struct ChatScrollView: View {
     private func handleFeelingInput(_ index: Int) {
         print("handleFeelingInput, index: \(index)")
         
-        addMessage(type: "Option", param: getImoji(param: feelingOptions[index]) + feelingOptions[index], recipe: nil)
-        
         if index == 3 {
             audioPlayer?.playSound(fileName: "drop", fileType: "mp3", volume: 0.15)
             withAnimation { inputMode = 0 }
         } else {
             audioPlayer?.playSound(fileName: "ice", fileType: "mp3", volume: 0.05)
             
+            addMessage(type: "Option", param: getImoji(param: feelingOptions[index]) + feelingOptions[index], recipe: nil)
+            
             let ind: Int = index / 3
             performRefresh(id: ind) {
                 
-                let recommendDTOs = RecommendHandler.searchAll()
+                let recommendDTOs = RecommendHandler.shared.searchAll()
                 let cnt = recommendDTOs.count
                 
                 if index < cnt {
@@ -312,9 +309,11 @@ struct ChatScrollView: View {
         } else {
             audioPlayer?.playSound(fileName: "ice", fileType: "mp3", volume: 0.05)
             
+            addMessage(type: "Option", param: getImoji(param: scheduleOptions[index]) + scheduleOptions[index], recipe: nil)
+            
             let ind: Int = index / 3
             performRefresh(id: ind) {
-                let recommendDTOs = RecommendHandler.searchAll()
+                let recommendDTOs = RecommendHandler.shared.searchAll()
                 let cnt = recommendDTOs.count
                 
                 if index-6 < cnt {
@@ -333,7 +332,7 @@ struct ChatScrollView: View {
     func performRefresh(id: Int, completion: @escaping () -> Void) {
         isRefreshing = true
         DispatchQueue.global().async {
-            refreshDefaultRecommendDTOs(weather: weatherName, id: id) {
+            RecommendAPIHandler.shared.refreshDefaultRecommendDTOs(weather: weatherName, id: id) {
                 print("recommends refreshed completly")
                 DispatchQueue.main.async {
                     isRefreshing = false
