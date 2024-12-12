@@ -11,7 +11,6 @@
 		D44466962CF61FCD00D4A3D0 /* 경기천년바탕OTF_Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = D44466942CF61FCD00D4A3D0 /* 경기천년바탕OTF_Bold.otf */; };
 		D44466972CF61FCD00D4A3D0 /* 경기천년바탕OTF_Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = D44466952CF61FCD00D4A3D0 /* 경기천년바탕OTF_Regular.otf */; };
 		D44466AB2CF622F700D4A3D0 /* CustomTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = D44466AA2CF622F700D4A3D0 /* CustomTabBar.swift */; };
-		D49616802CF71F2200336617 /* TestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D496167F2CF71F2200336617 /* TestView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,7 +37,6 @@
 		D44466942CF61FCD00D4A3D0 /* 경기천년바탕OTF_Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "경기천년바탕OTF_Bold.otf"; sourceTree = "<group>"; };
 		D44466952CF61FCD00D4A3D0 /* 경기천년바탕OTF_Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "경기천년바탕OTF_Regular.otf"; sourceTree = "<group>"; };
 		D44466AA2CF622F700D4A3D0 /* CustomTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBar.swift; sourceTree = "<group>"; };
-		D496167F2CF71F2200336617 /* TestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -48,6 +46,20 @@
 				Info.plist,
 			);
 			target = D44465FF2CF60FEC00D4A3D0 /* mixby2 */;
+		};
+		D4CDE4882D0A98E200716D86 /* Exceptions for "mixby2Tests" folder in "mixby2" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				APITestView.swift,
+			);
+			target = D44465FF2CF60FEC00D4A3D0 /* mixby2 */;
+		};
+		D4CDE4892D0A98E200716D86 /* Exceptions for "mixby2Tests" folder in "mixby2Tests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				APITestView.swift,
+			);
+			target = D444660F2CF60FED00D4A3D0 /* mixby2Tests */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -67,6 +79,10 @@
 		};
 		D44466132CF60FED00D4A3D0 /* mixby2Tests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				D4CDE4882D0A98E200716D86 /* Exceptions for "mixby2Tests" folder in "mixby2" target */,
+				D4CDE4892D0A98E200716D86 /* Exceptions for "mixby2Tests" folder in "mixby2Tests" target */,
+			);
 			path = mixby2Tests;
 			sourceTree = "<group>";
 		};
@@ -172,7 +188,6 @@
 				D444661D2CF60FED00D4A3D0 /* mixby2UITests */,
 				D44466012CF60FEC00D4A3D0 /* Products */,
 				D49CAB172CFE44930024B431 /* Tabs */,
-				D496167F2CF71F2200336617 /* TestView.swift */,
 				D49CAAF82CFE3D8E0024B431 /* User Input */,
 				D4FB35112CF880B1007135AF /* Views */,
 			);
@@ -349,7 +364,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D49616802CF71F2200336617 /* TestView.swift in Sources */,
 				D44466AB2CF622F700D4A3D0 /* CustomTabBar.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
