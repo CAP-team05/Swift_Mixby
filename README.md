@@ -33,20 +33,19 @@ cd Swift_Mixby
 ## Directory Structure
 <img width="243" alt="image" src="https://github.com/user-attachments/assets/e9de68fb-d177-4e09-ab96-07a6c2d372ce" />
 
-|폴더(파일)명|기능|
+|파일(폴더)명|기능|
 |----|---|
-|CustomTabBar|탭 전환용 하단바|
+|CustomTabBar.swift|탭 전환용 하단바|
 |*.otf|앱 폰트|
-|----|---|
-|API Handler|서버와의 API 통신, json 파싱|
-|Bartender|바텐더 이미지, 대사|
-|Cards|각 탭의 ScrollView, VGrid에 들어갈 요소|
-|SoundFX|효과음 소스 및 재생|
-|ChatBubble|메인 추천 탭의 말풍선 관리|
-|Design|배경화면, 블러, 기본 색상 관리|
-|DTO|데이터 테이블 구조|
-|Handler|데이터 테이블 생성 및 관리|
-|Tabs|메인 TabView 에서 전활할 탭 요소|
-|User Input|사용자 입력을 받는 모든 요소 관리|
-|Views|각 요소 클릭시 이동할 NavigationView 관리|
+|/API Handler|서버와의 API 통신, json 파싱|
+|/Bartender|바텐더 이미지, 대사|
+|/Cards|각 탭의 ScrollView, VGrid에 들어갈 요소|
+|/SoundFX|효과음 소스 및 재생|
+|/ChatBubble|메인 추천 탭의 말풍선 관리|
+|/Design|배경화면, 블러, 기본 색상 관리|
+|/DTO|데이터 테이블 구조|
+|/Handler|데이터 테이블 생성 및 관리|
+|/Tabs|메인 TabView 에서 전활할 탭 요소|
+|/User Input|사용자 입력을 받는 모든 요소 관리|
+|/Views|각 요소 클릭시 이동할 NavigationView 관리|
 
